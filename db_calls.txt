@@ -1,0 +1,7 @@
+create table user(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    full_name VARCHAR(255) NOT NULL ,
+    login VARCHAR(20) NOT NULL UNIQUE ,
+    password VARCHAR(20) NOT NULL ,
+    expire_date DATE
+)
