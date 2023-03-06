@@ -4,87 +4,40 @@ package nic.testprojet.AccountingSystem.models;
 import javax.validation.constraints.Size;
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
+
+import lombok.*;
 import org.hibernate.validator.constraints.UniqueElements;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
-@Table(name ="user")
+@Table(name = "users")
+@Data
+@NoArgsConstructor
 public class Person {
+
     @Id
-    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
+    
+    @NonNull
     @NotEmpty(message = "Имя не должно быть пустым")
-    @Column(name = "full_name")
-    @Size(min = 5, max =100, message = "ФИО должно быть от 5 до 100 символов")
+    @Size(min = 5, max = 100, message = "ФИО должно быть от 5 до 100 символов")
     private String fullName;
 
+    @NonNull
     @UniqueElements
-    private String login;
+    private String username;
 
-    @Column(name = "password")
     private String password;
 
-    @Column(name = "expire_date")
+    @NonNull
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
+    private List<Role> roles = new ArrayList<>();
+
     private String expireDate;
 
-    public Person(){
-
-    }
-
-    public Person(String fullName, String login) {
-        this.fullName = fullName;
-        this.login = login;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getFullName() {
-        return fullName;
-    }
-
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
-
-    public String getLogin() {
-        return login;
-    }
-
-    public void setLogin(String login) {
-        this.login = login;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getExpireDate() {
-        return expireDate;
-    }
-
-    public void setExpireDate(String expireDate) {
-        this.expireDate = expireDate;
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", fullName='" + fullName + '\'' +
-                ", login='" + login + '\'' +
-                ", password='" + password + '\'' +
-                ", expireDate='" + expireDate + '\'' +
-                '}';
-    }
 }
