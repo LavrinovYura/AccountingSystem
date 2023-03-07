@@ -3,7 +3,6 @@ package nic.testprojet.AccountingSystem.services;
 import nic.testprojet.AccountingSystem.models.Person;
 import nic.testprojet.AccountingSystem.models.Role;
 import nic.testprojet.AccountingSystem.repositories.PersonRepository;
-import nic.testprojet.AccountingSystem.security.PersonDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
