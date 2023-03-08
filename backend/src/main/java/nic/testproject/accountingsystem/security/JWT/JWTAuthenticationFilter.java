@@ -31,10 +31,12 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
         if (StringUtils.hasText(token) && tokenGenerator.validateToken(token)) {
             String username = tokenGenerator.getUsernameFromJWT(token);
 
+            //Суть токена состоит в том, чтобы не получать данные из бд или получать, но в крайнем случае, и ты слоупок
+            //Реализуешь токен и поиск по юзеру по бд - ты конч
+            //ИСПРАВИТЬ!
             UserDetails userDetails = personDetailService.loadUserByUsername(username);
-            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails,
-                    null,
-                    userDetails.getAuthorities());
+            UsernamePasswordAuthenticationToken authenticationToken =
+                    new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
             authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
         }

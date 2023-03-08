@@ -1,8 +1,8 @@
 package nic.testproject.accountingsystem.services;
 
-import nic.testproject.accountingsystem.models.Person;
-import nic.testproject.accountingsystem.models.Role;
-import nic.testproject.accountingsystem.repositories.PersonRepository;
+import nic.testproject.accountingsystem.models.user.Person;
+import nic.testproject.accountingsystem.models.user.Role;
+import nic.testproject.accountingsystem.repositories.user.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

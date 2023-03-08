@@ -1,6 +1,6 @@
-package nic.testproject.accountingsystem.repositories;
+package nic.testproject.accountingsystem.repositories.user;
 
-import nic.testproject.accountingsystem.models.Person;
+import nic.testproject.accountingsystem.models.user.Person;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

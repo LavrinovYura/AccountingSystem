@@ -1,4 +1,4 @@
-package nic.testproject.accountingsystem.models;
+package nic.testproject.accountingsystem.models.user;
 
 
 import lombok.Data;

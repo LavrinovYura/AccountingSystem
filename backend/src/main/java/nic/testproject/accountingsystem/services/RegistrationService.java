@@ -1,10 +1,10 @@
 package nic.testproject.accountingsystem.services;
 
 import nic.testproject.accountingsystem.dto.RegisterDTO;
-import nic.testproject.accountingsystem.models.Person;
-import nic.testproject.accountingsystem.models.Role;
-import nic.testproject.accountingsystem.repositories.PersonRepository;
-import nic.testproject.accountingsystem.repositories.RoleRepository;
+import nic.testproject.accountingsystem.models.user.Person;
+import nic.testproject.accountingsystem.models.user.Role;
+import nic.testproject.accountingsystem.repositories.user.PersonRepository;
+import nic.testproject.accountingsystem.repositories.user.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

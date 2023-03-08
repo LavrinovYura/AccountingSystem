@@ -3,7 +3,7 @@ package nic.testproject.accountingsystem.controllers;
 import nic.testproject.accountingsystem.dto.AuthResponseDTO;
 import nic.testproject.accountingsystem.dto.LoginDTO;
 import nic.testproject.accountingsystem.dto.RegisterDTO;
-import nic.testproject.accountingsystem.repositories.PersonRepository;
+import nic.testproject.accountingsystem.repositories.user.PersonRepository;
 import nic.testproject.accountingsystem.security.JWT.JWTGenerator;
 import nic.testproject.accountingsystem.services.RegistrationService;
 import org.springframework.beans.factory.annotation.Autowired;
