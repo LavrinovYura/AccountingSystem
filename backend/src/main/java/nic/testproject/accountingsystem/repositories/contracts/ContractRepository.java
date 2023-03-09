@@ -13,6 +13,9 @@ import java.util.Optional;
 
 @Repository
 public interface ContractRepository extends JpaRepository<Contract, Integer> {
+
+    boolean existsByName(String name);
+
     Optional<Contract> findById(int id);
 
     Optional<List<Contract>> findByType(ContractType type);
@@ -36,8 +39,4 @@ public interface ContractRepository extends JpaRepository<Contract, Integer> {
 
     @Query("SELECT c FROM Contract c JOIN c.contractCounterparties cp WHERE cp.name = :counterpartyName")
     Optional<List<Contract>> findByCounterpartyName(@Param("counterpartyName") String counterpartyName);
-
-    Contract save(Contract contract); //????
-
-    Contract saveAndFlush(Contract contract); //?????
 }

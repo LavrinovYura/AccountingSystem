@@ -1,4 +1,4 @@
-package nic.testproject.accountingsystem.dto;
+package nic.testproject.accountingsystem.dto.authorization;
 
 import lombok.Data;
 

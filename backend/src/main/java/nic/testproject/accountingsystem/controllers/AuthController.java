@@ -1,8 +1,8 @@
 package nic.testproject.accountingsystem.controllers;
 
-import nic.testproject.accountingsystem.dto.AuthResponseDTO;
-import nic.testproject.accountingsystem.dto.LoginDTO;
-import nic.testproject.accountingsystem.dto.RegisterDTO;
+import nic.testproject.accountingsystem.dto.authorization.AuthResponseDTO;
+import nic.testproject.accountingsystem.dto.authorization.LoginDTO;
+import nic.testproject.accountingsystem.dto.authorization.RegisterDTO;
 import nic.testproject.accountingsystem.repositories.user.PersonRepository;
 import nic.testproject.accountingsystem.security.JWT.JWTGenerator;
 import nic.testproject.accountingsystem.services.RegistrationService;
@@ -13,11 +13,9 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+@CrossOrigin
 @RestController
 @RequestMapping("api/auth")
 public class AuthController {

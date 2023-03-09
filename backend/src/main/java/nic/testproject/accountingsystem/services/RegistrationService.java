@@ -1,6 +1,6 @@
 package nic.testproject.accountingsystem.services;
 
-import nic.testproject.accountingsystem.dto.RegisterDTO;
+import nic.testproject.accountingsystem.dto.authorization.RegisterDTO;
 import nic.testproject.accountingsystem.models.user.Person;
 import nic.testproject.accountingsystem.models.user.Role;
 import nic.testproject.accountingsystem.repositories.user.PersonRepository;

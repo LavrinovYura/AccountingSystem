@@ -1,5 +1,7 @@
 package nic.testproject.accountingsystem.models.contracts;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nic.testproject.accountingsystem.models.contracts.counterparty.ContractCounterparties;
@@ -15,6 +17,8 @@ import java.util.List;
 @Table(name = "contracts")
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Contract {
 
     @Id
