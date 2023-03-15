@@ -21,12 +21,15 @@ public class Contract {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
+
     @Enumerated(EnumType.STRING)
     private ContractType type;
+
     private LocalDate plannedStartDate;
     private LocalDate plannedEndDate;
     private LocalDate actualStartDate;
     private LocalDate actualEndDate;
+
     private Double amount;
 
     @OneToMany(mappedBy = "contract", cascade = CascadeType.ALL,fetch = FetchType.LAZY)

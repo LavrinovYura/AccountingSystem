@@ -6,6 +6,8 @@ import nic.testproject.accountingsystem.models.contracts.counterparty.ContractCo
 import nic.testproject.accountingsystem.models.contracts.details.ContractPhase;
 import nic.testproject.accountingsystem.repositories.contracts.ContractRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -24,9 +26,16 @@ public class ContractService {
         this.contractRepository = contractRepository;
     }
 
-    public ResponseEntity<String> addContract(ContractDTO contractDTO) {
+    public Page<Contract> findContracts(ContractDTO criteria, Pageable pageable) {
+        System.out.println(ContractSpecifications.searchContracts(criteria));
+        return contractRepository.findAll(ContractSpecifications.searchContracts(criteria), pageable);
+    }
+
+    public void addContract(Contract contractDTO) {
+
         List<ContractPhase> contractPhase = contractDTO.getPhases();
         List<ContractCounterparties> contractCounterparties = contractDTO.getContractCounterparties();
+
         Contract contract = Contract.builder()
                 .name(contractDTO.getName())
                 .type(contractDTO.getType())
@@ -48,8 +57,5 @@ public class ContractService {
             it.getExpenses().forEach(expense -> expense.setContractPhase(it));
         });
         contractCounterparties.forEach(it -> it.setMainContract(contract));
-
-
-        return new ResponseEntity<>("Contract saved", HttpStatus.OK);
     }
 }

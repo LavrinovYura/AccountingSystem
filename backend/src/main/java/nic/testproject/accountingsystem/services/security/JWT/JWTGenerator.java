@@ -28,7 +28,6 @@ public class JWTGenerator {
  //               .setExpiration(expireDate)
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                 .compact();
-        System.out.println("\nPROGRAM TOKEN " + token +"\n");
         return token;
     }
 
