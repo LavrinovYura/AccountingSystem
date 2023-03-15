@@ -4,7 +4,7 @@ import nic.testproject.accountingsystem.dto.authorization.AuthResponseDTO;
 import nic.testproject.accountingsystem.dto.authorization.LoginDTO;
 import nic.testproject.accountingsystem.dto.authorization.RegisterDTO;
 import nic.testproject.accountingsystem.repositories.user.PersonRepository;
-import nic.testproject.accountingsystem.security.JWT.JWTGenerator;
+import nic.testproject.accountingsystem.services.security.JWT.JWTGenerator;
 import nic.testproject.accountingsystem.services.RegistrationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

@@ -1,12 +1,14 @@
 package nic.testproject.accountingsystem.models.contracts.details;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import nic.testproject.accountingsystem.models.contracts.Contract;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.Set;
+import java.util.List;
 
 
 @Entity
@@ -17,30 +19,21 @@ public class ContractPhase {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-
+    private Long id;
     @Column(nullable = false)
     private String name;
-
     private LocalDate plannedStartDate;
-
     private LocalDate plannedEndDate;
-
     private LocalDate actualStartDate;
-
     private LocalDate actualEndDate;
-
     private Double phaseCost;
 
     @OneToMany(mappedBy = "contractPhase", cascade = CascadeType.ALL)
-    private Set<PhaseExpense> expenses;
+    private List<PhaseExpense> expenses;
 
+    @JsonIgnore
+    @ToString.Exclude
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "contract_id")
+    @JoinColumn(name = "contract_id", referencedColumnName = "id")
     private Contract contract;
-
-    public void addExpense(PhaseExpense expense) {
-        expenses.add(expense);
-        expense.setContractPhase(this);
-    }
 }

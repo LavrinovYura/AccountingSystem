@@ -1,7 +1,9 @@
 package nic.testproject.accountingsystem.models.contracts.counterparty;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import nic.testproject.accountingsystem.models.contracts.Contract;
 import nic.testproject.accountingsystem.models.contracts.details.ContractType;
 
@@ -23,22 +25,19 @@ public class ContractCounterparties {
     @Enumerated(EnumType.STRING)
     private ContractType type;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "counterparty_id")
     private Counterparty counterparty;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
+    @ToString.Exclude
+    @ManyToOne
     @JoinColumn(name = "contract_id")
-    private Contract contract;
+    private Contract mainContract;
 
     private Double amount;
-
     private LocalDate plannedStartDate;
-
     private LocalDate plannedEndDate;
-
     private LocalDate actualStartDate;
-
     private LocalDate actualEndDate;
-
 }

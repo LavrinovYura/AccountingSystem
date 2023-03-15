@@ -1,7 +1,9 @@
 package nic.testproject.accountingsystem.models.contracts.details;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -16,21 +18,17 @@ public class PhaseExpense {
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         private Long id;
 
-        @Column(nullable = false)
         private String name;
 
         @Enumerated(EnumType.STRING)
-        @Column(nullable = false)
         private ExpenseType type;
 
-        @Column(nullable = false)
-        private BigDecimal amount;
+        private Double amount;
 
+        @JsonIgnore
+        @ToString.Exclude
         @ManyToOne(fetch = FetchType.LAZY)
-        @JoinColumn(name = "contact_phase_id")
+        @JoinColumn(name = "contract_phase_id",  referencedColumnName = "id")
         private ContractPhase contractPhase;
 
-        public enum ExpenseType {
-            PLAN, ACTUAL
-        }
 }
