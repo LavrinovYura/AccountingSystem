@@ -1,4 +1,4 @@
-package nic.testproject.accountingsystem.services.contracts;
+package nic.testproject.accountingsystem.services.contracts.specs;
 
 import nic.testproject.accountingsystem.dto.contracts.ContractDTO;
 import nic.testproject.accountingsystem.models.contracts.Contract;
@@ -19,19 +19,19 @@ public class ContractSpecifications {
             }
 
             if (searchCriteria.getPlannedStartDate() != null) {
-                predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("plannedStartDate"), searchCriteria.getPlannedStartDate()));
+                predicates.add(criteriaBuilder.equal(root.get("plannedStartDate"), searchCriteria.getPlannedStartDate()));
             }
 
             if (searchCriteria.getPlannedEndDate() != null) {
-                predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("plannedEndDate"), searchCriteria.getPlannedEndDate()));
+                predicates.add(criteriaBuilder.equal(root.get("plannedEndDate"), searchCriteria.getPlannedEndDate()));
             }
 
             if (searchCriteria.getActualStartDate() != null) {
-                predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("actualStartDate"), searchCriteria.getActualStartDate()));
+                predicates.add(criteriaBuilder.equal(root.get("actualStartDate"), searchCriteria.getActualStartDate()));
             }
 
             if (searchCriteria.getActualEndDate() != null) {
-                predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("actualEndDate"), searchCriteria.getActualEndDate()));
+                predicates.add(criteriaBuilder.equal(root.get("actualEndDate"), searchCriteria.getActualEndDate()));
             }
 
             if (searchCriteria.getAmount() != null) {

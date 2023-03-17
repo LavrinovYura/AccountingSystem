@@ -14,7 +14,6 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class Contract {
 
     @Id
@@ -32,9 +31,9 @@ public class Contract {
 
     private Double amount;
 
-    @OneToMany(mappedBy = "contract", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "contract", cascade = CascadeType.ALL)
     private List<ContractPhase> phases;
 
-    @OneToMany(mappedBy = "mainContract", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "mainContract", cascade = CascadeType.ALL)
     private List<ContractCounterparties> contractCounterparties;
 }
