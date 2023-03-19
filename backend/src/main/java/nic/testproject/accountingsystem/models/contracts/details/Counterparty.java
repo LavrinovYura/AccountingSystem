@@ -1,4 +1,4 @@
-package nic.testproject.accountingsystem.models.contracts.counterparty;
+package nic.testproject.accountingsystem.models.contracts.details;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
@@ -23,6 +23,6 @@ public class Counterparty {
 
     @JsonIgnore
     @ToString.Exclude
-    @OneToMany(mappedBy = "counterparty", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "counterparty",cascade = CascadeType.ALL)
     private List<ContractCounterparties> contractCounterparties;
 }

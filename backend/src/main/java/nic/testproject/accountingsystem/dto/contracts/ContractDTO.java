@@ -2,9 +2,9 @@ package nic.testproject.accountingsystem.dto.contracts;
 
 
 import lombok.Data;
-import nic.testproject.accountingsystem.models.contracts.counterparty.ContractCounterparties;
+import nic.testproject.accountingsystem.models.contracts.details.ContractCounterparties;
 import nic.testproject.accountingsystem.models.contracts.details.ContractPhase;
-import nic.testproject.accountingsystem.models.contracts.details.ContractType;
+import nic.testproject.accountingsystem.models.contracts.ContractType;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -18,6 +18,7 @@ public class ContractDTO {
     private LocalDate actualStartDate;
     private LocalDate actualEndDate;
     private Double amount;
-    private List<ContractPhase> phases;
-    private List<ContractCounterparties> contractCounterparties;
+
+    private List<ContractPhaseDTO> phases;
+    private List<ContractCounterpartiesDTO> contractCounterparties;
 }

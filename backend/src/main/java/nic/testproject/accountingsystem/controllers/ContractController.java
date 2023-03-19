@@ -1,6 +1,7 @@
 package nic.testproject.accountingsystem.controllers;
 
 import nic.testproject.accountingsystem.dto.contracts.ContractDTO;
+import nic.testproject.accountingsystem.dto.contracts.update.UpdateContractDTO;
 import nic.testproject.accountingsystem.models.contracts.Contract;
 import nic.testproject.accountingsystem.repositories.contracts.ContractRepository;
 import nic.testproject.accountingsystem.services.contracts.ContractService;
@@ -17,7 +18,7 @@ import java.util.List;
 
 @CrossOrigin
 @RestController
-@RequestMapping("api/menu/")
+@RequestMapping("api/menu/contracts/")
 public class ContractController {
 
     private final ContractService contractService;
@@ -29,23 +30,23 @@ public class ContractController {
         this.contractRepository = contractRepository;
     }
 
-    @PostMapping("contract/save")
-    public ResponseEntity<String> saveContract(@RequestBody ContractDTO contractDTO) {
+    @PostMapping("save")
+    public ResponseEntity<Contract> saveContract(@RequestBody ContractDTO contractDTO) {
         if (contractRepository.existsByName(contractDTO.getName())) {
-            return new ResponseEntity<>("Contract already exist", HttpStatus.BAD_REQUEST);
+            return ResponseEntity.badRequest().build();
         }
-        contractService.saveContract(contractDTO);
-        return ResponseEntity.ok().build();
+        Contract savedContract = contractService.saveContract(contractDTO);
+        return ResponseEntity.ok(savedContract);
     }
 
-    @GetMapping("contracts")
+    @GetMapping("show")
     public ResponseEntity<List<Contract>> getContracts(
             @ModelAttribute ContractDTO criteria,
             @RequestParam(name = "page", defaultValue = "0") int page,
             @RequestParam(name = "size", defaultValue = "50") int size) {
 
         Pageable pageable = PageRequest.of(page, size);
-        Page<Contract> contractPage = contractService.findContracts(criteria, pageable);
+        Page<Contract> contractPage = contractService.getContracts(criteria, pageable);
 
         if (contractPage.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -53,5 +54,13 @@ public class ContractController {
 
         List<Contract> contracts = new ArrayList<>(contractPage.getContent());
         return ResponseEntity.ok(contracts);
+    }
+
+    @PutMapping("update/{id}")
+    public ResponseEntity<Contract> updateContract(
+            @PathVariable Long id,
+            @RequestBody UpdateContractDTO updateContractDTO) {
+        Contract updatedContract = contractService.updateContract(id, updateContractDTO);
+        return ResponseEntity.ok(updatedContract);
     }
 }

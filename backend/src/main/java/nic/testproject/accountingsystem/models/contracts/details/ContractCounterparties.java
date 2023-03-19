@@ -1,11 +1,11 @@
-package nic.testproject.accountingsystem.models.contracts.counterparty;
+package nic.testproject.accountingsystem.models.contracts.details;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import nic.testproject.accountingsystem.models.contracts.Contract;
-import nic.testproject.accountingsystem.models.contracts.details.ContractType;
+import nic.testproject.accountingsystem.models.contracts.ContractType;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -32,8 +32,8 @@ public class ContractCounterparties {
     @JsonIgnore
     @ToString.Exclude
     @ManyToOne
-    @JoinColumn(name = "contract_id")
-    private Contract mainContract;
+    @JoinColumn(name = "contract_id", referencedColumnName = "id")
+    private Contract contract2;
 
     private Double amount;
     private LocalDate plannedStartDate;

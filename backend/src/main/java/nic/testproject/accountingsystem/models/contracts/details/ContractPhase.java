@@ -20,6 +20,7 @@ public class ContractPhase {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(nullable = false)
     private String name;
     private LocalDate plannedStartDate;
@@ -27,13 +28,14 @@ public class ContractPhase {
     private LocalDate actualStartDate;
     private LocalDate actualEndDate;
     private Double phaseCost;
-
-    @OneToMany(mappedBy = "contractPhase", cascade = CascadeType.ALL)
-    private List<PhaseExpense> expenses;
+    private Double actualMaterialCosts;
+    private Double plannedMaterialCosts;
+    private Double actualSalaryExpenses;
+    private Double plannedSalaryExpenses;
 
     @JsonIgnore
     @ToString.Exclude
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "contract_id", referencedColumnName = "id")
-    private Contract contract;
+    @ManyToOne
+    @JoinColumn(name = "contract_id_1")
+    private Contract contract1;
 }

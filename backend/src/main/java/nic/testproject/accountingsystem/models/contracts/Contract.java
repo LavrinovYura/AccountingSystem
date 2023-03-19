@@ -1,9 +1,8 @@
 package nic.testproject.accountingsystem.models.contracts;
 
 import lombok.*;
-import nic.testproject.accountingsystem.models.contracts.counterparty.ContractCounterparties;
+import nic.testproject.accountingsystem.models.contracts.details.ContractCounterparties;
 import nic.testproject.accountingsystem.models.contracts.details.ContractPhase;
-import nic.testproject.accountingsystem.models.contracts.details.ContractType;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -13,12 +12,12 @@ import java.util.List;
 @Table(name = "contracts")
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 public class Contract {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String name;
 
     @Enumerated(EnumType.STRING)
@@ -31,9 +30,9 @@ public class Contract {
 
     private Double amount;
 
-    @OneToMany(mappedBy = "contract", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "contract1", cascade = CascadeType.ALL)
     private List<ContractPhase> phases;
 
-    @OneToMany(mappedBy = "mainContract", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "contract2", cascade = CascadeType.ALL)
     private List<ContractCounterparties> contractCounterparties;
 }

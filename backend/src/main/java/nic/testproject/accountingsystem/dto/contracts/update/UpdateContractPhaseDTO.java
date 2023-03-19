@@ -1,13 +1,12 @@
-package nic.testproject.accountingsystem.dto.contracts;
+package nic.testproject.accountingsystem.dto.contracts.update;
 
 import lombok.Data;
 import nic.testproject.accountingsystem.models.contracts.Contract;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @Data
-public class ContractPhaseDTO {
+public class UpdateContractPhaseDTO {
     private String name;
     private LocalDate plannedStartDate;
     private LocalDate plannedEndDate;

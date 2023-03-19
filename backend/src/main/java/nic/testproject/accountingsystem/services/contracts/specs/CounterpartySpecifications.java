@@ -1,7 +1,7 @@
 package nic.testproject.accountingsystem.services.contracts.specs;
 
 import nic.testproject.accountingsystem.dto.contracts.CounterpartyDTO;
-import nic.testproject.accountingsystem.models.contracts.counterparty.Counterparty;
+import nic.testproject.accountingsystem.models.contracts.details.Counterparty;
 import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.criteria.Predicate;

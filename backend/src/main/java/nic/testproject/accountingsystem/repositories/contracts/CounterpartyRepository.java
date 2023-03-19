@@ -1,6 +1,6 @@
 package nic.testproject.accountingsystem.repositories.contracts;
 
-import nic.testproject.accountingsystem.models.contracts.counterparty.Counterparty;
+import nic.testproject.accountingsystem.models.contracts.details.Counterparty;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 

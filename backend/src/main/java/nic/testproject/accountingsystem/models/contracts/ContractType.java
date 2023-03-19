@@ -1,4 +1,4 @@
-package nic.testproject.accountingsystem.models.contracts.details;
+package nic.testproject.accountingsystem.models.contracts;
 
 public enum ContractType {
     PROCUREMENT,
