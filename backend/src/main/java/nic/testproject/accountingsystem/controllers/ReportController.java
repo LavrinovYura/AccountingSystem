@@ -1,7 +1,10 @@
 package nic.testproject.accountingsystem.controllers;
 
+import nic.testproject.accountingsystem.dto.report.AllContracts;
+import nic.testproject.accountingsystem.dto.report.ContractName;
 import nic.testproject.accountingsystem.dto.report.ReportDates;
-import nic.testproject.accountingsystem.models.contracts.Contract;
+import nic.testproject.accountingsystem.models.contracts.details.ContractPhase;
+import nic.testproject.accountingsystem.repositories.contracts.projections.ContractPhaseProjection;
 import nic.testproject.accountingsystem.services.reports.ContractReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
@@ -11,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
@@ -26,7 +30,6 @@ public class ReportController {
         this.reportService = reportService;
     }
 
-
     @GetMapping("/contracts")
     public ResponseEntity<ByteArrayResource> getContractsReport(
             @RequestBody ReportDates reportDates
@@ -34,14 +37,8 @@ public class ReportController {
         LocalDate plannedStartDate = reportDates.getPlannedStartDate();
         LocalDate plannedEndDate = reportDates.getPlannedEndDate();
 
-        List<Contract> contracts = reportService.getContractsByPeriod(plannedStartDate, plannedEndDate);
-        ByteArrayInputStream in = reportService.generateExcelReport(contracts);
-
-        byte[] bytes = new byte[in.available()];
-        int read = in.read(bytes);
-        while (read != -1) {
-            read = in.read(bytes);
-        }
+        AllContracts contracts = reportService.getAllContractsByPeriod(plannedStartDate, plannedEndDate);
+        ByteArrayOutputStream outputStream = reportService.generateContractsExcelReport(contracts);
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Disposition", "attachment; filename=contracts_report.xlsx");
@@ -50,6 +47,24 @@ public class ReportController {
                 .ok()
                 .headers(headers)
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                .body(new ByteArrayResource(bytes));
+                .body(new ByteArrayResource(outputStream.toByteArray()));
+    }
+
+    @GetMapping("/contractPhases")
+    public ResponseEntity<ByteArrayResource> getPhasesReport(
+            @RequestBody ContractName name
+    ) throws IOException {
+
+        List<ContractPhaseProjection> contractPhases = reportService.getAllPhasesByContract(name.getName());
+        ByteArrayOutputStream outputStream = reportService.generatePhasesExcelReport(contractPhases);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Disposition", "attachment; filename=phases_report.xlsx");
+
+        return ResponseEntity
+                .ok()
+                .headers(headers)
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(new ByteArrayResource(outputStream.toByteArray()));
     }
 }

@@ -8,5 +8,4 @@ import java.time.LocalDate;
 public class ReportDates {
     private LocalDate plannedStartDate;
     private LocalDate plannedEndDate;
-
 }
