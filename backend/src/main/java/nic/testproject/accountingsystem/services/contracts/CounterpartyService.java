@@ -30,10 +30,11 @@ public class CounterpartyService {
         return counterpartyRepository.findAll(CounterpartySpecifications.searchCounterparties(criteria), pageable);
     }
 
-    public Counterparty updateCounterparty(Long id, UpdateCounterpartyDTO updateCounterpartyDTO) {
-        Optional<Counterparty> optionalCounterparty = counterpartyRepository.findById(id);
+    public Counterparty updateCounterparty(UpdateCounterpartyDTO updateCounterpartyDTO) {
+        String name = updateCounterpartyDTO.getName();
+        Optional<Counterparty> optionalCounterparty = counterpartyRepository.findByName(name);
         if (!optionalCounterparty.isPresent()) {
-            throw new ResourceNotFoundException("Contract not found with id: " + id);
+            throw new ResourceNotFoundException("Counterparty not found with name: " + name);
         }
         Counterparty counterparty = optionalCounterparty.get();
         modelMapper.map(updateCounterpartyDTO, counterparty);
@@ -41,10 +42,24 @@ public class CounterpartyService {
         return counterparty;
     }
 
-    public void deleteCounterparty(Long id) {
-        Optional<Counterparty> optionalCounterparty = counterpartyRepository.findById(id);
+    public void deleteCounterparty(String name) {
+        Optional<Counterparty> optionalCounterparty = counterpartyRepository.findByName(name);
         if (!optionalCounterparty.isPresent()) {
-            throw new ResourceNotFoundException("Counterparty not found with id: " + id);
+            throw new ResourceNotFoundException("Counterparty not found with id: " + name);
+        }
+
+        Counterparty counterparty = optionalCounterparty.get();
+
+        counterparty.getContractCounterparties().forEach(it->it.setCounterparty(null));
+        counterparty.setContractCounterparties(null);
+
+        counterpartyRepository.delete(counterparty);
+    }
+
+    public void deleteCounterpartyWithChildren(String name) {
+        Optional<Counterparty> optionalCounterparty = counterpartyRepository.findByName(name);
+        if (!optionalCounterparty.isPresent()) {
+            throw new ResourceNotFoundException("Counterparty not found with id: " + name);
         }
         counterpartyRepository.delete(optionalCounterparty.get());
     }

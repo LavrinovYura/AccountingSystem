@@ -16,7 +16,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,13 +25,11 @@ public class ContractService {
 
     private final ContractRepository contractRepository;
     private final ModelMapper modelMapper;
-    private final CounterpartyRepository counterpartyRepository;
 
     @Autowired
     public ContractService(ContractRepository contractRepository, ModelMapper modelMapper, CounterpartyRepository counterpartyRepository) {
         this.contractRepository = contractRepository;
         this.modelMapper = modelMapper;
-        this.counterpartyRepository = counterpartyRepository;
     }
 
     public Page<Contract> getContracts(ContractDTO criteria, Pageable pageable) {
@@ -53,10 +50,11 @@ public class ContractService {
         return savedContract;
     }
 
-    public Contract updateContract(Long id, UpdateContractDTO updateContractDTO) {
-        Optional<Contract> optionalContract = contractRepository.findById(id);
+    public ContractDTO updateContract(UpdateContractDTO updateContractDTO) {
+        String name = updateContractDTO.getName();
+        Optional<Contract> optionalContract = contractRepository.findContractByName(name);
         if (!optionalContract.isPresent()) {
-            throw new ResourceNotFoundException("Contract not found with id: " + id);
+            throw new ResourceNotFoundException("Contract not found with id: " + name);
         }
 
         Contract contract = optionalContract.get();
@@ -69,7 +67,24 @@ public class ContractService {
         linkContractIdToContractCounterparties(contractCounterparties, savedContract);
         linkContractIdToContractPhase(contractPhase, savedContract);
 
-        return savedContract;
+        return modelMapper.map(savedContract, ContractDTO.class);
+    }
+
+    public void deleteContractWithChildren(String name) {
+        Optional<Contract> optionalContract = contractRepository.findContractByName(name);
+        if (!optionalContract.isPresent()) {
+            throw new ResourceNotFoundException("Counterparty not found with id: " + name);
+        }
+        contractRepository.delete(optionalContract.get());
+    }
+
+    public void deleteContract(String name) {
+        Optional<Contract> optionalContract = contractRepository.findContractByName(name);
+        if (!optionalContract.isPresent()) {
+            throw new ResourceNotFoundException("Counterparty not found with id: " + name);
+        }
+        optionalContract.get().getContractCounterparties().forEach(it->it.setCounterparty(null));
+        contractRepository.delete(optionalContract.get());
     }
 
     private void linkContractIdToContractPhase(List<ContractPhase> contractPhase, Contract savedContract) {

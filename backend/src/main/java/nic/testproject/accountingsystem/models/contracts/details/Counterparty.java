@@ -1,9 +1,7 @@
 package nic.testproject.accountingsystem.models.contracts.details;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
@@ -12,6 +10,8 @@ import java.util.List;
 @Table(name = "counterparties")
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Counterparty {
 
     @Id

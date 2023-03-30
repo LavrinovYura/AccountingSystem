@@ -1,5 +1,6 @@
 package nic.testproject.accountingsystem.repositories.contracts;
 
+import nic.testproject.accountingsystem.dto.contracts.ContractDTO;
 import nic.testproject.accountingsystem.models.contracts.Contract;
 import nic.testproject.accountingsystem.repositories.contracts.projections.ContractProjection;
 import nic.testproject.accountingsystem.repositories.contracts.projections.ContractWithPhasesProjection;
@@ -15,7 +16,8 @@ import java.util.Optional;
 public interface ContractRepository extends JpaRepository<Contract, Long>, JpaSpecificationExecutor<Contract> {
 
     boolean existsByName(String name);
-    Optional<ContractWithPhasesProjection> findContractByName(String name);
+    Optional<ContractWithPhasesProjection> findByName(String name);
+    Optional<Contract> findContractByName(String name);
     Optional<List<ContractProjection>> findByPlannedStartDateBetweenOrderByPlannedStartDateAsc(LocalDate startDate, LocalDate endDate);
 
 }

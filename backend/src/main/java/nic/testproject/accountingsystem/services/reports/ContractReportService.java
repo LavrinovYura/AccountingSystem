@@ -200,7 +200,7 @@ public class ContractReportService {
     }
 
     public List<ContractPhaseProjection> getAllPhasesByContract(String name) {
-        ContractWithPhasesProjection contract = contractRepository.findContractByName(name)
+        ContractWithPhasesProjection contract = contractRepository.findByName(name)
                 .orElseThrow(() -> new ResourceNotFoundException("Contract not found"));
         return contract.getPhases();
     }

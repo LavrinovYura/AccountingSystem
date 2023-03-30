@@ -1,11 +1,12 @@
 package nic.testproject.accountingsystem.controllers;
 
+import nic.testproject.accountingsystem.dto.RequestName;
 import nic.testproject.accountingsystem.dto.contracts.ContractDTO;
 import nic.testproject.accountingsystem.dto.contracts.CounterpartyDTO;
-import nic.testproject.accountingsystem.dto.contracts.update.UpdateContractDTO;
 import nic.testproject.accountingsystem.dto.contracts.update.UpdateCounterpartyDTO;
 import nic.testproject.accountingsystem.models.contracts.details.Counterparty;
 import nic.testproject.accountingsystem.services.contracts.CounterpartyService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -13,8 +14,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @CrossOrigin
 @RestController
@@ -22,40 +23,49 @@ import java.util.List;
 public class CounterpartyController {
 
     private final CounterpartyService counterpartyService;
+    private final ModelMapper modelMapper;
 
     @Autowired
-    public CounterpartyController(CounterpartyService counterpartyService) {
+    public CounterpartyController(CounterpartyService counterpartyService, ModelMapper modelMapper) {
         this.counterpartyService = counterpartyService;
+        this.modelMapper = modelMapper;
     }
 
     @GetMapping("show")
-    public ResponseEntity<List<Counterparty>> getCounterparties(
+    public ResponseEntity<List<CounterpartyDTO>> getCounterparties(
             @ModelAttribute CounterpartyDTO criteria,
             @RequestParam(name = "page", defaultValue = "0") int page,
             @RequestParam(name = "size", defaultValue = "50") int size) {
 
         Pageable pageable = PageRequest.of(page, size);
-        Page<Counterparty> contractPage = counterpartyService.findCounterparties(criteria, pageable);
+        Page<Counterparty> counterpartiesPage = counterpartyService.findCounterparties(criteria, pageable);
 
-        if (contractPage.isEmpty()) {
+        if (counterpartiesPage.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
 
-        List<Counterparty> contracts = new ArrayList<>(contractPage.getContent());
+        List<CounterpartyDTO> contracts = counterpartiesPage.getContent().stream()
+                .map(counterparty -> modelMapper.map(counterparty, CounterpartyDTO.class))
+                .collect(Collectors.toList());
+
         return ResponseEntity.ok(contracts);
     }
 
-    @PutMapping("update/{id}")
-    public ResponseEntity<Counterparty> updateContract(
-             @PathVariable Long id,
-             @RequestBody UpdateCounterpartyDTO updateCounterpartyDTO) {
-        Counterparty counterparty = counterpartyService.updateCounterparty(id, updateCounterpartyDTO);
+    @PutMapping("update")
+    public ResponseEntity<CounterpartyDTO> updateCounterparty(@RequestBody UpdateCounterpartyDTO updateCounterpartyDTO) {
+        CounterpartyDTO counterparty = modelMapper.map(counterpartyService.updateCounterparty(updateCounterpartyDTO), CounterpartyDTO.class);
         return ResponseEntity.ok(counterparty);
     }
 
-    @DeleteMapping("delete/{id}")
-    public ResponseEntity<Void> deleteCounterparty(@PathVariable Long id) {
-        counterpartyService.deleteCounterparty(id);
+    @DeleteMapping("delete")
+    public ResponseEntity<Void> deleteCounterparty(@RequestBody RequestName name) {
+        counterpartyService.deleteCounterparty(name.getName());
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("deleteAll")
+    public ResponseEntity<Void> deleteCounterpartyWithChildren(@RequestBody RequestName name) {
+        counterpartyService.deleteCounterpartyWithChildren(name.getName());
         return ResponseEntity.ok().build();
     }
 }

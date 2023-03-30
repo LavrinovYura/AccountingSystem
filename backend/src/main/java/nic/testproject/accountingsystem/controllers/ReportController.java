@@ -1,9 +1,8 @@
 package nic.testproject.accountingsystem.controllers;
 
+import nic.testproject.accountingsystem.dto.RequestName;
 import nic.testproject.accountingsystem.dto.report.AllContracts;
-import nic.testproject.accountingsystem.dto.report.ContractName;
-import nic.testproject.accountingsystem.dto.report.ReportDates;
-import nic.testproject.accountingsystem.models.contracts.details.ContractPhase;
+import nic.testproject.accountingsystem.dto.report.RequestDates;
 import nic.testproject.accountingsystem.repositories.contracts.projections.ContractPhaseProjection;
 import nic.testproject.accountingsystem.services.reports.ContractReportService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,12 +12,12 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
+@CrossOrigin
 @RestController
 @RequestMapping("api/menu/reports")
 public class ReportController {
@@ -32,12 +31,10 @@ public class ReportController {
 
     @GetMapping("/contracts")
     public ResponseEntity<ByteArrayResource> getContractsReport(
-            @RequestBody ReportDates reportDates
+            @RequestBody RequestDates dates
     ) throws IOException {
-        LocalDate plannedStartDate = reportDates.getPlannedStartDate();
-        LocalDate plannedEndDate = reportDates.getPlannedEndDate();
 
-        AllContracts contracts = reportService.getAllContractsByPeriod(plannedStartDate, plannedEndDate);
+        AllContracts contracts = reportService.getAllContractsByPeriod(dates.getPlannedStartDate(), dates.getPlannedEndDate());
         ByteArrayOutputStream outputStream = reportService.generateContractsExcelReport(contracts);
 
         HttpHeaders headers = new HttpHeaders();
@@ -52,7 +49,7 @@ public class ReportController {
 
     @GetMapping("/contractPhases")
     public ResponseEntity<ByteArrayResource> getPhasesReport(
-            @RequestBody ContractName name
+            @RequestBody RequestName name
     ) throws IOException {
 
         List<ContractPhaseProjection> contractPhases = reportService.getAllPhasesByContract(name.getName());

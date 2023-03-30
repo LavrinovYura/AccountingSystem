@@ -1,5 +1,6 @@
 package nic.testproject.accountingsystem.models.contracts;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import nic.testproject.accountingsystem.models.contracts.details.ContractCounterparties;
 import nic.testproject.accountingsystem.models.contracts.details.ContractPhase;

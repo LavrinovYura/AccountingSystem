@@ -1,7 +1,5 @@
 package nic.testproject.accountingsystem.repositories.contracts.projections;
 
-import nic.testproject.accountingsystem.models.contracts.ContractType;
-
 import java.time.LocalDate;
 
 public interface ContractPhaseProjection {

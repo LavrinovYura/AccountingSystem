@@ -1,20 +1,21 @@
 package nic.testproject.accountingsystem.controllers;
 
+import nic.testproject.accountingsystem.dto.RequestName;
 import nic.testproject.accountingsystem.dto.contracts.ContractDTO;
 import nic.testproject.accountingsystem.dto.contracts.update.UpdateContractDTO;
 import nic.testproject.accountingsystem.models.contracts.Contract;
 import nic.testproject.accountingsystem.repositories.contracts.ContractRepository;
 import nic.testproject.accountingsystem.services.contracts.ContractService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @CrossOrigin
 @RestController
@@ -23,24 +24,26 @@ public class ContractController {
 
     private final ContractService contractService;
     private final ContractRepository contractRepository;
+    private final ModelMapper modelMapper;
 
     @Autowired
-    public ContractController(ContractService contractService, ContractRepository contractRepository) {
+    public ContractController(ContractService contractService, ContractRepository contractRepository, ModelMapper modelMapper) {
         this.contractService = contractService;
         this.contractRepository = contractRepository;
+        this.modelMapper = modelMapper;
     }
 
     @PostMapping("save")
-    public ResponseEntity<Contract> saveContract(@RequestBody ContractDTO contractDTO) {
+    public ResponseEntity<ContractDTO> saveContract(@RequestBody ContractDTO contractDTO) {
         if (contractRepository.existsByName(contractDTO.getName())) {
             return ResponseEntity.badRequest().build();
         }
-        Contract savedContract = contractService.saveContract(contractDTO);
+        ContractDTO savedContract = modelMapper.map(contractService.saveContract(contractDTO),ContractDTO.class);
         return ResponseEntity.ok(savedContract);
     }
 
     @GetMapping("show")
-    public ResponseEntity<List<Contract>> getContracts(
+    public ResponseEntity<List<ContractDTO>> getContracts(
             @ModelAttribute ContractDTO criteria,
             @RequestParam(name = "page", defaultValue = "0") int page,
             @RequestParam(name = "size", defaultValue = "50") int size) {
@@ -52,15 +55,28 @@ public class ContractController {
             return ResponseEntity.notFound().build();
         }
 
-        List<Contract> contracts = new ArrayList<>(contractPage.getContent());
+        List<ContractDTO> contracts = contractPage.getContent().stream()
+                .map(contract -> modelMapper.map(contract, ContractDTO.class))
+                .collect(Collectors.toList());
+
         return ResponseEntity.ok(contracts);
     }
 
-    @PutMapping("update/{id}")
-    public ResponseEntity<Contract> updateContract(
-            @PathVariable Long id,
-            @RequestBody UpdateContractDTO updateContractDTO) {
-        Contract updatedContract = contractService.updateContract(id, updateContractDTO);
+    @PutMapping("update")
+    public ResponseEntity<ContractDTO> updateContract(@RequestBody UpdateContractDTO updateContractDTO) {
+        ContractDTO updatedContract = contractService.updateContract(updateContractDTO);
         return ResponseEntity.ok(updatedContract);
+    }
+
+    @DeleteMapping("deleteAll")
+    public ResponseEntity<Void> deleteContractWithChildren(@RequestBody RequestName name) {
+        contractService.deleteContractWithChildren(name.getName());
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("delete")
+    public ResponseEntity<Void> deleteContract(@RequestBody RequestName name) {
+        contractService.deleteContract(name.getName());
+        return ResponseEntity.ok().build();
     }
 }

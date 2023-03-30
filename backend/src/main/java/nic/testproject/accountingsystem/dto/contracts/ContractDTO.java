@@ -1,9 +1,8 @@
 package nic.testproject.accountingsystem.dto.contracts;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
-import nic.testproject.accountingsystem.models.contracts.details.ContractCounterparties;
-import nic.testproject.accountingsystem.models.contracts.details.ContractPhase;
 import nic.testproject.accountingsystem.models.contracts.ContractType;
 
 import java.time.LocalDate;
