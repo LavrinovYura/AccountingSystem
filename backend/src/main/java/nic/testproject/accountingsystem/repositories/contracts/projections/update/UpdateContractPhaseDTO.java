@@ -1,4 +1,4 @@
-package nic.testproject.accountingsystem.dto.contracts.update;
+package nic.testproject.accountingsystem.repositories.contracts.projections.update;
 
 import lombok.Data;
 import nic.testproject.accountingsystem.models.contracts.Contract;

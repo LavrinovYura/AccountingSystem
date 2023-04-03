@@ -1,7 +1,7 @@
 package nic.testproject.accountingsystem.services.contracts;
 
 import nic.testproject.accountingsystem.dto.contracts.CounterpartyDTO;
-import nic.testproject.accountingsystem.dto.contracts.update.UpdateCounterpartyDTO;
+import nic.testproject.accountingsystem.repositories.contracts.projections.update.UpdateCounterpartyDTO;
 import nic.testproject.accountingsystem.exceptions.ResourceNotFoundException;
 import nic.testproject.accountingsystem.models.contracts.details.Counterparty;
 import nic.testproject.accountingsystem.repositories.contracts.CounterpartyRepository;

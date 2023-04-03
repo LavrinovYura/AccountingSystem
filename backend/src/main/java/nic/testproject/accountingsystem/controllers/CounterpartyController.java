@@ -1,9 +1,8 @@
 package nic.testproject.accountingsystem.controllers;
 
 import nic.testproject.accountingsystem.dto.RequestName;
-import nic.testproject.accountingsystem.dto.contracts.ContractDTO;
 import nic.testproject.accountingsystem.dto.contracts.CounterpartyDTO;
-import nic.testproject.accountingsystem.dto.contracts.update.UpdateCounterpartyDTO;
+import nic.testproject.accountingsystem.repositories.contracts.projections.update.UpdateCounterpartyDTO;
 import nic.testproject.accountingsystem.models.contracts.details.Counterparty;
 import nic.testproject.accountingsystem.services.contracts.CounterpartyService;
 import org.modelmapper.ModelMapper;

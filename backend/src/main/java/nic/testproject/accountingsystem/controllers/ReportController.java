@@ -10,14 +10,16 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
-@CrossOrigin
 @RestController
 @RequestMapping("api/menu/reports")
 public class ReportController {
@@ -31,10 +33,12 @@ public class ReportController {
 
     @GetMapping("/contracts")
     public ResponseEntity<ByteArrayResource> getContractsReport(
-            @RequestBody RequestDates dates
+            @RequestBody RequestDates reportDates
     ) throws IOException {
+        LocalDate plannedStartDate = reportDates.getPlannedStartDate();
+        LocalDate plannedEndDate = reportDates.getPlannedEndDate();
 
-        AllContracts contracts = reportService.getAllContractsByPeriod(dates.getPlannedStartDate(), dates.getPlannedEndDate());
+        AllContracts contracts = reportService.getAllContractsByPeriod(plannedStartDate, plannedEndDate);
         ByteArrayOutputStream outputStream = reportService.generateContractsExcelReport(contracts);
 
         HttpHeaders headers = new HttpHeaders();
