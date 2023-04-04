@@ -57,11 +57,10 @@ public class AdminController {
 
     @PutMapping("users/addrole")
     public ResponseEntity<UserDTO> addRole(
-            @RequestBody RoleType type,
+            @RequestBody RoleType roleType,
             @RequestBody RequestName name) {
-        adminService.addRole(name,type);
-
-
+        adminService.addRole(roleType,name.getName());
+        return ResponseEntity.noContent().build();
     }
 
 }

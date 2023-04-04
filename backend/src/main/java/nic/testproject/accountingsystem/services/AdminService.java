@@ -4,6 +4,7 @@ import nic.testproject.accountingsystem.models.user.Person;
 import nic.testproject.accountingsystem.models.user.Role;
 import nic.testproject.accountingsystem.models.user.RoleType;
 import nic.testproject.accountingsystem.repositories.user.PersonRepository;
+import nic.testproject.accountingsystem.repositories.user.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,10 +17,12 @@ import java.util.Optional;
 public class AdminService {
 
     private final PersonRepository personRepository;
+    private final RoleRepository roleRepository;
 
     @Autowired
-    public AdminService(PersonRepository personRepository) {
+    public AdminService(PersonRepository personRepository, RoleRepository roleRepository) {
         this.personRepository = personRepository;
+        this.roleRepository = roleRepository;
     }
 
     public Page<Person> getUsers(Pageable pageable) {
@@ -37,10 +40,16 @@ public class AdminService {
 
     public void addRole(RoleType roleType, String name) {
         Optional<Person> optionalPerson = personRepository.findByUsername(name);
-        if (optionalPerson.isPresent()) {
+        Optional<Role> optionalRole = roleRepository.findByRoleType(roleType);
+        if (optionalPerson.isPresent() && optionalRole.isPresent()) {
             Person person = optionalPerson.get();
-            Role role = new Role();
-            person.getRoles().add();
+            Role role = optionalRole.get();
+
+            if (person.getRoles().stream().anyMatch(r -> r.equals(role))) {
+                throw new RuntimeException("Role already exists for person");
+            }
+            person.getRoles().add(role);
+
             personRepository.delete(optionalPerson.get());
         } else {
             throw new EntityNotFoundException("User with username " + name + " not found");

@@ -3,6 +3,7 @@ package nic.testproject.accountingsystem.services;
 import nic.testproject.accountingsystem.dto.authorization.RegisterDTO;
 import nic.testproject.accountingsystem.models.user.Person;
 import nic.testproject.accountingsystem.models.user.Role;
+import nic.testproject.accountingsystem.models.user.RoleType;
 import nic.testproject.accountingsystem.repositories.user.PersonRepository;
 import nic.testproject.accountingsystem.repositories.user.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,8 +36,8 @@ public class RegistrationService {
         person.setPassword(passwordEncoder.encode(registerDTO.getPassword()));
         Date date = new Date();
         person.setExpireDate(String.valueOf(date));
-        Role role = roleRepository.findByName("USER").get();
-        person.setRoles(Collections.singletonList(role));
+        Role role = roleRepository.findByRoleType(RoleType.USER).get();
+        person.setRoles(Collections.singleton(role));
 
         personRepository.save(person);
     }
