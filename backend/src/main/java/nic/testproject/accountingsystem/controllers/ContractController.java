@@ -2,7 +2,6 @@ package nic.testproject.accountingsystem.controllers;
 
 import nic.testproject.accountingsystem.dto.RequestName;
 import nic.testproject.accountingsystem.dto.contracts.ContractDTO;
-import nic.testproject.accountingsystem.repositories.contracts.projections.update.UpdateContractDTO;
 import nic.testproject.accountingsystem.models.contracts.Contract;
 import nic.testproject.accountingsystem.repositories.contracts.ContractRepository;
 import nic.testproject.accountingsystem.services.contracts.ContractService;
@@ -34,7 +33,8 @@ public class ContractController {
     }
 
     @PostMapping("save")
-    public ResponseEntity<ContractDTO> saveContract(@RequestBody ContractDTO contractDTO) {
+    public ResponseEntity<ContractDTO> saveContract(
+            @RequestBody ContractDTO contractDTO) {
         if (contractRepository.existsByName(contractDTO.getName())) {
             return ResponseEntity.badRequest().build();
         }
@@ -42,7 +42,7 @@ public class ContractController {
         return ResponseEntity.ok(savedContract);
     }
 
-    @GetMapping("show")
+    @GetMapping("show}")
     public ResponseEntity<List<ContractDTO>> getContracts(
             @ModelAttribute ContractDTO criteria,
             @RequestParam(name = "page", defaultValue = "0") int page,
@@ -63,8 +63,8 @@ public class ContractController {
     }
 
     @PutMapping("update")
-    public ResponseEntity<ContractDTO> updateContract(@RequestBody UpdateContractDTO updateContractDTO) {
-        ContractDTO updatedContract = contractService.updateContract(updateContractDTO);
+    public ResponseEntity<ContractDTO> updateContract(@RequestBody ContractDTO ContractDTO) {
+        ContractDTO updatedContract = contractService.updateContract(ContractDTO);
         return ResponseEntity.ok(updatedContract);
     }
 

@@ -1,5 +1,6 @@
 package nic.testproject.accountingsystem.services.security;
 
+import nic.testproject.accountingsystem.models.user.RoleType;
 import nic.testproject.accountingsystem.services.security.JWT.JWTAuthEntryPoint;
 import nic.testproject.accountingsystem.services.security.JWT.JWTAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;

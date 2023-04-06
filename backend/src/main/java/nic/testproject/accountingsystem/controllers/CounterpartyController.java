@@ -2,7 +2,6 @@ package nic.testproject.accountingsystem.controllers;
 
 import nic.testproject.accountingsystem.dto.RequestName;
 import nic.testproject.accountingsystem.dto.contracts.CounterpartyDTO;
-import nic.testproject.accountingsystem.repositories.contracts.projections.update.UpdateCounterpartyDTO;
 import nic.testproject.accountingsystem.models.contracts.details.Counterparty;
 import nic.testproject.accountingsystem.services.contracts.CounterpartyService;
 import org.modelmapper.ModelMapper;
@@ -51,8 +50,8 @@ public class CounterpartyController {
     }
 
     @PutMapping("update")
-    public ResponseEntity<CounterpartyDTO> updateCounterparty(@RequestBody UpdateCounterpartyDTO updateCounterpartyDTO) {
-        CounterpartyDTO counterparty = modelMapper.map(counterpartyService.updateCounterparty(updateCounterpartyDTO), CounterpartyDTO.class);
+    public ResponseEntity<CounterpartyDTO> updateCounterparty(@RequestBody CounterpartyDTO counterpartyDTO) {
+        CounterpartyDTO counterparty = modelMapper.map(counterpartyService.updateCounterparty(counterpartyDTO),CounterpartyDTO.class);
         return ResponseEntity.ok(counterparty);
     }
 

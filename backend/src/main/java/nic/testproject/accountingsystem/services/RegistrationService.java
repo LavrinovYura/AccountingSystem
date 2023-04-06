@@ -29,7 +29,7 @@ public class RegistrationService {
     }
 
     @Transactional
-    public void register(RegisterDTO registerDTO){
+    public Person register(RegisterDTO registerDTO){
         Person person = new Person();
         person.setUsername(registerDTO.getUsername());
         person.setFullName(registerDTO.getFullName());
@@ -39,7 +39,6 @@ public class RegistrationService {
         Role role = roleRepository.findByRoleType(RoleType.USER).get();
         person.setRoles(Collections.singleton(role));
 
-        personRepository.save(person);
+        return personRepository.save(person);
     }
-
 }

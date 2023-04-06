@@ -1,7 +1,6 @@
 package nic.testproject.accountingsystem.services.contracts;
 
 import nic.testproject.accountingsystem.dto.contracts.ContractDTO;
-import nic.testproject.accountingsystem.repositories.contracts.projections.update.UpdateContractDTO;
 import nic.testproject.accountingsystem.exceptions.ResourceNotFoundException;
 import nic.testproject.accountingsystem.models.contracts.Contract;
 import nic.testproject.accountingsystem.models.contracts.details.ContractCounterparties;
@@ -50,15 +49,15 @@ public class ContractService {
         return savedContract;
     }
 
-    public ContractDTO updateContract(UpdateContractDTO updateContractDTO) {
-        String name = updateContractDTO.getName();
+    public ContractDTO updateContract(ContractDTO contractDTO) {
+        String name = contractDTO.getName();
         Optional<Contract> optionalContract = contractRepository.findContractByName(name);
         if (!optionalContract.isPresent()) {
             throw new ResourceNotFoundException("Contract not found with id: " + name);
         }
 
         Contract contract = optionalContract.get();
-        modelMapper.map(updateContractDTO, contract);
+        modelMapper.map(contractDTO, contract);
         Contract savedContract = contractRepository.saveAndFlush(contract);
 
         List<ContractPhase> contractPhase = savedContract.getPhases();

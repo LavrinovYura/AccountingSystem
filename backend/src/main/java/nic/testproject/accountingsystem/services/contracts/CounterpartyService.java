@@ -1,7 +1,6 @@
 package nic.testproject.accountingsystem.services.contracts;
 
 import nic.testproject.accountingsystem.dto.contracts.CounterpartyDTO;
-import nic.testproject.accountingsystem.repositories.contracts.projections.update.UpdateCounterpartyDTO;
 import nic.testproject.accountingsystem.exceptions.ResourceNotFoundException;
 import nic.testproject.accountingsystem.models.contracts.details.Counterparty;
 import nic.testproject.accountingsystem.repositories.contracts.CounterpartyRepository;
@@ -30,16 +29,14 @@ public class CounterpartyService {
         return counterpartyRepository.findAll(CounterpartySpecifications.searchCounterparties(criteria), pageable);
     }
 
-    public Counterparty updateCounterparty(UpdateCounterpartyDTO updateCounterpartyDTO) {
-        String name = updateCounterpartyDTO.getName();
+    public Counterparty updateCounterparty(CounterpartyDTO counterpartyDTO) {
+        String name = counterpartyDTO.getName();
         Optional<Counterparty> optionalCounterparty = counterpartyRepository.findByName(name);
         if (!optionalCounterparty.isPresent()) {
             throw new ResourceNotFoundException("Counterparty not found with name: " + name);
         }
         Counterparty counterparty = optionalCounterparty.get();
-        modelMapper.map(updateCounterpartyDTO, counterparty);
-
-        return counterparty;
+        return  counterpartyRepository.save(counterparty);
     }
 
     public void deleteCounterparty(String name) {

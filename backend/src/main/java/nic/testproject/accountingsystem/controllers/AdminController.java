@@ -1,6 +1,7 @@
 package nic.testproject.accountingsystem.controllers;
 
 import nic.testproject.accountingsystem.dto.RequestName;
+import nic.testproject.accountingsystem.dto.administration.RequestRole;
 import nic.testproject.accountingsystem.dto.administration.UserDTO;
 import nic.testproject.accountingsystem.dto.authorization.LoginDTO;
 import nic.testproject.accountingsystem.models.user.Person;
@@ -31,6 +32,7 @@ public class AdminController {
         this.modelMapper = modelMapper;
     }
 
+    //Поменять на RequestBody
     @GetMapping("users")
     public ResponseEntity<List<UserDTO>> getUsers(
             @RequestParam(name = "page", defaultValue = "0") int page,
@@ -55,11 +57,17 @@ public class AdminController {
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("users/addrole")
+    @PutMapping("users/addRole")
     public ResponseEntity<UserDTO> addRole(
-            @RequestBody RoleType roleType,
-            @RequestBody RequestName name) {
-        adminService.addRole(roleType,name.getName());
+            @RequestBody RequestRole requestRole) {
+        adminService.addRole(requestRole.getRoleType(),requestRole.getName());
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("users/removeRole")
+    public ResponseEntity<UserDTO> removeRole(
+            @RequestBody RequestRole requestRole) {
+        adminService.removeRole(requestRole.getRoleType(),requestRole.getName());
         return ResponseEntity.noContent().build();
     }
 

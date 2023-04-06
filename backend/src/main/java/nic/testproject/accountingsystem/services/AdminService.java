@@ -11,9 +11,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import javax.transaction.Transactional;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class AdminService {
 
     private final PersonRepository personRepository;
@@ -46,11 +48,29 @@ public class AdminService {
             Role role = optionalRole.get();
 
             if (person.getRoles().stream().anyMatch(r -> r.equals(role))) {
-                throw new RuntimeException("Role already exists for person");
+                throw new RuntimeException("This person doesn't have this role ");
             }
             person.getRoles().add(role);
 
-            personRepository.delete(optionalPerson.get());
+            personRepository.save(person);
+        } else {
+            throw new EntityNotFoundException("User with username " + name + " not found");
+        }
+    }
+
+    public void removeRole(RoleType roleType, String name) {
+        Optional<Person> optionalPerson = personRepository.findByUsername(name);
+        Optional<Role> optionalRole = roleRepository.findByRoleType(roleType);
+        if (optionalPerson.isPresent() && optionalRole.isPresent()) {
+            Person person = optionalPerson.get();
+            Role role = optionalRole.get();
+
+            if (person.getRoles().stream().anyMatch(r -> r.equals(role))) {
+                throw new RuntimeException("This person doesn't have this role");
+            }
+            person.getRoles().remove(role);
+
+            personRepository.save(person);
         } else {
             throw new EntityNotFoundException("User with username " + name + " not found");
         }
