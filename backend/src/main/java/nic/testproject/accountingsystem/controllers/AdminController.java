@@ -3,9 +3,7 @@ package nic.testproject.accountingsystem.controllers;
 import nic.testproject.accountingsystem.dto.RequestName;
 import nic.testproject.accountingsystem.dto.administration.RequestRole;
 import nic.testproject.accountingsystem.dto.administration.UserDTO;
-import nic.testproject.accountingsystem.dto.authorization.LoginDTO;
 import nic.testproject.accountingsystem.models.user.Person;
-import nic.testproject.accountingsystem.models.user.RoleType;
 import nic.testproject.accountingsystem.services.AdminService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,15 +58,34 @@ public class AdminController {
     @PutMapping("users/addRole")
     public ResponseEntity<UserDTO> addRole(
             @RequestBody RequestRole requestRole) {
-        adminService.addRole(requestRole.getRoleType(),requestRole.getName());
+        adminService.addRole(requestRole.getRoleType(), requestRole.getName());
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping("users/removeRole")
     public ResponseEntity<UserDTO> removeRole(
             @RequestBody RequestRole requestRole) {
-        adminService.removeRole(requestRole.getRoleType(),requestRole.getName());
+        adminService.removeRole(requestRole.getRoleType(), requestRole.getName());
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("users/usersByRole")
+    public ResponseEntity<List<UserDTO>> getUsersByRole(
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "50") int size,
+            @RequestBody RequestRole requestRole) {
+        Pageable pageable = PageRequest.of(page, size);
+        List<Person> personPage = adminService.getUsersByRole(pageable, requestRole.getRoleType());
+
+        if (personPage.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        List<UserDTO> users = personPage.stream()
+                .map(contract -> modelMapper.map(contract, UserDTO.class))
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(users);
     }
 
 }

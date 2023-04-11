@@ -10,9 +10,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @Transactional
@@ -30,7 +31,10 @@ public class AdminService {
     public Page<Person> getUsers(Pageable pageable) {
         return personRepository.findAll(pageable);
     }
-
+    public List<Person> getUsersByRole(Pageable pageable, RoleType type) {
+        Role roles = roleRepository.findByRoleType(type).get();
+        return personRepository.findAllByRole(roles);
+    }
     public void deleteUser(String name) {
         Optional<Person> optionalPerson = personRepository.findByUsername(name);
         if (optionalPerson.isPresent()) {

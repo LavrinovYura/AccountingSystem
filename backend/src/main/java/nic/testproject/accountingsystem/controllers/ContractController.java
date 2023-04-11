@@ -42,7 +42,7 @@ public class ContractController {
         return ResponseEntity.ok(savedContract);
     }
 
-    @GetMapping("show}")
+    @GetMapping("show")
     public ResponseEntity<List<ContractDTO>> getContracts(
             @ModelAttribute ContractDTO criteria,
             @RequestParam(name = "page", defaultValue = "0") int page,
