@@ -26,7 +26,9 @@ public class ContractService {
     private final ModelMapper modelMapper;
 
     @Autowired
-    public ContractService(ContractRepository contractRepository, ModelMapper modelMapper, CounterpartyRepository counterpartyRepository) {
+    public ContractService(ContractRepository contractRepository,
+                           ModelMapper modelMapper,
+                           CounterpartyRepository counterpartyRepository) {
         this.contractRepository = contractRepository;
         this.modelMapper = modelMapper;
     }

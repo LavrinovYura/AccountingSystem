@@ -5,33 +5,45 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import nic.testproject.accountingsystem.models.contracts.Contract;
-
 import javax.persistence.*;
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
-import java.util.List;
-
 
 @Entity
 @Table(name = "contract_phases")
 @Data
 @NoArgsConstructor
 public class ContractPhase {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @NotBlank(message = "Please enter contract name")
     private String name;
+
+    @NotNull(message = "Please enter the planned start date")
     private LocalDate plannedStartDate;
+    @NotNull(message = "Please enter the planned end date")
     private LocalDate plannedEndDate;
+
+    @NotNull(message = "Please enter the planned costs of materials")
+    @DecimalMin("0.0")
+    private Double plannedMaterialCosts;
+    @NotNull(message = "Please enter the planned expenditures for salaries")
+    @DecimalMin("0.0")
+    private Double phaseCost;
+    @NotNull(message = "Please enter the planned expenses for the phase")
+    @DecimalMin("0.0")
+    private Double plannedSalaryExpenses;
+
     private LocalDate actualStartDate;
     private LocalDate actualEndDate;
-    private Double phaseCost;
+    @DecimalMin("0.0")
     private Double actualMaterialCosts;
-    private Double plannedMaterialCosts;
+    @DecimalMin("0.0")
     private Double actualSalaryExpenses;
-    private Double plannedSalaryExpenses;
 
     @JsonIgnore
     @ToString.Exclude

@@ -2,8 +2,8 @@ package nic.testproject.accountingsystem.models.contracts.details;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
-
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 @Entity
@@ -13,12 +13,17 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class Counterparty {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @NotBlank(message = "Please enter name of counterparty")
     private String name;
+
+    @NotBlank(message = "Please enter adress of counterparty")
     private String address;
+
+    @NotBlank(message = "Please enter INN of counterparty")
     private String inn;
 
     @JsonIgnore

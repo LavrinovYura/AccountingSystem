@@ -1,18 +1,17 @@
 package nic.testproject.accountingsystem.models.contracts;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import nic.testproject.accountingsystem.models.contracts.details.ContractCounterparties;
 import nic.testproject.accountingsystem.models.contracts.details.ContractPhase;
-import org.hibernate.validator.constraints.UniqueElements;
-
 import javax.persistence.*;
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.List;
 
 @Entity
-@Table(name = "contracts"
-)
+@Table(name = "contracts")
 @Data
 @NoArgsConstructor
 public class Contract {
@@ -21,17 +20,23 @@ public class Contract {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true)
+    @NotBlank(message = "Please enter contract name")
     private String name;
 
     @Enumerated(EnumType.STRING)
+    @NotNull(message = "Please enter contract type")
     private ContractType type;
 
+    @NotNull(message = "Please enter the planned start date")
     private LocalDate plannedStartDate;
+    @NotNull(message = "Please enter the planned end date")
     private LocalDate plannedEndDate;
+
     private LocalDate actualStartDate;
     private LocalDate actualEndDate;
 
+    @NotNull(message = "Please enter the amount")
+    @DecimalMin("0.0")
     private Double amount;
 
     @OneToMany(mappedBy = "contract1", cascade = CascadeType.ALL)
