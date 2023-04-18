@@ -32,7 +32,10 @@ public class ContractService {
     }
 
     public Page<Contract> getContracts(ContractDTO criteria, Pageable pageable) {
-        return contractRepository.findAll(ContractSpecifications.searchContracts(criteria), pageable);
+        Page<Contract> page = contractRepository.findAll(ContractSpecifications.searchContracts(criteria), pageable);
+        if (page.isEmpty())
+            throw new ResourceNotFoundException();
+        return page;
     }
 
     public Contract saveContract(ContractDTO contractDTO) {
@@ -52,8 +55,9 @@ public class ContractService {
     public ContractDTO updateContract(ContractDTO contractDTO) {
         String name = contractDTO.getName();
         Optional<Contract> optionalContract = contractRepository.findContractByName(name);
+
         if (!optionalContract.isPresent()) {
-            throw new ResourceNotFoundException("Contract not found with id: " + name);
+            throw new ResourceNotFoundException();
         }
 
         Contract contract = optionalContract.get();
@@ -72,7 +76,7 @@ public class ContractService {
     public void deleteContractWithChildren(String name) {
         Optional<Contract> optionalContract = contractRepository.findContractByName(name);
         if (!optionalContract.isPresent()) {
-            throw new ResourceNotFoundException("Counterparty not found with id: " + name);
+            throw new ResourceNotFoundException();
         }
         contractRepository.delete(optionalContract.get());
     }
@@ -80,7 +84,7 @@ public class ContractService {
     public void deleteContract(String name) {
         Optional<Contract> optionalContract = contractRepository.findContractByName(name);
         if (!optionalContract.isPresent()) {
-            throw new ResourceNotFoundException("Counterparty not found with id: " + name);
+            throw new ResourceNotFoundException();
         }
         optionalContract.get().getContractCounterparties().forEach(it->it.setCounterparty(null));
         contractRepository.delete(optionalContract.get());

@@ -1,5 +1,6 @@
 package nic.testproject.accountingsystem.services;
 
+import nic.testproject.accountingsystem.exceptions.ResourceNotFoundException;
 import nic.testproject.accountingsystem.models.user.Person;
 import nic.testproject.accountingsystem.models.user.Role;
 import nic.testproject.accountingsystem.models.user.RoleType;
@@ -10,7 +11,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.util.*;
@@ -29,19 +29,22 @@ public class AdminService {
     }
 
     public Page<Person> getUsers(Pageable pageable) {
-        return personRepository.findAll(pageable);
+        Page<Person> page = personRepository.findAll(pageable);
+        if (page.isEmpty())
+            throw new EntityNotFoundException("No Contracts in database");
+        return page;
+
     }
     public List<Person> getUsersByRole(Pageable pageable, RoleType type) {
         Role roles = roleRepository.findByRoleType(type).get();
-        return personRepository.findAllByRole(roles);
+        return personRepository.findAllByRoles(roles);
     }
     public void deleteUser(String name) {
         Optional<Person> optionalPerson = personRepository.findByUsername(name);
-        if (optionalPerson.isPresent()) {
-            personRepository.delete(optionalPerson.get());
-        } else {
-            throw new EntityNotFoundException("User with username " + name + " not found");
-        }
+        if (!optionalPerson.isPresent())
+            throw new ResourceNotFoundException();
+
+        personRepository.delete(optionalPerson.get());
     }
 
     public void addRole(RoleType roleType, String name) {
@@ -58,7 +61,7 @@ public class AdminService {
 
             personRepository.save(person);
         } else {
-            throw new EntityNotFoundException("User with username " + name + " not found");
+            throw new ResourceNotFoundException();
         }
     }
 
@@ -76,7 +79,7 @@ public class AdminService {
 
             personRepository.save(person);
         } else {
-            throw new EntityNotFoundException("User with username " + name + " not found");
+            throw new ResourceNotFoundException();
         }
     }
 }

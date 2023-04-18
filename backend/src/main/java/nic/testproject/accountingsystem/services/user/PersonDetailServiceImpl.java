@@ -1,5 +1,6 @@
-package nic.testproject.accountingsystem.services;
+package nic.testproject.accountingsystem.services.user;
 
+import nic.testproject.accountingsystem.exceptions.UserNotFoundException;
 import nic.testproject.accountingsystem.models.user.Person;
 import nic.testproject.accountingsystem.models.user.Role;
 import nic.testproject.accountingsystem.repositories.user.PersonRepository;
@@ -29,7 +30,8 @@ public class PersonDetailServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-       Person person = personRepository.findByUsername(username).orElseThrow(()->new UsernameNotFoundException("User not found"));
+       Person person = personRepository.findByUsername(username).
+               orElseThrow(()-> new UserNotFoundException("User not found"));
         return new User(person.getUsername(), person.getPassword(), mapRolesToAuthorities(person.getRoles()));
     }
 

@@ -3,6 +3,7 @@ package nic.testproject.accountingsystem.controllers;
 import nic.testproject.accountingsystem.dto.RequestName;
 import nic.testproject.accountingsystem.dto.contracts.CounterpartyDTO;
 import nic.testproject.accountingsystem.models.contracts.details.Counterparty;
+import nic.testproject.accountingsystem.repositories.contracts.CounterpartyRepository;
 import nic.testproject.accountingsystem.services.contracts.CounterpartyService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,11 +23,23 @@ public class CounterpartyController {
 
     private final CounterpartyService counterpartyService;
     private final ModelMapper modelMapper;
+    private final CounterpartyRepository counterpartyRepository;
 
     @Autowired
-    public CounterpartyController(CounterpartyService counterpartyService, ModelMapper modelMapper) {
+    public CounterpartyController(CounterpartyService counterpartyService, ModelMapper modelMapper, CounterpartyRepository counterpartyRepository) {
         this.counterpartyService = counterpartyService;
         this.modelMapper = modelMapper;
+        this.counterpartyRepository = counterpartyRepository;
+    }
+
+    @PostMapping("save")
+    public ResponseEntity<CounterpartyDTO> saveCounterparty(
+            @RequestBody CounterpartyDTO counterpartyDTO) {
+        if (counterpartyRepository.existsByName(counterpartyDTO.getName())) {
+            return ResponseEntity.badRequest().build();
+        }
+        CounterpartyDTO savedContract = modelMapper.map(counterpartyService.saveCounterparty(counterpartyDTO),CounterpartyDTO.class);
+        return ResponseEntity.ok(savedContract);
     }
 
     @GetMapping("show")

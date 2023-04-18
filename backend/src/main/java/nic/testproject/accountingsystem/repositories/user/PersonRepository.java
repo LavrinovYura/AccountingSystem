@@ -15,5 +15,5 @@ import java.util.Set;
 public interface PersonRepository extends JpaRepository<Person, Integer> {
     Optional<Person> findByUsername(String username);
     Boolean existsByUsername(String username);
-    List<Person> findAllByRole(Role role);
+    List<Person> findAllByRoles(Role roles);
 }

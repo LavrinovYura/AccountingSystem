@@ -25,6 +25,12 @@ public class ContractCounterparties {
     @Enumerated(EnumType.STRING)
     private ContractType type;
 
+    private Double amount;
+    private LocalDate plannedStartDate;
+    private LocalDate plannedEndDate;
+    private LocalDate actualStartDate;
+    private LocalDate actualEndDate;
+
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "counterparty_id")
     private Counterparty counterparty;
@@ -35,9 +41,5 @@ public class ContractCounterparties {
     @JoinColumn(name = "contract_id", referencedColumnName = "id")
     private Contract contract2;
 
-    private Double amount;
-    private LocalDate plannedStartDate;
-    private LocalDate plannedEndDate;
-    private LocalDate actualStartDate;
-    private LocalDate actualEndDate;
+
 }

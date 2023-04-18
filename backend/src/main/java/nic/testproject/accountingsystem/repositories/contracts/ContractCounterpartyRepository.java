@@ -11,6 +11,6 @@ import java.util.Optional;
 
 public interface ContractCounterpartyRepository extends JpaRepository<ContractCounterparties, Long> {
     Optional<ContractCounterparties> findByContract2(Contract contract);
-    Optional<List<ContractCounterpartiesProjection>> findByPlannedStartDateBetweenOrderByPlannedStartDateAsc(LocalDate startDate, LocalDate endDate);
+    List<ContractCounterpartiesProjection> findByPlannedStartDateBetween(LocalDate startDate, LocalDate endDate);
 
 }

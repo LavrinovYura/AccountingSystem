@@ -1,17 +1,29 @@
 package nic.testproject.accountingsystem.exceptions;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
+
 
 @ControllerAdvice
 public class RestExceptionHandler {
 
     @ExceptionHandler(ResourceNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public void handleResourceNotFoundException() {
-        // Можно не указывать тело метода, так как HTTP-ответ формируется автоматически
+    public ResponseEntity<?> handleResourceNotFoundException() {
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @ExceptionHandler(ConflictException.class)
+    public ResponseEntity<String> handleConflictException(ConflictException exception){
+        String message = exception.getMessage();
+        return new ResponseEntity<>(message,HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<String> handleUserNotFoundException(UserNotFoundException exception){
+        String message = exception.getMessage();
+        return new ResponseEntity<>(message, HttpStatus.UNAUTHORIZED);
     }
 }
 

@@ -1,16 +1,18 @@
 package nic.testproject.accountingsystem.models.contracts;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import nic.testproject.accountingsystem.models.contracts.details.ContractCounterparties;
 import nic.testproject.accountingsystem.models.contracts.details.ContractPhase;
+import org.hibernate.validator.constraints.UniqueElements;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.List;
 
 @Entity
-@Table(name = "contracts")
+@Table(name = "contracts"
+)
 @Data
 @NoArgsConstructor
 public class Contract {
@@ -19,6 +21,7 @@ public class Contract {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true)
     private String name;
 
     @Enumerated(EnumType.STRING)

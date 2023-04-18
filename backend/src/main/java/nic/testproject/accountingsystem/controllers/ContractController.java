@@ -2,6 +2,7 @@ package nic.testproject.accountingsystem.controllers;
 
 import nic.testproject.accountingsystem.dto.RequestName;
 import nic.testproject.accountingsystem.dto.contracts.ContractDTO;
+import nic.testproject.accountingsystem.exceptions.ConflictException;
 import nic.testproject.accountingsystem.models.contracts.Contract;
 import nic.testproject.accountingsystem.repositories.contracts.ContractRepository;
 import nic.testproject.accountingsystem.services.contracts.ContractService;
@@ -35,19 +36,18 @@ public class ContractController {
     @PostMapping("save")
     public ResponseEntity<ContractDTO> saveContract(
             @RequestBody ContractDTO contractDTO) {
-        if (contractRepository.existsByName(contractDTO.getName())) {
-            return ResponseEntity.badRequest().build();
-        }
         ContractDTO savedContract = modelMapper.map(contractService.saveContract(contractDTO),ContractDTO.class);
+
         return ResponseEntity.ok(savedContract);
     }
 
     @GetMapping("show")
     public ResponseEntity<List<ContractDTO>> getContracts(
-            @ModelAttribute ContractDTO criteria,
+            @RequestBody ContractDTO criteria,
             @RequestParam(name = "page", defaultValue = "0") int page,
             @RequestParam(name = "size", defaultValue = "50") int size) {
 
+        System.out.println(criteria);
         Pageable pageable = PageRequest.of(page, size);
         Page<Contract> contractPage = contractService.getContracts(criteria, pageable);
 

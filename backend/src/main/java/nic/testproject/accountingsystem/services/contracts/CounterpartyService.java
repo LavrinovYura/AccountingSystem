@@ -25,6 +25,10 @@ public class CounterpartyService {
         this.modelMapper = modelMapper;
     }
 
+    public Counterparty saveCounterparty(CounterpartyDTO counterpartyDTO){
+        Counterparty counterparty = modelMapper.map(counterpartyDTO,Counterparty.class);
+        return counterpartyRepository.save(counterparty);
+    }
     public Page<Counterparty> findCounterparties(CounterpartyDTO criteria, Pageable pageable) {
         return counterpartyRepository.findAll(CounterpartySpecifications.searchCounterparties(criteria), pageable);
     }
@@ -33,7 +37,7 @@ public class CounterpartyService {
         String name = counterpartyDTO.getName();
         Optional<Counterparty> optionalCounterparty = counterpartyRepository.findByName(name);
         if (!optionalCounterparty.isPresent()) {
-            throw new ResourceNotFoundException("Counterparty not found with name: " + name);
+            throw new ResourceNotFoundException();
         }
         Counterparty counterparty = optionalCounterparty.get();
         return  counterpartyRepository.save(counterparty);
@@ -42,7 +46,7 @@ public class CounterpartyService {
     public void deleteCounterparty(String name) {
         Optional<Counterparty> optionalCounterparty = counterpartyRepository.findByName(name);
         if (!optionalCounterparty.isPresent()) {
-            throw new ResourceNotFoundException("Counterparty not found with id: " + name);
+            throw new ResourceNotFoundException();
         }
 
         Counterparty counterparty = optionalCounterparty.get();
@@ -56,7 +60,7 @@ public class CounterpartyService {
     public void deleteCounterpartyWithChildren(String name) {
         Optional<Counterparty> optionalCounterparty = counterpartyRepository.findByName(name);
         if (!optionalCounterparty.isPresent()) {
-            throw new ResourceNotFoundException("Counterparty not found with id: " + name);
+            throw new ResourceNotFoundException();
         }
         counterpartyRepository.delete(optionalCounterparty.get());
     }

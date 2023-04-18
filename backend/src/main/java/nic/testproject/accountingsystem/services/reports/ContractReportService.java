@@ -87,7 +87,7 @@ public class ContractReportService {
             for (ContractProjection contract : contractsMain) {
                 Row row = sheet.createRow(rowNum++);
                 row.createCell(0).setCellValue(rowNum - 1);
-                row.createCell(1).setCellValue("Контрагент");
+                row.createCell(1).setCellValue("Основной");
                 row.createCell(2).setCellValue(contract.getName());
                 row.createCell(3).setCellValue(contract.getType().name());
                 row.createCell(4).setCellValue(contract.getPlannedStartDate().toString());
@@ -191,17 +191,19 @@ public class ContractReportService {
     //Продумать исключения
     public AllContracts getAllContractsByPeriod(LocalDate startDate, LocalDate endDate) {
         List<ContractProjection> contracts = contractRepository
-                .findByPlannedStartDateBetweenOrderByPlannedStartDateAsc(startDate, endDate)
-                .orElseThrow(() -> new ResourceNotFoundException("Contracts not found with"));
+                .findByPlannedStartDateBetween(startDate, endDate);
         List<ContractCounterpartiesProjection> contractCounterparties = contractCounterpartyRepository
-                .findByPlannedStartDateBetweenOrderByPlannedStartDateAsc(startDate, endDate)
-                .orElseThrow(() -> new ResourceNotFoundException("Contract counterparties not found with"));
+                .findByPlannedStartDateBetween(startDate, endDate);
+
+        if (contracts.isEmpty() && contractCounterparties.isEmpty())
+            throw new ResourceNotFoundException();
+
         return new AllContracts(contracts, contractCounterparties);
     }
 
     public List<ContractPhaseProjection> getAllPhasesByContract(String name) {
         ContractWithPhasesProjection contract = contractRepository.findByName(name)
-                .orElseThrow(() -> new ResourceNotFoundException("Contract not found"));
+                .orElseThrow(() -> new ResourceNotFoundException());
         return contract.getPhases();
     }
 

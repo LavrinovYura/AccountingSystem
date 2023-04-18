@@ -35,12 +35,9 @@ public class AdminController {
     public ResponseEntity<List<UserDTO>> getUsers(
             @RequestParam(name = "page", defaultValue = "0") int page,
             @RequestParam(name = "size", defaultValue = "50") int size) {
+
         Pageable pageable = PageRequest.of(page, size);
         Page<Person> personPage = adminService.getUsers(pageable);
-
-        if (personPage.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
 
         List<UserDTO> users = personPage.getContent().stream()
                 .map(contract -> modelMapper.map(contract, UserDTO.class))
@@ -76,10 +73,6 @@ public class AdminController {
             @RequestBody RequestRole requestRole) {
         Pageable pageable = PageRequest.of(page, size);
         List<Person> personPage = adminService.getUsersByRole(pageable, requestRole.getRoleType());
-
-        if (personPage.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
 
         List<UserDTO> users = personPage.stream()
                 .map(contract -> modelMapper.map(contract, UserDTO.class))

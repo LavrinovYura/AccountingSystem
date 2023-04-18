@@ -1,6 +1,7 @@
-package nic.testproject.accountingsystem.services;
+package nic.testproject.accountingsystem.services.user;
 
 import nic.testproject.accountingsystem.dto.authorization.RegisterDTO;
+import nic.testproject.accountingsystem.exceptions.ConflictException;
 import nic.testproject.accountingsystem.models.user.Person;
 import nic.testproject.accountingsystem.models.user.Role;
 import nic.testproject.accountingsystem.models.user.RoleType;
@@ -15,6 +16,7 @@ import java.util.Collections;
 import java.util.Date;
 
 @Service
+@Transactional
 public class RegistrationService {
 
     private final PersonRepository personRepository;
@@ -27,9 +29,12 @@ public class RegistrationService {
         this.passwordEncoder = passwordEncoder;
         this.roleRepository = roleRepository;
     }
-
-    @Transactional
     public Person register(RegisterDTO registerDTO){
+        String username = registerDTO.getUsername();
+
+        if (personRepository.existsByUsername(username))
+            throw new ConflictException("Username " + username + " already taken");
+
         Person person = new Person();
         person.setUsername(registerDTO.getUsername());
         person.setFullName(registerDTO.getFullName());

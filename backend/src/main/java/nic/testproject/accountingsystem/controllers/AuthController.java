@@ -7,12 +7,11 @@ import nic.testproject.accountingsystem.dto.authorization.RegisterResponseDTO;
 import nic.testproject.accountingsystem.models.user.Person;
 import nic.testproject.accountingsystem.repositories.user.PersonRepository;
 import nic.testproject.accountingsystem.services.security.JWT.JWTGenerator;
-import nic.testproject.accountingsystem.services.RegistrationService;
+import nic.testproject.accountingsystem.services.user.RegistrationService;
+import nic.testproject.accountingsystem.services.user.LoginService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,59 +19,48 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
-
 @CrossOrigin
 @RestController
 @RequestMapping("api/auth")
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;
-    private final PersonRepository personRepository;
     private final JWTGenerator jwtGenerator;
-    private final RegistrationService registrationService;
     private final ModelMapper modelMapper;
+    private final LoginService loginService;
+    private final RegistrationService registrationService;
 
     @Autowired
     public AuthController(AuthenticationManager authenticationManager, PersonRepository personRepository,
-                          JWTGenerator jwtGenerator, RegistrationService registrationService, ModelMapper modelMapper) {
+                          JWTGenerator jwtGenerator, RegistrationService registrationService, ModelMapper modelMapper, LoginService personService, RegistrationService registrationService1) {
         this.authenticationManager = authenticationManager;
-        this.personRepository = personRepository;
         this.jwtGenerator = jwtGenerator;
-        this.registrationService = registrationService;
         this.modelMapper = modelMapper;
+        this.loginService = personService;
+        this.registrationService = registrationService1;
     }
 
     @PostMapping("login")
     public ResponseEntity<LoginResponseDTO> login(
             @RequestBody LoginDTO loginDTO) {
+
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginDTO.getUsername(), loginDTO.getPassword()));
+
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        Optional<Person> person = personRepository.findByUsername(loginDTO.getUsername());
-        String fullName;
+        Person person = loginService.findPersonByUsername(loginDTO.getUsername());
 
-        if (person.isPresent()) {
-            fullName = person.get().getFullName();
-        } else {
-            return ResponseEntity
-                    .status(HttpStatus.CONFLICT)
-                    .build();
-        }
-
+        String fullName = person.getFullName();
         String token = jwtGenerator.generateToken(authentication);
-        return new ResponseEntity<>(new LoginResponseDTO(token, fullName), HttpStatus.OK);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new LoginResponseDTO(token, fullName));
     }
 
     @PostMapping("register")
     public ResponseEntity<RegisterResponseDTO> register(@RequestBody RegisterDTO registerDTO) {
-        if (personRepository.existsByUsername(registerDTO.getUsername())) {
-            return ResponseEntity
-                    .status(HttpStatus.CONFLICT)
-                    .build();
-        }
-
         RegisterResponseDTO response = modelMapper
                 .map(registrationService.register(registerDTO), RegisterResponseDTO.class);
 
