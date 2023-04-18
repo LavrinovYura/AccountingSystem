@@ -8,6 +8,9 @@ import nic.testproject.accountingsystem.models.contracts.Contract;
 import nic.testproject.accountingsystem.models.contracts.ContractType;
 
 import javax.persistence.*;
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 @Entity
@@ -15,19 +18,28 @@ import java.time.LocalDate;
 @Data
 @NoArgsConstructor
 public class ContractCounterparties {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "Please enter contract name")
     private String name;
 
     @Enumerated(EnumType.STRING)
+    @NotNull(message = "Please enter contract type")
     private ContractType type;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "counterparty_id")
-    private Counterparty counterparty;
+    @NotNull(message = "Please enter the planned start date")
+    private LocalDate plannedStartDate;
+    @NotNull(message = "Please enter the planned end date")
+    private LocalDate plannedEndDate;
+
+    private LocalDate actualStartDate;
+    private LocalDate actualEndDate;
+
+    @NotNull(message = "Please enter the amount")
+    @DecimalMin("0.0")
+    private Double amount;
 
     @JsonIgnore
     @ToString.Exclude
@@ -35,9 +47,7 @@ public class ContractCounterparties {
     @JoinColumn(name = "contract_id", referencedColumnName = "id")
     private Contract contract2;
 
-    private Double amount;
-    private LocalDate plannedStartDate;
-    private LocalDate plannedEndDate;
-    private LocalDate actualStartDate;
-    private LocalDate actualEndDate;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "counterparty_id")
+    private Counterparty counterparty;
 }
