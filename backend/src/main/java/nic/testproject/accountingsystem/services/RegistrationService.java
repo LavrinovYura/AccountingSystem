@@ -8,6 +8,7 @@ import nic.testproject.accountingsystem.repositories.user.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import javax.transaction.Transactional;
 import java.util.Collections;
@@ -30,11 +31,17 @@ public class RegistrationService {
     @Transactional
     public void register(RegisterDTO registerDTO){
         Person person = new Person();
+
         person.setUsername(registerDTO.getUsername());
-        person.setFullName(registerDTO.getFullName());
         person.setPassword(passwordEncoder.encode(registerDTO.getPassword()));
+
+        person.setFirstName(StringUtils.capitalize(registerDTO.getFirstName().trim()));
+        person.setSecondName(StringUtils.capitalize(registerDTO.getSecondName().trim()));
+        person.setMiddleName(StringUtils.capitalize(registerDTO.getMiddleName().trim()));
+
         Date date = new Date();
         person.setExpireDate(String.valueOf(date));
+
         Role role = roleRepository.findByName("USER").get();
         person.setRoles(Collections.singletonList(role));
 

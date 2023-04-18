@@ -1,9 +1,12 @@
 package nic.testproject.accountingsystem.exceptions;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
+
+import javax.validation.ConstraintViolationException;
 
 @ControllerAdvice
 public class RestExceptionHandler {
@@ -12,6 +15,10 @@ public class RestExceptionHandler {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public void handleResourceNotFoundException() {
         // Можно не указывать тело метода, так как HTTP-ответ формируется автоматически
+    }
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<String> handleValidationException(ConstraintViolationException exception){
+        return new ResponseEntity<>(exception.getMessage(),HttpStatus.BAD_REQUEST);
     }
 }
 
