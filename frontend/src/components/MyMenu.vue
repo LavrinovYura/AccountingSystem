@@ -11,10 +11,10 @@
                         </v-list-item-icon>
                         <v-list-item-content>
                             <v-list-item-title>
-                                Anna
+                                {{ "name" }}
                             </v-list-item-title>
                             <v-list-item-subtitle>
-                                Evdokimova
+                                {{ "name "}}
                             </v-list-item-subtitle>
                         </v-list-item-content>
                     </v-list-item>
@@ -42,7 +42,7 @@ export default {
 
     data() {
         return {
-
+            name: localStorage.name
 
         }
     },
@@ -56,7 +56,7 @@ export default {
 
 </script>
 
-<style>
+<style  scoped>
 .main {
     max-height: 400px;  
     max-width: 250px; 

@@ -7,15 +7,15 @@
                         <h2>Регистрация</h2>
                     </v-card-title>
                     <v-card-text>
-                        <section v-on:keyup="FullName()">
+                        <section>
                             <v-text-field placeholder="Surname" 
                                 name="surname"
-                                v-model.trim="surname"
+                                v-model.trim="secondName"
                                 
                             ></v-text-field>
                             <v-text-field placeholder="Name" 
                                 name="name"
-                                v-model.trim="name"
+                                v-model.trim="firstName"
                             ></v-text-field>
                             <v-text-field placeholder="Middle name" 
                                 name="Middle name"
@@ -53,6 +53,7 @@
                             <v-btn 
                                 class="buttn" 
                                 color="success"
+                                @click=addLocal()
                                 > ghbdth</v-btn>
                         </router-link>
                     </v-card-actions>
@@ -63,7 +64,8 @@
 </template>
   
 <script>
-    import axios from 'axios';
+import { mapGetters, mapMutations } from 'vuex';
+import axios from 'axios';
 
     export default {
         name: 'MyFormEnter',
@@ -76,20 +78,24 @@
             return {
                 showPassword: false,
                 pasType: 'password',
-                name: '',
-                surname: '',
+                firstName: '',
+                secondName: '',
                 middleName: '',
                 password: "",
                 username: "",
                 fullname: '',
                 names: '',
-                data: 'User register success',
+                data: 201,
                 success: false,
                 registr: '',               
             }
         },
         
         methods: {
+            ...mapMutations({
+            addToken: 'ADD_TOKEN',
+            addName: 'ADD_NAME'}),
+
             showPas() {
                 this.showPassword = !this.showPassword
                 this.pasType = this.pasType === "password" ? "text" : "password"               
@@ -97,19 +103,26 @@
             
             async registrate() {
                 try {
-                    const response = await axios.post(this.$store.state.url + this.$store.state.urlRegistr, {
+                    const response = await axios.post(this.$store.state.url + '/api/auth/register', {
                         username: this.username,
                         password: this.password,
-                        fullName: this.fullname,
+                        firstName: this.firstName,
+                        secondName: this.secondName,
+                        middleName: this.middleName,
+                        
                     });
                     console.log(response)
                     console.log(response.data)            
-                    if (response.data === this.data) {
+                    if (response.status === this.data) {
                         this.success = true
-                    }                      
+                    }  
+                    if  (this.success == true) {
+                        this.addToken(response.data.accessToken)
+                        this.addName(response.data.fullName)
+                }                      
                 } 
                 catch(e) {
-                    alert('Неверный логин или пароль')
+                    alert('Неверно ')
                 }      
             },
 
@@ -123,13 +136,10 @@
         add() {
             setTimeout(this.goToMenu, 1000)           
         },
-
-        FullName() {
-                this.fullname = this.surname + " " + this.name + " " + this.middleName
-                this.names = this.fullname.split(' ', 2)
-                 
-                return this.fullname, this.names
-            },
+        addLocal() {
+            localStorage.setItem('tok', '50');
+        },
+        
 
         Name() {
             this.names = this.fullname.split(' ', 2)
@@ -140,7 +150,7 @@
     }
 </script>
   
-<style>
+<style  scoped>
 .btn {
     text-decoration: none
 }

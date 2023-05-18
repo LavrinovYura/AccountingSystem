@@ -3,22 +3,35 @@ import Vuex from 'vuex'
 
 import menu from '../moduls/menu';
 import contracts from '../moduls/contracts';
+import contragents from '../moduls/contragents'
 
 Vue.use(Vuex)
 
 export const store = new Vuex.Store({
   state: {
-    urlEnter: '/api/auth/login',
-    urlRegistr: '/api/auth/register',
-    url: 'http://5.tcp.eu.ngrok.io:13492',
-    urlGetContracts: '/api/menu/contracts/show',
-    token: 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsYXZyaSJ9.MLyGoKbKG8DuOR7QL_wIwEqLg-Q9yVTU6aVYjucpE84',
-    tokenType: 'Bearer'
+    
+    url: 'http://212.118.43.99:8080',
+    
+    token: '',
+    tokenType: 'Bearer',
+    name: '',
+    fullname: '',
+
   },
   getters: {
   },
   mutations: {
-    
+      ADD_TOKEN(state, payload) {
+        state.token = payload
+        localStorage.setItem('token', "50")
+        
+      },
+      ADD_NAME(state,payload) {
+        state.name = payload
+        state.fullname = state.name.split(' ', 2)
+        localStorage.setItem('name', state.fullname)
+
+      }
 
     
   },
@@ -28,6 +41,7 @@ export const store = new Vuex.Store({
   modules: {
     menu,
     contracts,
+    contragents,
   }
 });
 

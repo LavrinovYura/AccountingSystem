@@ -41,42 +41,7 @@ export default {
             }
 
         ],
-        contracts: [
-            {
-                name: 'ABC',
-                type: 'procurment',
-                plannedStartDate: '05.11.2002',
-                plannedEndDate: '11.05.2002',
-                actualStartDate: '11.05.2023',
-                actualEndDate: '05.11.2023',
-                amount: 50000.0,
-                stage: 'active',
-                contr: '1'
-            },
-            {
-                name: 'hjo',
-                type: 'some',
-                plannedStartDate: '05.11.2005',
-                plannedEndDate: '11.05.2006',
-                actualStartDate: '11.05.2020',
-                actualEndDate: '05.11.2021',
-                amount: 60000.0,
-                stage: 'active',
-                contr: '1'
-            },
-            {
-                name: 'DEF',
-                type: 'some',
-                plannedStartDate: '05.11.2003',
-                plannedEndDate: '11.05.2004',
-                actualStartDate: '11.05.2019',
-                actualEndDate: '05.11.2019',
-                amount: 60000.0,
-                stage: 'active',
-                contr: '1'
-            
-            },
-        ],
+        contracts: [],
         type: ['Закупка', "Поставка", "Работы"],
         stage: ["Завершен", "Активен"]
     },
@@ -99,7 +64,10 @@ export default {
     mutations: {
         ADD_NEW_CONTRACT(state, payload) {
             state.contracts.push(payload)
-        } 
+        },
+        ADD_ALL_CONTRACTS(state, payload){
+            state.contracts.push(payload)
+        }
     } 
     
 

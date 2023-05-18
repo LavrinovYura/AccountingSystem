@@ -16,6 +16,3 @@ new Vue({
   render: h => h(App)
 }).$mount('#app')
 
-Vue.use(Vuetify, {
-  iconfont: 'fa'
-})

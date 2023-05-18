@@ -1,10 +1,10 @@
 <template class="main">
     <v-app>
     
-        <section >
+    <section >
         <my-menu></my-menu>
     </section>
-        <section class="content">
+    <div class="content">
         <h1>Отчеты</h1>
         <v-divider></v-divider>
         <v-container >
@@ -13,32 +13,16 @@
             </v-btn>
             Добавить
         </v-container>
-         <v-divider></v-divider>
-        <v-container>
-            <v-text-field v-model="search"
-            append-icon="mdi-magnify"
-            label="Search"
-            single-line
-            hide-details>
-            </v-text-field>
-            <v-simple-table>
-                <thead>
-                    <tr class="text-center">
-                        <th> </th>
+        <v-divider></v-divider>
+        
+    </div> 
+    reports 
+    <span>   
+        <router-link class="btn" :to="{name: 'menu'}">
+            <v-btn color=" light"> Назад</v-btn>
+        </router-link> 
+    </span>
 
-                    </tr>
-                </thead>
-            </v-simple-table>
-            
-        </v-container>
-        </section>
-        report
-        <span>   
-            <router-link class="btn" :to="{name: 'menu'}">
-                <v-btn color=" light"> Назад</v-btn>
-            </router-link> 
-        </span>
-    
 </v-app>
 </template>
 
@@ -62,3 +46,21 @@ export default {
     }
 }
 </script>
+
+<style  scoped> 
+.main {
+    max-height: 400px;  
+    max-width: 250px; 
+}
+.content {
+    padding-left: 280px;
+    padding-top: 20px;
+    position: fixed;
+}
+.btn {
+    margin-left:20px
+}
+h1 {
+    text-align: center;
+}
+</style>

@@ -51,6 +51,7 @@
 
 <script>
 import axios from 'axios';
+import { mapGetters, mapMutations } from 'vuex';
 export default {
     name: 'MyFormEnter',
     props: {
@@ -64,16 +65,20 @@ export default {
             password: "",
             username: "",
             success: false,
-            token: '',
+            
             registr: '',
             err: false,
-            color: '',
+            
             
             
         }
     },
     
-    methods: {   
+    methods: { 
+        ...mapMutations({
+            addToken: 'ADD_TOKEN',
+            addName: 'ADD_NAME'
+        }),
         showPas() {
             this.showPassword = !this.showPassword
             this.pasType = this.pasType === "password" ? "text" : "password"           
@@ -81,7 +86,7 @@ export default {
         
         async enter() {
             try {
-                const response = await axios.post(this.$store.state.url + this.$store.state.urlEnter, {
+                const response = await axios.post(this.$store.state.url + '/api/auth/login', {
                     username: this.username,
                     password: this.password,                    
                });
@@ -89,26 +94,32 @@ export default {
                 console.log(response.data.tokenType)
 
                 if (response.status === 200) {
-                        this.success = true                       
+                        this.success = true,
+                        this.err=false                      
                     } 
                 if  (this.success == true) {
-                    this.token = response.data.accessToken
+                    this.addToken(response.data.accessToken)
+                    //this.addName(response.data.fullName)
                 }                
             } 
-            catch(error) {
-               this.err=true
-               this.username=''
-               this.password=''
-               this.color='red'               
-            } 
-            
+            catch(e) {
+               
+                alert('error is true')
+                            
+            }     
         },
         
         GoToMenu() {
             if (this.success == true) {
                 this.$router.push('menu')                
-            }            
-            console.log(1)
+            }   
+            else {
+                this.err=true
+                this.username=''
+                this.password=''
+            }     
+              
+            
         },
         
         Add() {
@@ -116,6 +127,12 @@ export default {
         }
     },
     
+    activated() {
+        this.success = false,
+        this.err=false
+        
+
+    },
 
     computed: {
         
@@ -126,7 +143,7 @@ export default {
 
 
 
-<style>
+<style  scoped>
 form {
     text-align: center;  
 }
