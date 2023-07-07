@@ -15,11 +15,11 @@ public class CounterpartySpecifications {
             List<Predicate> predicates = new ArrayList<>();
 
             if (searchCriteria.getName() != null) {
-                predicates.add(criteriaBuilder.equal(root.get("name"), searchCriteria.getName()));
+                predicates.add(criteriaBuilder.like(root.get("name"), searchCriteria.getName() + "%"));
             }
 
             if (searchCriteria.getAddress() != null) {
-                predicates.add(criteriaBuilder.equal(root.get("address"), searchCriteria.getAddress()));
+                predicates.add(criteriaBuilder.like(root.get("address"), searchCriteria.getAddress() + "%"));
             }
 
             if (searchCriteria.getInn() != null) {

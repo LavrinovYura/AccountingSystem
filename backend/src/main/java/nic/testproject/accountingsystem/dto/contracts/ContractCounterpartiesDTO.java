@@ -12,10 +12,10 @@ public class ContractCounterpartiesDTO {
     private String name;
     private ContractType type;
     private Double amount;
-    private LocalDate plannedStartDate;
-    private LocalDate plannedEndDate;
-    private LocalDate actualStartDate;
-    private LocalDate actualEndDate;
+    private String plannedStartDate;
+    private String plannedEndDate;
+    private String actualStartDate;
+    private String actualEndDate;
 
     private CounterpartyDTO counterparty;
 }

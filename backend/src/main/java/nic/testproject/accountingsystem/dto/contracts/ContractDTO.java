@@ -12,10 +12,10 @@ import java.util.List;
 public class ContractDTO {
     private String name;
     private ContractType type;
-    private LocalDate plannedStartDate;
-    private LocalDate plannedEndDate;
-    private LocalDate actualStartDate;
-    private LocalDate actualEndDate;
+    private String plannedStartDate;
+    private String plannedEndDate;
+    private String actualStartDate;
+    private String actualEndDate;
     private Double amount;
 
     private List<ContractPhaseDTO> phases;

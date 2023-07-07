@@ -36,7 +36,7 @@ public class ContractController {
     @PostMapping("save")
     public ResponseEntity<ContractDTO> saveContract(
             @RequestBody ContractDTO contractDTO) {
-        ContractDTO savedContract = modelMapper.map(contractService.saveContract(contractDTO),ContractDTO.class);
+        ContractDTO savedContract = contractService.saveContract(contractDTO);
 
         return ResponseEntity.ok(savedContract);
     }
@@ -62,9 +62,11 @@ public class ContractController {
         return ResponseEntity.ok(contracts);
     }
 
-    @PutMapping("update")
-    public ResponseEntity<ContractDTO> updateContract(@RequestBody ContractDTO ContractDTO) {
-        ContractDTO updatedContract = contractService.updateContract(ContractDTO);
+    @PutMapping("update/{name}")
+    public ResponseEntity<ContractDTO> updateContract(
+            @PathVariable String name,
+            @RequestBody ContractDTO ContractDTO) {
+        ContractDTO updatedContract = contractService.updateContract(ContractDTO, name);
         return ResponseEntity.ok(updatedContract);
     }
 

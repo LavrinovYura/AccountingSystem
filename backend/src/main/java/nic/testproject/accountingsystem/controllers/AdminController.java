@@ -30,7 +30,6 @@ public class AdminController {
         this.modelMapper = modelMapper;
     }
 
-    //Поменять на RequestBody
     @GetMapping("users")
     public ResponseEntity<List<UserDTO>> getUsers(
             @RequestParam(name = "page", defaultValue = "0") int page,

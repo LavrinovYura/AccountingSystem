@@ -46,10 +46,12 @@ public class RegistrationService {
         person.setMiddleName(StringUtils.capitalize(registerDTO.getMiddleName().trim()));
 
         Date date = new Date();
-        person.setExpireDate(String.valueOf(date));
+        person.setExpireDate(new Date(date.getTime() + 900000000));
+
         Role role = roleRepository.findByRoleType(RoleType.USER).get();
         person.setRoles(Collections.singleton(role));
 
         return personRepository.save(person);
     }
+
 }

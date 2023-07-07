@@ -1,8 +1,11 @@
 package nic.testproject.accountingsystem.dto.authorization;
 
+import lombok.Builder;
 import lombok.Data;
 
 @Data
 public class RegisterResponseDTO {
-    private String fullName;
+    private String firstName;
+    private String secondName;
+    private String middleName;
 }

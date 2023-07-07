@@ -31,13 +31,14 @@ public class AuthController {
     private final RegistrationService registrationService;
 
     @Autowired
-    public AuthController(AuthenticationManager authenticationManager, PersonRepository personRepository,
-                          JWTGenerator jwtGenerator, RegistrationService registrationService, ModelMapper modelMapper, LoginService personService, RegistrationService registrationService1) {
+    public AuthController(AuthenticationManager authenticationManager,
+                          JWTGenerator jwtGenerator, ModelMapper modelMapper,
+                          LoginService personService, RegistrationService registrationService) {
         this.authenticationManager = authenticationManager;
         this.jwtGenerator = jwtGenerator;
         this.modelMapper = modelMapper;
         this.loginService = personService;
-        this.registrationService = registrationService1;
+        this.registrationService = registrationService;
     }
 
     @PostMapping("login")
@@ -51,12 +52,18 @@ public class AuthController {
 
         Person person = loginService.findPersonByUsername(loginDTO.getUsername());
 
-        String fullName = person.getFullName();
+
         String token = jwtGenerator.generateToken(authentication);
+
+        LoginResponseDTO response = new LoginResponseDTO();
+        response.setAccessToken(token);
+        response.setFirstName(person.getFirstName());
+        response.setSecondName(person.getSecondName());
+        response.setMiddleName(person.getMiddleName());
 
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(new LoginResponseDTO(token, fullName));
+                .body(response);
     }
 
     @PostMapping("register")

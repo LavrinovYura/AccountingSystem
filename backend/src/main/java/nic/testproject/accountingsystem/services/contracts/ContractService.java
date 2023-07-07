@@ -8,11 +8,14 @@ import nic.testproject.accountingsystem.models.contracts.details.ContractPhase;
 import nic.testproject.accountingsystem.repositories.contracts.ContractRepository;
 import nic.testproject.accountingsystem.repositories.contracts.CounterpartyRepository;
 import nic.testproject.accountingsystem.services.contracts.specs.ContractSpecifications;
+import nic.testproject.accountingsystem.validation.ContractValidation;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.BindingResult;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -24,13 +27,15 @@ public class ContractService {
 
     private final ContractRepository contractRepository;
     private final ModelMapper modelMapper;
+    private final ContractValidation saveValidation;
 
     @Autowired
     public ContractService(ContractRepository contractRepository,
                            ModelMapper modelMapper,
-                           CounterpartyRepository counterpartyRepository) {
+                           CounterpartyRepository counterpartyRepository, ContractValidation saveValidation) {
         this.contractRepository = contractRepository;
         this.modelMapper = modelMapper;
+        this.saveValidation = saveValidation;
     }
 
     public Page<Contract> getContracts(ContractDTO criteria, Pageable pageable) {
@@ -40,9 +45,13 @@ public class ContractService {
         return page;
     }
 
-    public Contract saveContract(ContractDTO contractDTO) {
+    public ContractDTO saveContract(ContractDTO contractDTO) {
 
         Contract contract = modelMapper.map(contractDTO, Contract.class);
+
+        BindingResult errors = new BeanPropertyBindingResult(contract, "contract");
+        saveValidation.validate(contract, errors);
+
         Contract savedContract = contractRepository.save(contract);
 
         List<ContractPhase> contractPhase = savedContract.getPhases();
@@ -51,11 +60,10 @@ public class ContractService {
         linkContractIdToContractCounterparties(contractCounterparties, savedContract);
         linkContractIdToContractPhase(contractPhase, savedContract);
 
-        return savedContract;
+        return modelMapper.map(contract, ContractDTO.class);
     }
 
-    public ContractDTO updateContract(ContractDTO contractDTO) {
-        String name = contractDTO.getName();
+    public ContractDTO updateContract(ContractDTO contractDTO, String name) {
         Optional<Contract> optionalContract = contractRepository.findContractByName(name);
 
         if (!optionalContract.isPresent()) {
@@ -64,6 +72,10 @@ public class ContractService {
 
         Contract contract = optionalContract.get();
         modelMapper.map(contractDTO, contract);
+
+        BindingResult errors = new BeanPropertyBindingResult(contract, "contract");
+        saveValidation.validate(contract, errors);
+
         Contract savedContract = contractRepository.saveAndFlush(contract);
 
         List<ContractPhase> contractPhase = savedContract.getPhases();
@@ -88,7 +100,7 @@ public class ContractService {
         if (!optionalContract.isPresent()) {
             throw new ResourceNotFoundException();
         }
-        optionalContract.get().getContractCounterparties().forEach(it->it.setCounterparty(null));
+        optionalContract.get().getContractCounterparties().forEach(it -> it.setCounterparty(null));
         contractRepository.delete(optionalContract.get());
     }
 

@@ -62,9 +62,11 @@ public class CounterpartyController {
         return ResponseEntity.ok(contracts);
     }
 
-    @PutMapping("update")
-    public ResponseEntity<CounterpartyDTO> updateCounterparty(@RequestBody CounterpartyDTO counterpartyDTO) {
-        CounterpartyDTO counterparty = modelMapper.map(counterpartyService.updateCounterparty(counterpartyDTO),CounterpartyDTO.class);
+    @PutMapping("update/{name}")
+    public ResponseEntity<CounterpartyDTO> updateCounterparty(
+            @PathVariable String name,
+            @RequestBody CounterpartyDTO counterpartyDTO) {
+        CounterpartyDTO counterparty = counterpartyService.updateCounterparty(counterpartyDTO,name);
         return ResponseEntity.ok(counterparty);
     }
 

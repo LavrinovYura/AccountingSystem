@@ -5,7 +5,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-
 import javax.validation.ConstraintViolationException;
 
 @ControllerAdvice
@@ -27,6 +26,7 @@ public class RestExceptionHandler {
         String message = exception.getMessage();
         return new ResponseEntity<>(message, HttpStatus.UNAUTHORIZED);
     }
+
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<String> handleValidationException(ConstraintViolationException exception){
         return new ResponseEntity<>(exception.getMessage(),HttpStatus.BAD_REQUEST);

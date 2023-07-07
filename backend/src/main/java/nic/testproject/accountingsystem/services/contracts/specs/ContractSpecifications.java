@@ -14,24 +14,28 @@ public class ContractSpecifications {
         return (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
 
+            if (searchCriteria.getName() != null) {
+                predicates.add(criteriaBuilder.like(root.get("name"), searchCriteria.getName() + "%"));
+            }
+
             if (searchCriteria.getType() != null) {
                 predicates.add(criteriaBuilder.equal(root.get("type"), searchCriteria.getType()));
             }
 
             if (searchCriteria.getPlannedStartDate() != null) {
-                predicates.add(criteriaBuilder.equal(root.get("plannedStartDate"), searchCriteria.getPlannedStartDate()));
+                predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("plannedStartDate"), searchCriteria.getPlannedStartDate()));
             }
 
             if (searchCriteria.getPlannedEndDate() != null) {
-                predicates.add(criteriaBuilder.equal(root.get("plannedEndDate"), searchCriteria.getPlannedEndDate()));
+                predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("plannedEndDate"), searchCriteria.getPlannedEndDate()));
             }
 
             if (searchCriteria.getActualStartDate() != null) {
-                predicates.add(criteriaBuilder.equal(root.get("actualStartDate"), searchCriteria.getActualStartDate()));
+                predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("actualStartDate"), searchCriteria.getActualStartDate()));
             }
 
             if (searchCriteria.getActualEndDate() != null) {
-                predicates.add(criteriaBuilder.equal(root.get("actualEndDate"), searchCriteria.getActualEndDate()));
+                predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("actualEndDate"), searchCriteria.getActualEndDate()));
             }
 
             if (searchCriteria.getAmount() != null) {
