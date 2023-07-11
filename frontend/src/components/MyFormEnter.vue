@@ -26,10 +26,8 @@
                             @click:append="showPas"
                             v-model="password"
                             
-                        ></v-text-field>
-                    
+                        ></v-text-field>                   
                 </v-card-text>
-               {{ success }} {{ registr }}
                 <v-card-actions>
                     <router-link class="btn" :to="this.registr">
                         <v-btn class="mr-6" color="success"

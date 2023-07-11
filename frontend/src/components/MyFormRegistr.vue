@@ -34,9 +34,6 @@
                             @click:append="showPas"
                             v-model="password"
                         ></v-text-field>  
-                        {{ names[1]}} 
-                        {{ success }} 
-                                    
                     </v-card-text>         
                     <v-card-actions>
                         <router-link class="btn" :to="{name: 'FormEnter'}">

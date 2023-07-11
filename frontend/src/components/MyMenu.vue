@@ -31,26 +31,31 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
-
 export default {
     name: 'MyMenu',
-
-    props: {
-        
-    },
-
     data() {
         return {
-            name: localStorage.name
-
+            name: localStorage.name,
+            menuList: [
+                {
+                    name: 'contract',
+                    item: 'Договоры'
+                },
+                {
+                    name: 'organization',
+                    item: 'Kонтрагенты'
+                },
+                {
+                    name: 'report',
+                    item: 'Отчеты'
+                },
+                {
+                    name: 'admin',
+                    item: 'Администрирование'
+                },
+            ]
         }
     },
-    computed:{
-        ...mapGetters({
-            menuList: 'menu/menuList',
-        }),
-    }
 }
 
 

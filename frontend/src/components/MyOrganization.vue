@@ -68,9 +68,33 @@
                             <v-btn
                                 color="blue darken-1"
                                 text 
-                                @click="dialog1 = false, sendNewOrganization(), createNewOrganization()"                               
+                                @click="dialog1 = false, sendNewOrganization()"                               
                                 >Сохранить
                             </v-btn>
+                        </v-card-actions>
+                    </v-card>
+                </v-dialog>
+            </v-container>
+            <v-container>
+                <v-dialog v-model="dialogDelete" 
+                    persistent
+                    max-width="600px">
+                    <template v-slot:activator="{ on, attrs }">
+                        <v-btn outlined  
+                            icon color="red"
+                            v-bind="attrs" 
+                            v-on="on">
+                                <v-icon>mdi-delete</v-icon>
+                        </v-btn>
+                    </template>
+                    <v-card>
+                        <v-card-text>
+                            Вы хотите удалить только контрагента или связанные с ним контракты тоже?
+                        </v-card-text>
+                        <v-card-actions>
+                            <v-btn @click="dialogDelete=!dialogDelete">Отмена</v-btn>
+                            <v-btn @click="dialogDelete=!dialogDelete, deleteContragent(NameDelete.name) ">Только контрагента</v-btn>
+                            <v-btn @click="dialogDelete=!dialogDelete">Вместе с контрактами</v-btn>
                         </v-card-actions>
                     </v-card>
                 </v-dialog>
@@ -85,50 +109,89 @@
                             </th>
                         </thead>
                         <tbody>
-                            <tr v-for="(item, name, index) in contragents"
+                            <tr v-for="item in contragents"
                                 :key="item.idndex"
                                 @click="Show(item),NameDelete = item"
                                 >
                                 <td v-for="value in item">{{ value }}</td>
-                                <td>
-                                    
-                                    <v-btn 
-                                        outlined  
-                                        icon color="blue" >
-                                        <v-icon>mdi-pencil</v-icon>
-                                    </v-btn>          
-                                </td>
-                                <td>
-                                    <v-dialog v-model="dialogDelete" 
+                                <td>  
+                                    <v-dialog v-model="dialog3"
                                         persistent
                                         max-width="600px">
                                         <template v-slot:activator="{ on, attrs }">
-                                            <v-btn outlined  
-                                                icon color="red"
+                                            <v-btn 
+                                                outlined  
+                                                icon color="blue" 
                                                 v-bind="attrs" 
-                                                v-on="on">
-                                                    <v-icon>mdi-delete</v-icon>
-                                            </v-btn>
+                                                v-on="on"
+                                                >
+                                                <v-icon >mdi-pencil</v-icon>
+                                            </v-btn>                       
                                         </template>
                                         <v-card>
-                                            <v-card-text>
-                                                Вы хотите удалить только контрагента или связанные с ним контракты тоже?
+                                            <v-card-title> Редактировать Организацию-Контрагента</v-card-title>
+                                            <v-card-text v-for="(item, name, id) in  NameDelete">
+                                                <label> {{ name }}
+                                                <v-text-field 
+                                                    :name="name"
+                                                    :key="id"
+                                                    :value="item"
+                                                    @input="Agents[name] = $event"                               
+                                                    > {{ item }}
+                                                </v-text-field> 
+                                            </label>
                                             </v-card-text>
                                             <v-card-actions>
-                                                <v-btn @click="dialogDelete=!dialogDelete">Отмена</v-btn>
-                                                <v-btn @click="dialogDelete=!dialogDelete, deleteOrganization()">Только контрагента</v-btn>
-                                                <v-btn @click="dialogDelete=!dialogDelete, deleteAllOrganization()">Вместе с контрактами</v-btn>
+                                                <v-spacer></v-spacer>
+                                                <v-btn
+                                                    color="blue darken-1"
+                                                    text
+                                                    @click="dialog2 = true"
+                                                    >Закрыть
+                                                </v-btn>
+                                                <v-row>
+                                                    <v-dialog width="600px" justify-center
+                                                        v-model="dialog2"
+                                                        >
+                                                        <v-card >
+                                                            <v-card-title >
+                                                                <div>Вы уверены, что хотите закрыть окно?</div>
+                                                                <div>Все несохраненные данные будут утеряны</div>
+                                                            </v-card-title>
+                                                            <v-card-actions>
+                                                                <v-spacer></v-spacer>
+                                                                    <v-btn color="blue darken-1"
+                                                                        text
+                                                                        @click="dialog3 = false"
+                                                                        >Закрыть
+                                                                    </v-btn>
+                                                                    <v-btn color="blue darken-1"
+                                                                        text
+                                                                        @click="dialog2 = false"
+                                                                        >Остаться
+                                                                    </v-btn>
+                                                            </v-card-actions>
+                                                        </v-card>
+                                                    </v-dialog>
+                                                </v-row>
+                                                <v-btn
+                                                    color="blue darken-1"
+                                                    text 
+                                                    @click="dialog1 = false"                               
+                                                    >Сохранить
+                                                </v-btn>
                                             </v-card-actions>
                                         </v-card>
                                     </v-dialog>
-                                </td>
+                                </td>   
                             </tr>
                         </tbody>
                     </template>    
                 </v-simple-table>
             </v-container>
-            {{ Agents }} {{ a }} {{ NameDelete }}
         </section> 
+        {{ Agents }} jhguyg{{ NameDelete }}
+            {{ contragents }}
         organization 
         <span>   
             <router-link class="btn" :to="{name: 'menu'}">
@@ -143,7 +206,7 @@
 <script>
 import { VCardActions } from 'vuetify/lib';
 import MyMenu from '../components/MyMenu.vue';
-import { mapGetters, mapMutations } from 'vuex';
+import { mapGetters, mapMutations, mapActions } from 'vuex';
 import axios from 'axios';
 import { VListItemSubtitle } from 'vuetify/lib';
 export default {
@@ -162,20 +225,23 @@ export default {
             dialog1: false,
             dialog2: false,
             dialog3: false,
-            dialog4: false,
             dialogDelete: false,
-            a: '',
-            NameDelete: '',
+            NameDelete: {
+                name: '',
+                address: '',
+                inn: ''
+            },
             Agents: {
                 name: '',
                 address: '',
                 inn: ''
-            }
+            },
+            NameContractDelete: '',
         }
     },
     computed:{
         ...mapGetters({                      
-            contragents: "contragents/contragent"
+            contragents : 'contragent'
         }),
         
     },
@@ -183,9 +249,13 @@ export default {
     methods: {
         ...mapMutations({
             
-            addAllContragents: 'contragents/ADD_ALL_CONTRAGENTS',
-            addNewContragents: 'contragents/ADD_NEW_CONTRAGENTS'
+            addAllContragents: 'ADD_ALL_CONTRAGENTS',
+            addNewContragents: 'ADD_NEW_CONTRAGENTS',
+            
         }),
+
+        ...mapActions( ['deleteContragent']),
+        ...mapActions(['deleteWithContract']),
 
         sendNewOrganization() {
             const res = {};
@@ -198,6 +268,16 @@ export default {
             };
             console.log(res)   
         },
+
+        Show(item) {
+            console.log(item.name)
+            this.NameDelete = item
+        },
+
+
+
+
+
 
         async createNewOrganization() {
             try {
@@ -277,10 +357,7 @@ export default {
             
         },
 
-        Show(item) {
-            console.log(item.name)
-            this.a=item.name
-        },
+        
     }
 }
 </script>
@@ -302,5 +379,8 @@ h1 {
 }
 .btn {
     margin-left:20px
+}
+.table {
+    border: 1px solid black;
 }
 </style>
