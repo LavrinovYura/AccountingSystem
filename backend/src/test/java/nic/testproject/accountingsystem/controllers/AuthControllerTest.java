@@ -1,4 +1,4 @@
-package nic.testproject.accountingsystem;
+package nic.testproject.accountingsystem.controllers;
 
 import nic.testproject.accountingsystem.controllers.AuthController;
 import nic.testproject.accountingsystem.dto.authorization.LoginDTO;

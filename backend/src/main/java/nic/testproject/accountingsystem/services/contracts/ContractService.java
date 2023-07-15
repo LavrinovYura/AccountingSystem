@@ -32,7 +32,7 @@ public class ContractService {
     @Autowired
     public ContractService(ContractRepository contractRepository,
                            ModelMapper modelMapper,
-                           CounterpartyRepository counterpartyRepository, ContractValidation saveValidation) {
+                           ContractValidation saveValidation) {
         this.contractRepository = contractRepository;
         this.modelMapper = modelMapper;
         this.saveValidation = saveValidation;
@@ -104,13 +104,11 @@ public class ContractService {
         contractRepository.delete(optionalContract.get());
     }
 
-    private void linkContractIdToContractPhase(List<ContractPhase> contractPhase, Contract savedContract) {
+    public void linkContractIdToContractPhase(List<ContractPhase> contractPhase, Contract savedContract) {
         contractPhase.forEach(it -> it.setContract1(savedContract));
     }
 
-    private void linkContractIdToContractCounterparties(List<ContractCounterparties> contractCounterparties, Contract savedContract) {
+    public void linkContractIdToContractCounterparties(List<ContractCounterparties> contractCounterparties, Contract savedContract) {
         contractCounterparties.forEach(it -> it.setContract2(savedContract));
     }
-
-
 }

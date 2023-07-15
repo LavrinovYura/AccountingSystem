@@ -2,7 +2,6 @@ package nic.testproject.accountingsystem.controllers;
 
 import nic.testproject.accountingsystem.dto.RequestName;
 import nic.testproject.accountingsystem.dto.contracts.ContractDTO;
-import nic.testproject.accountingsystem.exceptions.ConflictException;
 import nic.testproject.accountingsystem.models.contracts.Contract;
 import nic.testproject.accountingsystem.repositories.contracts.ContractRepository;
 import nic.testproject.accountingsystem.services.contracts.ContractService;
@@ -23,13 +22,11 @@ import java.util.stream.Collectors;
 public class ContractController {
 
     private final ContractService contractService;
-    private final ContractRepository contractRepository;
     private final ModelMapper modelMapper;
 
     @Autowired
     public ContractController(ContractService contractService, ContractRepository contractRepository, ModelMapper modelMapper) {
         this.contractService = contractService;
-        this.contractRepository = contractRepository;
         this.modelMapper = modelMapper;
     }
 
