@@ -64,9 +64,8 @@
                     <td>{{ contract.actualStartDate }}</td>
                     <td>{{ contract.actualEndDate }}</td>
                     <td>{{ contract.amount }}</td>
-                    <td>{{ contract.phases.name }}</td>
-                    
-                    <td v-for="organiz in contract.contractCounterparties">{{ organiz.name}}</td>
+                    <td><v-col v-for="(items, nnn, id) in contract.phases"><div ><span>{{ items }}</span></div></v-col></td>                   
+                    <td><v-col v-for="(items) in contract.contractCounterparties">{{ items.name}}</v-col></td>
                 </tbody>
             </v-simple-table>
         </v-container>

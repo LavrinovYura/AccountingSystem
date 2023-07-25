@@ -39,7 +39,18 @@ export const store = new Vuex.Store({
           plannedEndDate: '',
           actualStartDate: '',
           actualEndDate: '',
-      }],
+          },
+          {
+            name: 'phasa2',
+            amount: '50005',
+            planAmount: '',
+            factAmount: '',
+            plannedStartDate: '',
+            plannedEndDate: '',
+            actualStartDate: '',
+            actualEndDate: '',
+          }
+        ],
       contractCounterparties: [{ 
           name: 'ann',
           amount: '',

@@ -11,15 +11,16 @@
             <v-btn outlined  icon color="blue">
                 <v-icon >mdi-plus</v-icon>
             </v-btn>
-            Добавить
+            <v-btn class="btn" color="green" outlined > Скачать</v-btn>
         </v-container>
+        
         <v-divider></v-divider>
         
     </div> 
     reports 
     <span>   
-        <router-link class="btn" :to="{name: 'menu'}">
-            <v-btn color=" light"> Назад</v-btn>
+        <router-link  :to="{name: 'menu'}">
+            <v-btn class="btn" color=" light"> Назад</v-btn>
         </router-link> 
     </span>
 
@@ -58,7 +59,8 @@ export default {
     position: fixed;
 }
 .btn {
-    margin-left:20px
+    margin-left:20px;
+    margin-right: 20px;
 }
 h1 {
     text-align: center;

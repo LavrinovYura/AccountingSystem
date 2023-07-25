@@ -7,95 +7,59 @@
                     </span>
                 </v-card-title>
                 <v-card-text>
-                    <v-text-field 
-                        label="Название"
-                        v-model= 'newContract.name'>
-                    </v-text-field>
-                    <v-select
-                        :items="type" 
-                        :menu-props="{ top: true, offsetY: true }"
-                        label="Тип"
-                        v-model= "newContract.type">
-                    </v-select>
-                    <label>Плановая дата начала
-                        <v-text-field                                
-                            type="Date"
-                            v-model="newContract.plannedStartDate">
-                        </v-text-field>
-                    </label>
-                    <hr>
-                    <label>Плановая дата окончания
-                        <v-text-field                                 
-                            type="Date"
-                            v-model="newContract.plannedEndDate">
-                        </v-text-field>
-                    </label>
-                    <hr>
-                    <label>Фактическая дата начала
-                        <v-text-field                                 
-                            type="Date"
-                            v-model="newContract.actualStartDate">
-                        </v-text-field>
-                    </label>
-                    <hr>
-                    <label>Фактическая дата окончания
-                        <v-text-field                                 
-                            type="Date"
-                            v-model="newContract.actualEndDate">
-                        </v-text-field>
-                    </label> 
-                    <v-text-field 
-                        label="Сумма договора"
-                        v-model="newContract.amount">
-                    </v-text-field>
+
                     <v-divider></v-divider>
-                    <h5>  Этапы</h5>
-                    <section > 
-                        <v-col v-for="name in textPhases" :key="name" cols="3" sm="4"><label class="ma-2 pa-2">{{ name.name }}<v-text-field :type="name.type" v-model="newContract.phases[name.model]"></v-text-field> </label></v-col>
-                    </section>
-                    
-                    <v-divider></v-divider>
-                    <section> <h5>Этапы</h5>
-                        <v-row> 
-                            <v-col><v-text-field v-model="newContract.phases.name" label="Название"></v-text-field></v-col>
-                            <v-col><v-text-field v-model="newContract.phases.amount" label="Сумма"></v-text-field></v-col>
-                            <v-col><v-text-field v-model="newContract.phases.planAmount" label="План расходы"></v-text-field></v-col>
-                            <v-col><v-text-field v-model="newContract.phases.factAmount" label="Факт расходы"></v-text-field></v-col>
-                            
-                            
-                        </v-row>
+                    <template>
                         <v-row>
-                           
-                            <v-col><label>План дата начала<v-text-field v-model="newContract.phases.plannedStartDate" type="Date" ></v-text-field></label></v-col>
-                            <v-col><label>План дата окончания<v-text-field v-model="newContract.phases.plannedEndDate" type="Date"></v-text-field></label></v-col>
-                            <v-col><label>Факт дата начала<v-text-field v-model="newContract.phases.actualStartDate" type="Date" ></v-text-field></label></v-col>
-                            <v-col><label>Факт дата окончания<v-text-field v-model="newContract.phases.actualEndDate" type="Date"></v-text-field></label></v-col>
-                        </v-row>
-                        <v-btn outlined  icon color="blue"> 
-                            <v-icon >mdi-plus</v-icon>
-                        </v-btn>
-                    </section>
-                    <v-divider></v-divider>
-                    <section> <h5>Договор с контрагентом</h5>
-                        <v-row> 
-                            <v-col><v-text-field  label="Название"></v-text-field></v-col>
-                            <v-col><v-text-field  label="Организация"></v-text-field></v-col>
-                            <v-col><v-text-field  label="Сумма договора"></v-text-field></v-col>
-                            <v-col><v-select :items="type" 
-                                    :menu-props="{ top: true, offsetY: true }" 
-                                    label="Тип договора">
-                                </v-select>
+                            <v-col v-for="(field, index) in fields" :key="index" cols="3">
+                                <template v-if="field.type === 'select'">
+                                    <v-select :items="type" v-model="newContract[field.model]"></v-select>
+                                </template>
+                                <template v-else>
+                                    <v-text-field :type="field.type" v-model="newContract[field.model]" :label="field.label"></v-text-field>
+                                </template>
                             </v-col>
                         </v-row>
-                        <v-row>                           
-                           <v-col><label>План дата начала<v-text-field type="Date" ></v-text-field></label></v-col>
-                           <v-col><label>План дата окончания<v-text-field type="Date"></v-text-field></label></v-col>
-                           <v-col><label>Факт дата начала<v-text-field type="Date" ></v-text-field></label></v-col>
-                           <v-col><label>Факт дата окончания<v-text-field type="Date"></v-text-field></label></v-col>
-                       </v-row>
+                        </template>
+                    <v-divider></v-divider>
+                    <v-divider></v-divider>
+
+                    <v-divider></v-divider>
+                    <section > 
+                        <h4>Этапы</h4>
+                        <v-row> 
+                            <v-col v-for="name in textPhases" cols="3">
+                                <label>{{ name.name1 }}
+                                    <v-text-field :type="name.type1" v-model="newContract.phases[name.model1]">
+                                    </v-text-field>
+                                </label>
+                            </v-col>
+                        </v-row>
                         <v-btn outlined  icon color="blue"> 
                             <v-icon >mdi-plus</v-icon>
                         </v-btn>
+                    </section>
+                    <v-divider></v-divider>
+
+                    <section>
+                        <h4>Договор с контрагентом</h4>
+                        <v-divider></v-divider>
+
+                        <v-row>
+                            <v-col v-for="(name, index) in textPhases" :key="index" cols="3">
+                                <label>{{ name.name2 }}</label>
+                                <template v-if="name.model2 === 'type'">
+                                    <v-select :items="type" :menu-props="{ top: true, offsetY: true }" v-model="newContract.contractCounterparties[name.model2]"></v-select>
+                                </template>
+                                <template v-else>
+                                    <v-text-field :type="name.type1" v-model="newContract.contractCounterparties[name.model2]"></v-text-field>
+                                </template>
+                            </v-col>
+                        </v-row>
+                        <v-btn outlined  icon color="blue"> 
+                            <v-icon >mdi-plus</v-icon>
+                        </v-btn>
+                        <v-divider></v-divider>
                     </section>
                 </v-card-text>
                 <v-card-actions>
@@ -135,7 +99,7 @@
                     <v-btn
                         color="blue darken-1"
                         text                                
-                        @click=" sndNewContract(), closeDialog()"
+                        @click="sndNewContract(), closeDialog()"
                         >Сохранить
                     </v-btn>
                 </v-card-actions>
@@ -181,46 +145,71 @@ export default {
                 },
             textPhases: [
                 {
-                    name: 'Название',
-                    type: '',
-                    model: 'name',
+                    name1: 'Название',
+                    name2: 'Название',
+                    type1: '',                    
+                    model1: 'name',
+                    model2: 'name',
                 },
                 {
-                    name: 'Сумаа',
-                    type: '',
-                    model: 'amount',
+                    name1: 'Сумма',
+                    name2: 'Организация',
+                    type1: '',                   
+                    model1: 'amount',
+                    model2: 'organization',
                 },
                 {
-                    name: 'Плановые расходы',
-                    type: '',
-                    model: 'planAmount',
+                    name1: 'Плановые расходы',
+                    name2: 'Сумма договора',
+                    type1: '',                   
+                    model1: 'planAmount',
+                    model2: 'amount',
                 },
                 {
-                    name: 'Фактические расходы',
-                    type: '',
-                    model: 'factAmount',
+                    name1: 'Фактические расходы',
+                    name2: 'Тип договора',
+                    type1: '',                                      
+                    model1: 'factAmount',
+                    model2: 'type',
                 },
                 {
-                    name: 'Плановая дата начала',
-                    type: 'Date',
-                    model: 'plannedStartDate',
+                    name1: 'Плановая дата начала',
+                    name2: 'Плановая дата начала',
+                    type1: 'Date',                   
+                    model1: 'plannedStartDate',
+                    model2: 'plannedStartDate',
                 },
                 {
-                    name: 'Плановая дата окончания',
-                    type: 'Date',
-                    model: 'plannedEndDate',
+                    name1: 'Плановая дата окончания',
+                    name2: 'Плановая дата окончания',
+                    type1: 'Date',                   
+                    model1: 'plannedEndDate',
+                    model2: 'plannedEndDate',
                 }, 
                 {
-                    name: 'Фактическая дата начала',
-                    type: 'Date',
-                    model: 'actualStartDate',
+                    name1: 'Фактическая дата начала',
+                    name2: 'Фактическая дата начала',
+                    type1: 'Date',                   
+                    model1: 'actualStartDate',
+                    model2: 'actualStartDate',
                 },
                 {
-                    name: 'Фактическая дата окончания',
-                    type: 'Date',
-                    model: 'newContract.phases.actualEndDate',
+                    name1: 'Фактическая дата окончания',
+                    name2: 'Фактическая дата окончания',
+                    type1: 'Date',                    
+                    model1: 'actualEndDate',
+                    model2: 'actualEndDate',
                 },
             ],
+            fields: [
+        { label: 'Название', model: 'name', type: 'text' },
+        { label: 'Тип', model: 'type', type: 'select', options: ['option1', 'option2'] },
+        { label: 'Плановая дата начала', model: 'plannedStartDate', type: 'date' },
+        { label: 'Плановая дата окончания', model: 'plannedEndDate', type: 'date' },
+        { label: 'Фактическая дата начала', model: 'actualStartDate', type: 'date' },
+        { label: 'Фактическая дата окончания', model: 'actualEndDate', type: 'date' },
+        { label: 'Сумма договора', model: 'amount', type: 'text' }
+      ],
             
             dialog2: false,
             

@@ -54,8 +54,8 @@
                                 <td>{{ item.actualStartDate }}</td>
                                 <td>{{ item.actualEndDate }}</td>
                                 <td>{{ item.amount }}</td>
-                                <td>{{ item.phases }}</td>
-                                <td>{{ item.contractCounterparties }}</td>
+                                <td><div v-for="items in item.phases">{{ items.name }}</div></td>
+                                <td>{{ item.contractCounterparties[0].name }}</td>
                                 <td>
                                     <router-link class="btn" :to="{name:'contractPage', params: {name: `${item.name}`}}">
                                         <v-btn outlined small depressed>
@@ -184,6 +184,10 @@ export default {
             }      
         },
     },
+
+    activated() {
+        this.getContractt()
+    }
 }
 
 </script>
