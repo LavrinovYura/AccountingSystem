@@ -42,9 +42,11 @@ public class ContractValidation implements Validator {
             bindingResult.rejectValue("name", "name.duplicate", "Contract with that name " + contract.getName() + " already exists");
 
         contractCounterparties.forEach(it -> {
-            if (contractCounterpartyRepository.existsByName(it.getName()))
+            if (contractCounterpartyRepository.existsByName(it.getName())){
                 bindingResult.rejectValue("contractCounterparties", "contractCounterparty.duplicate",
                         "Contract counterparty with name " + it.getName() + " already exists");
+                System.out.println(contractCounterpartyRepository.existsByName(it.getName()));
+            }
             if (counterpartyRepository.existsByName(it.getCounterparty().getName()))
                 bindingResult.rejectValue("contractCounterparties", "counterparty.duplicate",
                         "Counterparty with name " + it.getCounterparty().getName() + " already exists");

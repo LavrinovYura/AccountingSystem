@@ -14,7 +14,7 @@ public class RestExceptionHandler {
 
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleResourceNotFoundException(ResourceNotFoundException exception) {
-        String message = "Resource not found.";
+        String message = exception.getMessage();
         return new ResponseEntity<>(new ErrorResponse(message), HttpStatus.NOT_FOUND);
     }
 
@@ -30,10 +30,10 @@ public class RestExceptionHandler {
         return new ResponseEntity<>(new ErrorResponse(message), HttpStatus.UNAUTHORIZED);
     }
 
-    @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<ErrorResponse> handleValidationException(ConstraintViolationException exception) {
-        return new ResponseEntity<>(new ErrorResponse(exception.getMessage()), HttpStatus.BAD_REQUEST);
-    }
+//    @ExceptionHandler(ConstraintViolationException.class)
+//    public ResponseEntity<ErrorResponse> handleValidationException(ConstraintViolationException exception) {
+//        return new ResponseEntity<>(new ErrorResponse(exception.getMessage()), HttpStatus.BAD_REQUEST);
+//    }
 
 //    @ExceptionHandler(Exception.class)
 //    public ResponseEntity<ErrorResponse> handleGenericException(Exception exception) {

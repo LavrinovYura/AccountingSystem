@@ -2,6 +2,7 @@ package nic.testproject.accountingsystem.controllers;
 
 import nic.testproject.accountingsystem.dto.RequestName;
 import nic.testproject.accountingsystem.dto.contracts.ContractDTO;
+import nic.testproject.accountingsystem.exceptions.ResourceNotFoundException;
 import nic.testproject.accountingsystem.models.contracts.Contract;
 import nic.testproject.accountingsystem.repositories.contracts.ContractRepository;
 import nic.testproject.accountingsystem.services.contracts.ContractService;
@@ -46,10 +47,6 @@ public class ContractController {
 
         Pageable pageable = PageRequest.of(page, size);
         Page<Contract> contractPage = contractService.getContracts(criteria, pageable);
-
-        if (contractPage.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
 
         List<ContractDTO> contracts = contractPage.getContent().stream()
                 .map(contract -> modelMapper.map(contract, ContractDTO.class))

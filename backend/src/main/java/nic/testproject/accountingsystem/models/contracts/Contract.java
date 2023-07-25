@@ -31,12 +31,14 @@ public class Contract {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @NotNull(message = "Please enter the planned start date")
     private LocalDate plannedStartDate;
+
     @JsonFormat(pattern="yyyy-MM-dd")
     @NotNull(message = "Please enter the planned end date")
     private LocalDate plannedEndDate;
 
     @JsonFormat(pattern="yyyy-MM-dd")
     private LocalDate actualStartDate;
+
     @JsonFormat(pattern="yyyy-MM-dd")
     private LocalDate actualEndDate;
 

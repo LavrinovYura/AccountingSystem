@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@Transactional
 public class ContractService {
 
     private final ContractRepository contractRepository;
@@ -54,6 +53,8 @@ public class ContractService {
         BindingResult errors = new BeanPropertyBindingResult(contract, "contract");
         saveValidation.validate(contract, errors);
 
+        System.out.println(contract);
+
         Contract savedContract = contractRepository.save(contract);
 
         List<ContractPhase> contractPhase = savedContract.getPhases();
@@ -78,7 +79,7 @@ public class ContractService {
         BindingResult errors = new BeanPropertyBindingResult(contract, "contract");
         saveValidation.validate(contract, errors);
 
-        Contract savedContract = contractRepository.saveAndFlush(contract);
+        Contract savedContract = contractRepository.save(contract);
 
         List<ContractPhase> contractPhase = savedContract.getPhases();
         List<ContractCounterparties> contractCounterparties = savedContract.getContractCounterparties();

@@ -1,7 +1,5 @@
 package nic.testproject.accountingsystem.dto.contracts;
 
-
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import nic.testproject.accountingsystem.models.contracts.ContractType;
 
@@ -12,10 +10,10 @@ import java.util.List;
 public class ContractDTO {
     private String name;
     private ContractType type;
-    private String plannedStartDate;
-    private String plannedEndDate;
-    private String actualStartDate;
-    private String actualEndDate;
+    private LocalDate plannedStartDate;
+    private LocalDate plannedEndDate;
+    private LocalDate actualStartDate;
+    private LocalDate actualEndDate;
     private Double amount;
 
     private List<ContractPhaseDTO> phases;
