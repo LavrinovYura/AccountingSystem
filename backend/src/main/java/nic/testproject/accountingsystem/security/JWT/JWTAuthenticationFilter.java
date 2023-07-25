@@ -1,4 +1,4 @@
-package nic.testproject.accountingsystem.services.security.JWT;
+package nic.testproject.accountingsystem.security.JWT;
 
 import nic.testproject.accountingsystem.services.user.PersonDetailServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,18 +30,15 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
         String token = getJWTFromRequest(request);
-        System.out.println("\nPOSTMAN TOKEN " + token +"\n");
         if (StringUtils.hasText(token) && tokenGenerator.validateToken(token)) {
             String username = tokenGenerator.getUsernameFromJWT(token);
 
-            System.out.println(username + "ffff");
             UserDetails userDetails = personDetailService.loadUserByUsername(username);
             UsernamePasswordAuthenticationToken authenticationToken =
                     new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
             authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
         }
-        System.out.println(token);
         filterChain.doFilter(request, response);
     }
 

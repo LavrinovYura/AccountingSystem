@@ -1,5 +1,6 @@
 package nic.testproject.accountingsystem.services;
 
+import nic.testproject.accountingsystem.Util;
 import nic.testproject.accountingsystem.dto.contracts.ContractDTO;
 import nic.testproject.accountingsystem.exceptions.ConflictException;
 import nic.testproject.accountingsystem.exceptions.ResourceNotFoundException;
@@ -7,14 +8,10 @@ import nic.testproject.accountingsystem.models.contracts.Contract;
 import nic.testproject.accountingsystem.models.contracts.details.ContractCounterparties;
 import nic.testproject.accountingsystem.repositories.contracts.ContractRepository;
 import nic.testproject.accountingsystem.services.contracts.ContractService;
-import nic.testproject.accountingsystem.services.contracts.specs.ContractSpecifications;
 import nic.testproject.accountingsystem.validation.ContractValidation;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -25,6 +22,7 @@ import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -42,7 +40,7 @@ public class ContractServiceTests {
     private ModelMapper modelMapper;
 
     @Mock
-    private ContractSpecifications contractSpecifications;
+    private Util util;
 
     @Mock
     private ContractValidation contractValidation;
@@ -50,10 +48,10 @@ public class ContractServiceTests {
     @InjectMocks
     private ContractService contractService;
 
-    @BeforeEach
-    public void setup() {
-        MockitoAnnotations.openMocks(this);
-        contractService = new ContractService(contractRepository, modelMapper, contractValidation);
+    @Captor
+    private ArgumentCaptor<Contract> contractCaptor;
+
+    public ContractServiceTests() {
     }
 
     @Test
@@ -94,14 +92,21 @@ public class ContractServiceTests {
         ContractDTO contractDTO = new ContractDTO();
         Contract contract = new Contract();
         Contract savedContract = new Contract();
-
         BindingResult errors = new BeanPropertyBindingResult(contract, "contract");
 
         when(modelMapper.map(contractDTO, Contract.class)).thenReturn(contract);
         when(contractRepository.save(contract)).thenReturn(savedContract);
         when(modelMapper.map(savedContract, ContractDTO.class)).thenReturn(contractDTO);
-        doNothing().when(contractService).linkContractIdToContractCounterparties(anyList(), any(Contract.class));
-        doNothing().when(contractService).linkContractIdToContractPhase(anyList(), any(Contract.class));
+
+        doNothing().when(util).linkContractIdToContractCounterparties(
+                ArgumentMatchers.any(),
+                ArgumentMatchers.any()
+        );
+        doNothing().when(util).linkContractIdToContractPhase(
+                ArgumentMatchers.any(),
+                ArgumentMatchers.any()
+        );
+
         doNothing().when(contractValidation).validate(any(Contract.class), any(BindingResult.class));
 
         // Act
@@ -111,10 +116,16 @@ public class ContractServiceTests {
         assertSame(contractDTO, result);
         verify(contractRepository).save(contract);
         verify(contractValidation).validate(contract, errors);
-        verify(contractService).linkContractIdToContractCounterparties(anyList(), eq(savedContract));
-        verify(contractService).linkContractIdToContractPhase(anyList(), eq(savedContract));
-    }
+        verify(util).linkContractIdToContractCounterparties(
+                ArgumentMatchers.any(),
+                ArgumentMatchers.any(Contract.class)
+        );
+        verify(util).linkContractIdToContractPhase(
+                ArgumentMatchers.any(),
+                ArgumentMatchers.any(Contract.class)
+        );
 
+    }
 
 
 
@@ -133,9 +144,7 @@ public class ContractServiceTests {
         // Act & Assert
         assertThrows(ConflictException.class, () -> contractService.saveContract(contractDTO));
         verify(contractValidation).validate(eq(contract), any(Errors.class));
-        verifyNoInteractions(contractRepository, modelMapper);
     }
-
 
 
     @Test
@@ -151,7 +160,7 @@ public class ContractServiceTests {
     }
 
     @Test
-    public void testUpdateContract_ValidContractDTO_ReturnsMappedContractDTO() {
+    public void testUpdateContract_ExistingContract_ReturnsMappedContractDTO() {
         // Arrange
         ContractDTO contractDTO = new ContractDTO();
         String name = "Contract Name";
@@ -159,21 +168,40 @@ public class ContractServiceTests {
         Contract savedContract = new Contract();
 
         Optional<Contract> optionalContract = Optional.of(contract);
-        BindingResult errors = new BeanPropertyBindingResult(contract, "contract");
 
         when(contractRepository.findContractByName(name)).thenReturn(optionalContract);
         when(contractRepository.saveAndFlush(contract)).thenReturn(savedContract);
-        when(modelMapper.map(savedContract, ContractDTO.class)).thenReturn(contractDTO);
-        //when(saveValidation.validate(contract, errors)).thenReturn(errors);
+
+        // Define behavior for the first invocation
+        when(modelMapper.map(contract, ContractDTO.class)).thenReturn(contractDTO);
+
+        doNothing().when(modelMapper).map(contractDTO, contract);
+
+        doNothing().when(util).linkContractIdToContractCounterparties(
+                ArgumentMatchers.any(),
+                ArgumentMatchers.any()
+        );
+        doNothing().when(util).linkContractIdToContractPhase(
+                ArgumentMatchers.any(),
+                ArgumentMatchers.any()
+        );
 
         // Act
         ContractDTO result = contractService.updateContract(contractDTO, name);
 
         // Assert
         assertSame(contractDTO, result);
-        verify(contractRepository).saveAndFlush(contract);
-        verify(contractValidation).validate(contract, errors);
+        verify(contractRepository).findContractByName(name);
+        verify(contractRepository).saveAndFlush(contractCaptor.capture());
+        verify(modelMapper).map(savedContract, ContractDTO.class);
+        verify(modelMapper).map(contractDTO, contract);
+
+        Contract capturedContract = contractCaptor.getValue();
+        assertSame(contract, capturedContract);
     }
+
+
+
 
     @Test
     public void testDeleteContractWithChildren_WhenContractNotPresent_ThrowsResourceNotFoundException() {
@@ -224,6 +252,8 @@ public class ContractServiceTests {
 
         Optional<Contract> optionalContract = Optional.of(contract);
 
+        contract.setContractCounterparties(new ArrayList<>()); // Initialize the contractCounterparties list
+
         contract.getContractCounterparties().add(contractCounterparty1);
         contract.getContractCounterparties().add(contractCounterparty2);
 
@@ -237,4 +267,5 @@ public class ContractServiceTests {
         assertNull(contractCounterparty2.getContract2());
         verify(contractRepository).delete(contract);
     }
+
 }

@@ -30,11 +30,12 @@ public class CounterpartyService {
         this.validation = validation;
     }
 
-    public Counterparty saveCounterparty(CounterpartyDTO counterpartyDTO) {
+    public CounterpartyDTO saveCounterparty(CounterpartyDTO counterpartyDTO) {
         Counterparty counterparty = modelMapper.map(counterpartyDTO, Counterparty.class);
         BindingResult errors = new BeanPropertyBindingResult(counterparty, "counterparty");
         validation.validate(counterparty, errors);
-        return counterpartyRepository.save(counterparty);
+        return modelMapper.map(counterpartyRepository.save(counterparty), CounterpartyDTO.class);
+
     }
 
     public Page<Counterparty> findCounterparties(CounterpartyDTO criteria, Pageable pageable) {
@@ -44,7 +45,7 @@ public class CounterpartyService {
     public CounterpartyDTO updateCounterparty(CounterpartyDTO counterpartyDTO, String name) {
         Optional<Counterparty> optionalCounterparty = counterpartyRepository.findByName(name);
         if (!optionalCounterparty.isPresent()) {
-            throw new ResourceNotFoundException();
+            throw new ResourceNotFoundException("There is no counterparty with name" + name);
         }
         Counterparty counterparty = optionalCounterparty.get();
         BindingResult errors = new BeanPropertyBindingResult(counterparty, "counterparty");
@@ -55,7 +56,7 @@ public class CounterpartyService {
     public void deleteCounterparty(String name) {
         Optional<Counterparty> optionalCounterparty = counterpartyRepository.findByName(name);
         if (!optionalCounterparty.isPresent()) {
-            throw new ResourceNotFoundException();
+            throw new ResourceNotFoundException("There is no counterparty with name" + name);
         }
 
         Counterparty counterparty = optionalCounterparty.get();
@@ -69,7 +70,7 @@ public class CounterpartyService {
     public void deleteCounterpartyWithChildren(String name) {
         Optional<Counterparty> optionalCounterparty = counterpartyRepository.findByName(name);
         if (!optionalCounterparty.isPresent()) {
-            throw new ResourceNotFoundException();
+            throw new ResourceNotFoundException("There is no counterparty with name" + name);
         }
         counterpartyRepository.delete(optionalCounterparty.get());
     }

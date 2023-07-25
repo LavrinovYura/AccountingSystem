@@ -30,6 +30,7 @@ public class RegistrationService {
         this.passwordEncoder = passwordEncoder;
         this.roleRepository = roleRepository;
     }
+
     public Person register(RegisterDTO registerDTO){
         String username = registerDTO.getUsername();
 
@@ -48,7 +49,7 @@ public class RegistrationService {
         Date date = new Date();
         person.setExpireDate(new Date(date.getTime() + 900000000));
 
-        Role role = roleRepository.findByRoleType(RoleType.USER).get();
+        Role role = roleRepository.findByRoleType(RoleType.USER);
         person.setRoles(Collections.singleton(role));
 
         return personRepository.save(person);

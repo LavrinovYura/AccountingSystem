@@ -50,9 +50,6 @@ class CounterpartyControllerTests {
         counterpartyDTO.setName("Test Counterparty");
 
         when(counterpartyService.saveCounterparty(any(CounterpartyDTO.class)))
-                .thenReturn(new Counterparty());
-
-        when(modelMapper.map(any(), eq(CounterpartyDTO.class)))
                 .thenReturn(counterpartyDTO);
 
         // Act

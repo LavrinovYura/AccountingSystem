@@ -23,11 +23,13 @@ public class Person {
     private int id;
 
     @NotBlank(message = "Please enter your name")
+    @NotNull
     @Size(min = 1, max = 100, message = "Name must be between 1 and 100 characters")
     @Pattern(regexp = "^[A-Za-zА-Юа-ю]+$", message = "Name must consist of only letters")
     private String firstName;
 
     @NotBlank(message = "Please enter your last name")
+    @NotNull
     @Size(min = 1, max = 100, message = "Last name must be between 1 and 100 characters")
     @Pattern(regexp = "^[A-Za-zА-Юа-ю]+$", message = "Last name must consist of only letters")
     private String secondName;
@@ -39,8 +41,10 @@ public class Person {
     private String middleName;
 
     @Column(unique=true)
+    @NotNull
     private String username;
 
+    @NotNull
     private String password;
 
     @ManyToMany(fetch = FetchType.EAGER)

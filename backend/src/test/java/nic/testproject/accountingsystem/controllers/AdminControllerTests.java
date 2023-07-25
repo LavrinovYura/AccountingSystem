@@ -1,6 +1,5 @@
 package nic.testproject.accountingsystem.controllers;
 
-import nic.testproject.accountingsystem.controllers.AdminController;
 import nic.testproject.accountingsystem.dto.RequestName;
 import nic.testproject.accountingsystem.dto.administration.RequestRole;
 import nic.testproject.accountingsystem.dto.administration.UserDTO;
@@ -235,7 +234,9 @@ public class AdminControllerTests {
         RequestRole requestRole = new RequestRole();
         requestRole.setRoleType(RoleType.ADMIN);
         List<Person> persons = Collections.singletonList(createPerson());
-        when(adminService.getUsersByRole(pageable, RoleType.ADMIN)).thenReturn(persons);
+        Page<Person> pageOfPersons = new PageImpl<>(persons, pageable, persons.size());
+
+        when(adminService.getUsersByRole(pageable, RoleType.ADMIN)).thenReturn(pageOfPersons);
         when(modelMapper.map(any(Person.class), eq(UserDTO.class))).thenReturn(createUserDTO());
 
         // Act

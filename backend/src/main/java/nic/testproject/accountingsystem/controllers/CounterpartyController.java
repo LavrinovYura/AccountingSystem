@@ -38,8 +38,8 @@ public class CounterpartyController {
         if (counterpartyRepository.existsByName(counterpartyDTO.getName())) {
             return ResponseEntity.badRequest().build();
         }
-        CounterpartyDTO savedContract = modelMapper.map(counterpartyService.saveCounterparty(counterpartyDTO),CounterpartyDTO.class);
-        return ResponseEntity.ok(savedContract);
+        CounterpartyDTO savedCounterparty = counterpartyService.saveCounterparty(counterpartyDTO);
+        return ResponseEntity.ok(savedCounterparty);
     }
 
     @GetMapping("show")

@@ -1,10 +1,11 @@
-package nic.testproject.accountingsystem.services.security.JWT;
+package nic.testproject.accountingsystem.security.JWT;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -19,7 +20,8 @@ import java.util.Set;
 @Component
 public class JWTGenerator {
 
-    private static final String JWT_SECRET = "404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970";
+    @Value("${JWTGenerator.SECRET}")
+    private String JWT_SECRET;
     private static final long JWT_EXPIRATION = 7000;
 
     public String generateToken(Authentication authentication){

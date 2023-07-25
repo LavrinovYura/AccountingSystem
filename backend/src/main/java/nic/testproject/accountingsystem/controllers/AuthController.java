@@ -5,8 +5,7 @@ import nic.testproject.accountingsystem.dto.authorization.LoginDTO;
 import nic.testproject.accountingsystem.dto.authorization.RegisterDTO;
 import nic.testproject.accountingsystem.dto.authorization.RegisterResponseDTO;
 import nic.testproject.accountingsystem.models.user.Person;
-import nic.testproject.accountingsystem.repositories.user.PersonRepository;
-import nic.testproject.accountingsystem.services.security.JWT.JWTGenerator;
+import nic.testproject.accountingsystem.security.JWT.JWTGenerator;
 import nic.testproject.accountingsystem.services.user.RegistrationService;
 import nic.testproject.accountingsystem.services.user.LoginService;
 import org.modelmapper.ModelMapper;
@@ -51,7 +50,6 @@ public class AuthController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         Person person = loginService.findPersonByUsername(loginDTO.getUsername());
-
 
         String token = jwtGenerator.generateToken(authentication);
 

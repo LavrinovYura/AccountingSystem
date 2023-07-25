@@ -44,7 +44,6 @@ public class ContractController {
             @RequestParam(name = "page", defaultValue = "0") int page,
             @RequestParam(name = "size", defaultValue = "50") int size) {
 
-        System.out.println(criteria);
         Pageable pageable = PageRequest.of(page, size);
         Page<Contract> contractPage = contractService.getContracts(criteria, pageable);
 

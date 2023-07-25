@@ -1,6 +1,5 @@
 package nic.testproject.accountingsystem.repositories.contracts;
 
-import nic.testproject.accountingsystem.dto.contracts.ContractDTO;
 import nic.testproject.accountingsystem.models.contracts.Contract;
 import nic.testproject.accountingsystem.repositories.contracts.projections.ContractProjection;
 import nic.testproject.accountingsystem.repositories.contracts.projections.ContractWithPhasesProjection;

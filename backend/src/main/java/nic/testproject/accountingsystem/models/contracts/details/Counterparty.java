@@ -20,7 +20,7 @@ public class Counterparty {
     @NotBlank(message = "Please enter name of counterparty")
     private String name;
 
-    @NotBlank(message = "Please enter adress of counterparty")
+    @NotBlank(message = "Please enter address of counterparty")
     private String address;
 
     @NotBlank(message = "Please enter INN of counterparty")
