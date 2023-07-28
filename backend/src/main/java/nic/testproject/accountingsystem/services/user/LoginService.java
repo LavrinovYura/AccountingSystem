@@ -21,7 +21,7 @@ public class LoginService {
     public Person findPersonByUsername(String username){
         Optional<Person> optionalPerson = personRepository.findByUsername(username);
         if(!optionalPerson.isPresent())
-            throw new ResourceNotFoundException();
+            throw new ResourceNotFoundException("There is no person with name" + username);
         return optionalPerson.get();
     }
 }

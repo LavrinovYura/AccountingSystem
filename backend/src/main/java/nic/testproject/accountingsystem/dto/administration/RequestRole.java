@@ -5,6 +5,6 @@ import nic.testproject.accountingsystem.models.user.RoleType;
 
 @Data
 public class RequestRole {
-    RoleType roleType;
+    String roleType;
     String name;
 }

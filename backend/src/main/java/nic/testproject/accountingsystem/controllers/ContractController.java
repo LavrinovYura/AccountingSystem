@@ -2,9 +2,7 @@ package nic.testproject.accountingsystem.controllers;
 
 import nic.testproject.accountingsystem.dto.RequestName;
 import nic.testproject.accountingsystem.dto.contracts.ContractDTO;
-import nic.testproject.accountingsystem.exceptions.ConflictException;
 import nic.testproject.accountingsystem.models.contracts.Contract;
-import nic.testproject.accountingsystem.repositories.contracts.ContractRepository;
 import nic.testproject.accountingsystem.services.contracts.ContractService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,13 +21,11 @@ import java.util.stream.Collectors;
 public class ContractController {
 
     private final ContractService contractService;
-    private final ContractRepository contractRepository;
     private final ModelMapper modelMapper;
 
     @Autowired
-    public ContractController(ContractService contractService, ContractRepository contractRepository, ModelMapper modelMapper) {
+    public ContractController(ContractService contractService, ModelMapper modelMapper) {
         this.contractService = contractService;
-        this.contractRepository = contractRepository;
         this.modelMapper = modelMapper;
     }
 
@@ -47,13 +43,8 @@ public class ContractController {
             @RequestParam(name = "page", defaultValue = "0") int page,
             @RequestParam(name = "size", defaultValue = "50") int size) {
 
-        System.out.println(criteria);
         Pageable pageable = PageRequest.of(page, size);
         Page<Contract> contractPage = contractService.getContracts(criteria, pageable);
-
-        if (contractPage.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
 
         List<ContractDTO> contracts = contractPage.getContent().stream()
                 .map(contract -> modelMapper.map(contract, ContractDTO.class))

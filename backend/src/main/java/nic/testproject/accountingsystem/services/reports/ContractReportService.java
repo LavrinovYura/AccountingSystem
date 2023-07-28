@@ -1,6 +1,7 @@
 package nic.testproject.accountingsystem.services.reports;
 
 import nic.testproject.accountingsystem.dto.report.AllContracts;
+import nic.testproject.accountingsystem.exceptions.ConflictException;
 import nic.testproject.accountingsystem.exceptions.ResourceNotFoundException;
 import nic.testproject.accountingsystem.repositories.contracts.ContractCounterpartyRepository;
 import nic.testproject.accountingsystem.repositories.contracts.ContractRepository;
@@ -88,6 +89,7 @@ public class ContractReportService {
                 Row row = sheet.createRow(rowNum++);
                 row.createCell(0).setCellValue(rowNum - 1);
                 row.createCell(1).setCellValue("Основной");
+                System.out.println(contract);
                 row.createCell(2).setCellValue(contract.getName());
                 row.createCell(3).setCellValue(contract.getType().name());
                 row.createCell(4).setCellValue(contract.getPlannedStartDate().toString());
@@ -159,6 +161,7 @@ public class ContractReportService {
                     row.getCell(i).setCellStyle(cellStyle);
                 }
             }
+
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             workbook.write(out);
 
@@ -188,22 +191,24 @@ public class ContractReportService {
         return headerStyle;
     }
 
-    //Продумать исключения
     public AllContracts getAllContractsByPeriod(LocalDate startDate, LocalDate endDate) {
+        if (endDate.isBefore(startDate))
+            throw new ConflictException("End date can't be before start date");
+
         List<ContractProjection> contracts = contractRepository
                 .findByPlannedStartDateBetween(startDate, endDate);
         List<ContractCounterpartiesProjection> contractCounterparties = contractCounterpartyRepository
                 .findByPlannedStartDateBetween(startDate, endDate);
 
-        if (contracts.isEmpty() && contractCounterparties.isEmpty())
-            throw new ResourceNotFoundException();
+        if (contracts.isEmpty() || contractCounterparties.isEmpty())
+            throw new ResourceNotFoundException("There is no contracts in this period");
 
         return new AllContracts(contracts, contractCounterparties);
     }
 
     public List<ContractPhaseProjection> getAllPhasesByContract(String name) {
         ContractWithPhasesProjection contract = contractRepository.findByName(name)
-                .orElseThrow(() -> new ResourceNotFoundException());
+                .orElseThrow(() -> new ResourceNotFoundException("There is no contract with name " + name));
         return contract.getPhases();
     }
 

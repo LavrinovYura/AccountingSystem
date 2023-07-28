@@ -1,5 +1,6 @@
 package nic.testproject.accountingsystem.services;
 
+import nic.testproject.accountingsystem.exceptions.ConflictException;
 import nic.testproject.accountingsystem.exceptions.ResourceNotFoundException;
 import nic.testproject.accountingsystem.models.user.Person;
 import nic.testproject.accountingsystem.models.user.Role;
@@ -31,55 +32,76 @@ public class AdminService {
     public Page<Person> getUsers(Pageable pageable) {
         Page<Person> page = personRepository.findAll(pageable);
         if (page.isEmpty())
-            throw new EntityNotFoundException("No Contracts in database");
+            throw new EntityNotFoundException("No users in database");
         return page;
+    }
 
+    public Page<Person> getUsersByRole(Pageable pageable, String type) {
+        Role role = getRoleByType(type);
+
+        Page<Person> page = personRepository.findAllByRoles(role, pageable);
+
+        if (page.isEmpty())
+            throw new EntityNotFoundException("There are no users with this role in the database");
+
+        return page;
     }
-    public List<Person> getUsersByRole(Pageable pageable, RoleType type) {
-        Role roles = roleRepository.findByRoleType(type).get();
-        return personRepository.findAllByRoles(roles);
-    }
+
+
     public void deleteUser(String name) {
         Optional<Person> optionalPerson = personRepository.findByUsername(name);
         if (!optionalPerson.isPresent())
-            throw new ResourceNotFoundException();
+            throw new ResourceNotFoundException("There is no person with name" + name);
 
         personRepository.delete(optionalPerson.get());
     }
 
-    public void addRole(RoleType roleType, String name) {
+    public void addRole(String type, String name) {
         Optional<Person> optionalPerson = personRepository.findByUsername(name);
-        Optional<Role> optionalRole = roleRepository.findByRoleType(roleType);
-        if (optionalPerson.isPresent() && optionalRole.isPresent()) {
+        Role role = getRoleByType(type);
+
+        if (optionalPerson.isPresent()) {
             Person person = optionalPerson.get();
-            Role role = optionalRole.get();
 
-            if (person.getRoles().stream().anyMatch(r -> r.equals(role))) {
-                throw new RuntimeException("This person doesn't have this role ");
+            if (person.getRoles().contains(role)) {
+                throw new ConflictException("This person already has this role.");
             }
-            person.getRoles().add(role);
 
+            person.getRoles().add(role);
             personRepository.save(person);
         } else {
-            throw new ResourceNotFoundException();
+            throw new ResourceNotFoundException("There is no person with name" + name);
         }
     }
 
-    public void removeRole(RoleType roleType, String name) {
+    public void removeRole(String type, String name) {
         Optional<Person> optionalPerson = personRepository.findByUsername(name);
-        Optional<Role> optionalRole = roleRepository.findByRoleType(roleType);
-        if (optionalPerson.isPresent() && optionalRole.isPresent()) {
-            Person person = optionalPerson.get();
-            Role role = optionalRole.get();
+        Role role = getRoleByType(type);
 
-            if (person.getRoles().stream().anyMatch(r -> r.equals(role))) {
-                throw new RuntimeException("This person doesn't have this role");
+        if (optionalPerson.isPresent()) {
+            Person person = optionalPerson.get();
+
+            if (person.getRoles().stream().noneMatch(r -> r.equals(role))) {
+                throw new ConflictException("This person doesn't have this role");
             }
             person.getRoles().remove(role);
 
             personRepository.save(person);
         } else {
-            throw new ResourceNotFoundException();
+            throw new ResourceNotFoundException("There is no person with name" + name);
         }
     }
+
+    private Role getRoleByType(String type) {
+        RoleType roleType;
+
+        try {
+            roleType = RoleType.valueOf(type);
+        } catch (IllegalArgumentException e) {
+            throw new ResourceNotFoundException("There is no such role exist");
+        }
+
+        return roleRepository.findByRoleType(roleType);
+    }
+
 }

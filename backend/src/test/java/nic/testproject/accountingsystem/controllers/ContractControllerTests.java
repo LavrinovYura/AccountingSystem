@@ -1,19 +1,15 @@
-package nic.testproject.accountingsystem;
+package nic.testproject.accountingsystem.controllers;
 
-import nic.testproject.accountingsystem.controllers.ContractController;
 import nic.testproject.accountingsystem.dto.RequestName;
 import nic.testproject.accountingsystem.dto.contracts.ContractDTO;
+import nic.testproject.accountingsystem.exceptions.ResourceNotFoundException;
 import nic.testproject.accountingsystem.models.contracts.Contract;
-import nic.testproject.accountingsystem.repositories.contracts.ContractRepository;
 import nic.testproject.accountingsystem.services.contracts.ContractService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -32,12 +28,6 @@ class ContractControllerTests {
 
     @Mock
     private ContractService contractService;
-
-    @Mock
-    private ContractRepository contractRepository;
-
-    @Mock
-    private ModelMapper modelMapper;
 
     @InjectMocks
     private ContractController contractController;
@@ -62,12 +52,9 @@ class ContractControllerTests {
         int page = 0;
         int size = 50;
         Pageable pageable = PageRequest.of(page, size);
-        Page<Contract> contractPage = new PageImpl<>(Collections.emptyList());
-        when(contractService.getContracts(criteria, pageable)).thenReturn(contractPage);
+        doThrow(ResourceNotFoundException.class).when(contractService).getContracts(criteria, pageable);
 
-        ResponseEntity<List<ContractDTO>> response = contractController.getContracts(criteria, page, size);
-
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertThrows(ResourceNotFoundException.class, () -> contractController.getContracts(criteria, page, size));
         verify(contractService, times(1)).getContracts(criteria, pageable);
     }
 

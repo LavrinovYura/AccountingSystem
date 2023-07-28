@@ -71,7 +71,8 @@ public class AdminController {
             @RequestParam(name = "size", defaultValue = "50") int size,
             @RequestBody RequestRole requestRole) {
         Pageable pageable = PageRequest.of(page, size);
-        List<Person> personPage = adminService.getUsersByRole(pageable, requestRole.getRoleType());
+
+        Page<Person> personPage = adminService.getUsersByRole(pageable, requestRole.getRoleType());
 
         List<UserDTO> users = personPage.stream()
                 .map(contract -> modelMapper.map(contract, UserDTO.class))

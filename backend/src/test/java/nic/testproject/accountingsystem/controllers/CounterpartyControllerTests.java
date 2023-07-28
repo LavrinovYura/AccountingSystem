@@ -1,6 +1,5 @@
-package nic.testproject.accountingsystem;
+package nic.testproject.accountingsystem.controllers;
 
-import nic.testproject.accountingsystem.controllers.CounterpartyController;
 import nic.testproject.accountingsystem.dto.RequestName;
 import nic.testproject.accountingsystem.dto.contracts.CounterpartyDTO;
 import nic.testproject.accountingsystem.exceptions.ResourceNotFoundException;
@@ -25,7 +24,8 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -49,10 +49,8 @@ class CounterpartyControllerTests {
         CounterpartyDTO counterpartyDTO = new CounterpartyDTO();
         counterpartyDTO.setName("Test Counterparty");
 
+        when(counterpartyRepository.existsByName(any(String.class))).thenReturn(false);
         when(counterpartyService.saveCounterparty(any(CounterpartyDTO.class)))
-                .thenReturn(new Counterparty());
-
-        when(modelMapper.map(any(), eq(CounterpartyDTO.class)))
                 .thenReturn(counterpartyDTO);
 
         // Act
@@ -141,7 +139,7 @@ class CounterpartyControllerTests {
         RequestName counterpartyName = new RequestName();
 
         // Mock the service to throw ResourceNotFoundException
-        doThrow(new ResourceNotFoundException()).when(counterpartyService)
+        doThrow(new ResourceNotFoundException("no counterparty with name" + counterpartyName.getName())).when(counterpartyService)
                 .deleteCounterparty(counterpartyName.getName());
 
         // Act & Assert
@@ -157,9 +155,6 @@ class CounterpartyControllerTests {
         // Arrange
         RequestName counterpartyName = new RequestName();
 
-        // Mock the repository to return an existing counterparty
-        Counterparty counterparty = new Counterparty();
-
         // Act
         ResponseEntity<Void> response = counterpartyController.deleteCounterpartyWithChildren(counterpartyName);
 
@@ -174,7 +169,7 @@ class CounterpartyControllerTests {
         RequestName counterpartyName = new RequestName();
 
         // Mock the service to throw ResourceNotFoundException
-        doThrow(new ResourceNotFoundException()).when(counterpartyService)
+        doThrow(new ResourceNotFoundException("no counterparty with name" + counterpartyName.getName())).when(counterpartyService)
                 .deleteCounterpartyWithChildren(counterpartyName.getName());
 
         // Act & Assert

@@ -1,12 +1,11 @@
-package nic.testproject.accountingsystem;
+package nic.testproject.accountingsystem.controllers;
 
-import nic.testproject.accountingsystem.controllers.AuthController;
 import nic.testproject.accountingsystem.dto.authorization.LoginDTO;
 import nic.testproject.accountingsystem.dto.authorization.LoginResponseDTO;
 import nic.testproject.accountingsystem.dto.authorization.RegisterDTO;
 import nic.testproject.accountingsystem.dto.authorization.RegisterResponseDTO;
 import nic.testproject.accountingsystem.models.user.Person;
-import nic.testproject.accountingsystem.services.security.JWT.JWTGenerator;
+import nic.testproject.accountingsystem.security.JWT.JWTGenerator;
 import nic.testproject.accountingsystem.services.user.LoginService;
 import nic.testproject.accountingsystem.services.user.RegistrationService;
 import org.junit.jupiter.api.Test;

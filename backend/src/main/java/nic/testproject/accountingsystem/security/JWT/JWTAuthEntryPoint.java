@@ -1,4 +1,4 @@
-package nic.testproject.accountingsystem.services.security.JWT;
+package nic.testproject.accountingsystem.security.JWT;
 
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;

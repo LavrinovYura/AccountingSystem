@@ -1,5 +1,6 @@
 package nic.testproject.accountingsystem.models.contracts.details;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,8 +24,11 @@ public class ContractPhase {
     @NotBlank(message = "Please enter contract name")
     private String name;
 
+    @JsonFormat(pattern="yyyy-MM-dd")
     @NotNull(message = "Please enter the planned start date")
     private LocalDate plannedStartDate;
+
+    @JsonFormat(pattern="yyyy-MM-dd")
     @NotNull(message = "Please enter the planned end date")
     private LocalDate plannedEndDate;
 
@@ -38,10 +42,15 @@ public class ContractPhase {
     @DecimalMin("0.0")
     private Double plannedSalaryExpenses;
 
+    @JsonFormat(pattern="yyyy-MM-dd")
     private LocalDate actualStartDate;
+
+    @JsonFormat(pattern="yyyy-MM-dd")
     private LocalDate actualEndDate;
+
     @DecimalMin("0.0")
     private Double actualMaterialCosts;
+
     @DecimalMin("0.0")
     private Double actualSalaryExpenses;
 

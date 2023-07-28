@@ -1,4 +1,4 @@
-package nic.testproject.accountingsystem.services.security;
+package nic.testproject.accountingsystem.security;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.bind.annotation.CrossOrigin;

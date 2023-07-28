@@ -7,7 +7,9 @@ import java.util.List;
 
 @Data
 public class UserDTO {
-    private String fullName;
+    private String firstName;
+    private String secondName;
+    private String middleName;
     private String username;
     private List<Role> roles;
     private String expireDate;

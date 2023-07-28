@@ -11,8 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.BeanPropertyBindingResult;
-import org.springframework.validation.BindingResult;
 
 import java.util.Optional;
 
@@ -30,32 +28,42 @@ public class CounterpartyService {
         this.validation = validation;
     }
 
-    public Counterparty saveCounterparty(CounterpartyDTO counterpartyDTO) {
+    public CounterpartyDTO saveCounterparty(CounterpartyDTO counterpartyDTO) {
         Counterparty counterparty = modelMapper.map(counterpartyDTO, Counterparty.class);
-        BindingResult errors = new BeanPropertyBindingResult(counterparty, "counterparty");
-        validation.validate(counterparty, errors);
-        return counterpartyRepository.save(counterparty);
+        validation.saveValidation(counterparty);
+        return modelMapper.map(counterpartyRepository.save(counterparty), CounterpartyDTO.class);
+
     }
 
     public Page<Counterparty> findCounterparties(CounterpartyDTO criteria, Pageable pageable) {
-        return counterpartyRepository.findAll(CounterpartySpecifications.searchCounterparties(criteria), pageable);
+        Page<Counterparty> counterparties= counterpartyRepository.findAll(CounterpartySpecifications.searchCounterparties(criteria), pageable);
+        if(counterparties.isEmpty())
+            throw new ResourceNotFoundException("There is no counterparties");
+
+        return counterparties;
     }
 
-    public CounterpartyDTO updateCounterparty(CounterpartyDTO counterpartyDTO, String name) {
+    public CounterpartyDTO updateCounterparty(CounterpartyDTO counterpartyDTO, String name)   {
         Optional<Counterparty> optionalCounterparty = counterpartyRepository.findByName(name);
+
         if (!optionalCounterparty.isPresent()) {
-            throw new ResourceNotFoundException();
+            throw new ResourceNotFoundException("There is no counterparty with name" + name);
         }
+
         Counterparty counterparty = optionalCounterparty.get();
-        BindingResult errors = new BeanPropertyBindingResult(counterparty, "counterparty");
-        validation.validate(counterparty, errors);
-        return modelMapper.map(counterpartyRepository.save(counterparty), CounterpartyDTO.class);
+
+        validation.updateValidation(counterparty, counterpartyDTO);
+
+        modelMapper.map(counterpartyDTO, counterparty);
+        Counterparty updatedCounterparty = counterpartyRepository.save(counterparty);
+
+        return modelMapper.map(updatedCounterparty, CounterpartyDTO.class);
     }
 
     public void deleteCounterparty(String name) {
         Optional<Counterparty> optionalCounterparty = counterpartyRepository.findByName(name);
         if (!optionalCounterparty.isPresent()) {
-            throw new ResourceNotFoundException();
+            throw new ResourceNotFoundException("There is no counterparty with name" + name);
         }
 
         Counterparty counterparty = optionalCounterparty.get();
@@ -69,7 +77,7 @@ public class CounterpartyService {
     public void deleteCounterpartyWithChildren(String name) {
         Optional<Counterparty> optionalCounterparty = counterpartyRepository.findByName(name);
         if (!optionalCounterparty.isPresent()) {
-            throw new ResourceNotFoundException();
+            throw new ResourceNotFoundException("There is no counterparty with name" + name);
         }
         counterpartyRepository.delete(optionalCounterparty.get());
     }

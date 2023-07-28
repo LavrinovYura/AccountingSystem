@@ -2,6 +2,7 @@ package nic.testproject.accountingsystem.controllers;
 
 import nic.testproject.accountingsystem.dto.RequestName;
 import nic.testproject.accountingsystem.dto.contracts.CounterpartyDTO;
+import nic.testproject.accountingsystem.exceptions.ValidationException;
 import nic.testproject.accountingsystem.models.contracts.details.Counterparty;
 import nic.testproject.accountingsystem.repositories.contracts.CounterpartyRepository;
 import nic.testproject.accountingsystem.services.contracts.CounterpartyService;
@@ -34,12 +35,12 @@ public class CounterpartyController {
 
     @PostMapping("save")
     public ResponseEntity<CounterpartyDTO> saveCounterparty(
-            @RequestBody CounterpartyDTO counterpartyDTO) {
+            @RequestBody CounterpartyDTO counterpartyDTO) throws ValidationException {
         if (counterpartyRepository.existsByName(counterpartyDTO.getName())) {
             return ResponseEntity.badRequest().build();
         }
-        CounterpartyDTO savedContract = modelMapper.map(counterpartyService.saveCounterparty(counterpartyDTO),CounterpartyDTO.class);
-        return ResponseEntity.ok(savedContract);
+        CounterpartyDTO savedCounterparty = counterpartyService.saveCounterparty(counterpartyDTO);
+        return ResponseEntity.ok(savedCounterparty);
     }
 
     @GetMapping("show")
@@ -65,7 +66,7 @@ public class CounterpartyController {
     @PutMapping("update/{name}")
     public ResponseEntity<CounterpartyDTO> updateCounterparty(
             @PathVariable String name,
-            @RequestBody CounterpartyDTO counterpartyDTO) {
+            @RequestBody CounterpartyDTO counterpartyDTO) throws ValidationException {
         CounterpartyDTO counterparty = counterpartyService.updateCounterparty(counterpartyDTO,name);
         return ResponseEntity.ok(counterparty);
     }
