@@ -127,11 +127,11 @@ public class AdminControllerTests {
     void testAddRole_ReturnsNoContent_WhenRoleAddedSuccessfully() {
         // Arrange
         RequestRole requestRole = new RequestRole();
-        requestRole.setRoleType(RoleType.ADMIN);
+        requestRole.setRoleType(String.valueOf(RoleType.ADMIN));
         requestRole.setName("johndoe");
 
         // Mock the necessary dependencies
-        doNothing().when(adminService).addRole(eq(RoleType.ADMIN), eq("johndoe"));
+        doNothing().when(adminService).addRole(eq(String.valueOf(RoleType.ADMIN)), eq("johndoe"));
 
         // Act
         ResponseEntity<UserDTO> response = adminController.addRole(requestRole);
@@ -145,13 +145,13 @@ public class AdminControllerTests {
     void testAddRole_ThrowsResourceNotFoundException_WhenPersonNotFound() {
         // Arrange
         RequestRole requestRole = new RequestRole();
-        requestRole.setRoleType(RoleType.ADMIN);
+        requestRole.setRoleType(String.valueOf(RoleType.ADMIN));
         requestRole.setName("johndoe");
 
         // Mock the necessary dependencies
         doThrow(ResourceNotFoundException.class)
                 .when(adminService)
-                .addRole(eq(RoleType.ADMIN), eq("johndoe"));
+                .addRole(eq(String.valueOf(RoleType.ADMIN)), eq("johndoe"));
 
         // Act & Assert
         assertThrows(ResourceNotFoundException.class, () -> adminController.addRole(requestRole));
@@ -163,12 +163,12 @@ public class AdminControllerTests {
     void testAddRole_ThrowsRuntimeException_WhenRoleAlreadyExistsForUser() {
         // Arrange
         RequestRole requestRole = new RequestRole();
-        requestRole.setRoleType(RoleType.ADMIN);
+        requestRole.setRoleType(String.valueOf(RoleType.ADMIN));
         requestRole.setName("johndoe");
 
         // Mock the necessary dependencies
         doThrow(new RuntimeException("This person doesn't have this role "))
-                .when(adminService).addRole(eq(RoleType.ADMIN), eq("johndoe"));
+                .when(adminService).addRole(eq(String.valueOf(RoleType.ADMIN)), eq("johndoe"));
 
         // Act & Assert
         assertThrows(RuntimeException.class, () -> adminController.addRole(requestRole));
@@ -179,11 +179,11 @@ public class AdminControllerTests {
     void testRemoveRole_ReturnsNoContent_WhenRoleRemovedSuccessfully() {
         // Arrange
         RequestRole requestRole = new RequestRole();
-        requestRole.setRoleType(RoleType.ADMIN);
+        requestRole.setRoleType(String.valueOf(RoleType.ADMIN));
         requestRole.setName("johndoe");
 
         // Mock the necessary dependencies
-        doNothing().when(adminService).removeRole(eq(RoleType.ADMIN), eq("johndoe"));
+        doNothing().when(adminService).removeRole(eq(String.valueOf(RoleType.ADMIN)), eq("johndoe"));
 
         // Act
         ResponseEntity<UserDTO> response = adminController.removeRole(requestRole);
@@ -196,13 +196,13 @@ public class AdminControllerTests {
     void testRemoveRole_ThrowsResourceNotFoundException_WhenPersonNotFound() {
         // Arrange
         RequestRole requestRole = new RequestRole();
-        requestRole.setRoleType(RoleType.ADMIN);
+        requestRole.setRoleType(String.valueOf(RoleType.ADMIN));
         requestRole.setName("johndoe");
 
         // Mock the necessary dependencies
         doThrow(ResourceNotFoundException.class)
                 .when(adminService)
-                .removeRole(eq(RoleType.ADMIN), eq("johndoe"));
+                .removeRole(eq(String.valueOf(RoleType.ADMIN)), eq("johndoe"));
 
         // Act & Assert
         assertThrows(ResourceNotFoundException.class, () -> adminController.removeRole(requestRole));
@@ -212,13 +212,13 @@ public class AdminControllerTests {
     void testRemoveRole_ThrowsRuntimeException_WhenPersonDoesNotHaveRole() {
         // Arrange
         RequestRole requestRole = new RequestRole();
-        requestRole.setRoleType(RoleType.ADMIN);
+        requestRole.setRoleType(String.valueOf(RoleType.ADMIN));
         requestRole.setName("johndoe");
 
         // Mock the necessary dependencies
         doThrow(RuntimeException.class)
                 .when(adminService)
-                .removeRole(eq(RoleType.ADMIN), eq("johndoe"));
+                .removeRole(eq(String.valueOf(RoleType.ADMIN)), eq("johndoe"));
 
         // Act & Assert
         assertThrows(RuntimeException.class, () -> adminController.removeRole(requestRole));
@@ -232,11 +232,11 @@ public class AdminControllerTests {
         int size = 50;
         Pageable pageable = PageRequest.of(page, size);
         RequestRole requestRole = new RequestRole();
-        requestRole.setRoleType(RoleType.ADMIN);
+        requestRole.setRoleType(String.valueOf(RoleType.ADMIN));
         List<Person> persons = Collections.singletonList(createPerson());
         Page<Person> pageOfPersons = new PageImpl<>(persons, pageable, persons.size());
 
-        when(adminService.getUsersByRole(pageable, RoleType.ADMIN)).thenReturn(pageOfPersons);
+        when(adminService.getUsersByRole(pageable, String.valueOf(RoleType.ADMIN))).thenReturn(pageOfPersons);
         when(modelMapper.map(any(Person.class), eq(UserDTO.class))).thenReturn(createUserDTO());
 
         // Act
@@ -247,7 +247,6 @@ public class AdminControllerTests {
         assertNotNull(response.getBody());
         assertEquals(1, response.getBody().size());
         UserDTO userDTO = response.getBody().get(0);
-        assertEquals("John Doe", userDTO.getFullName());
         assertEquals("johndoe", userDTO.getUsername());
         assertNotNull(userDTO.getRoles());
         assertEquals("2023-06-20", userDTO.getExpireDate());
@@ -274,7 +273,6 @@ public class AdminControllerTests {
 
     private UserDTO createUserDTO() {
         UserDTO userDTO = new UserDTO();
-        userDTO.setFullName("John Doe");
         userDTO.setUsername("johndoe");
         userDTO.setRoles(Collections.singletonList(createRole()));
         userDTO.setExpireDate("2023-06-20");

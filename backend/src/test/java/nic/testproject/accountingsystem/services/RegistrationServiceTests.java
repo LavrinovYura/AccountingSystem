@@ -18,7 +18,6 @@ import org.springframework.util.StringUtils;
 
 import java.util.Collections;
 import java.util.Date;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -46,7 +45,7 @@ class RegistrationServiceTests {
 
         when(personRepository.existsByUsername(registerDTO.getUsername())).thenReturn(false);
         when(passwordEncoder.encode(registerDTO.getPassword())).thenReturn("encodedPassword");
-        when(roleRepository.findByRoleType(RoleType.USER)).thenReturn(Optional.of(createRole()));
+        when(roleRepository.findByRoleType(RoleType.USER)).thenReturn(createRole());
         when(personRepository.save(any(Person.class))).thenReturn(person);
 
         // Act

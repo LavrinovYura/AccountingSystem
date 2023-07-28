@@ -1,4 +1,5 @@
 package nic.testproject.accountingsystem.services;
+
 import nic.testproject.accountingsystem.exceptions.ResourceNotFoundException;
 import nic.testproject.accountingsystem.models.user.Person;
 import nic.testproject.accountingsystem.models.user.Role;
@@ -78,11 +79,11 @@ class AdminServiceTests {
         List<Person> persons = Collections.singletonList(new Person());
         Page<Person> expectedPage = new PageImpl<>(persons, pageable, persons.size());
 
-        when(roleRepository.findByRoleType(roleType)).thenReturn(Optional.of(role));
+        when(roleRepository.findByRoleType(roleType)).thenReturn(role);
         when(personRepository.findAllByRoles(role, pageable)).thenReturn(expectedPage);
 
         // Act
-        Page<Person> result = adminService.getUsersByRole(pageable, roleType);
+        Page<Person> result = adminService.getUsersByRole(pageable, String.valueOf(roleType));
 
         // Assert
         assertEquals(expectedPage, result);
@@ -94,16 +95,13 @@ class AdminServiceTests {
     }
 
     @Test
-    public void getUsersByRole_RoleDoesNotExist_ThrowsEntityNotFoundException() {
+    public void getUsersByRole_RoleDoesNotExist_ThrowsResourceNotFoundException() {
         // Arrange
-        RoleType roleType = RoleType.ADMIN;
-
-        when(roleRepository.findByRoleType(roleType)).thenReturn(Optional.empty());
+        String roleType = "NOT EXISTING ROLE";
 
         // Act & Assert
-        assertThrows(EntityNotFoundException.class, () -> adminService.getUsersByRole(Pageable.unpaged(), roleType));
+        assertThrows(ResourceNotFoundException.class, () -> adminService.getUsersByRole(Pageable.unpaged(), roleType));
 
-        verify(roleRepository, times(1)).findByRoleType(roleType);
         verifyNoMoreInteractions(roleRepository, personRepository);
     }
 
@@ -116,11 +114,11 @@ class AdminServiceTests {
         Pageable pageable = Pageable.unpaged();
         Page<Person> emptyPage = new PageImpl<>(Collections.emptyList(), pageable, 0);
 
-        when(roleRepository.findByRoleType(roleType)).thenReturn(Optional.of(role));
+        when(roleRepository.findByRoleType(roleType)).thenReturn(role);
         when(personRepository.findAllByRoles(role, pageable)).thenReturn(emptyPage);
 
         // Act & Assert
-        assertThrows(EntityNotFoundException.class, () -> adminService.getUsersByRole(pageable, roleType));
+        assertThrows(EntityNotFoundException.class, () -> adminService.getUsersByRole(pageable, String.valueOf(roleType)));
 
         verify(roleRepository, times(1)).findByRoleType(roleType);
         verify(personRepository, times(1)).findAllByRoles(role, pageable);
@@ -174,11 +172,11 @@ class AdminServiceTests {
         Optional<Role> optionalRole = Optional.of(existingRole);
 
         when(personRepository.findByUsername(username)).thenReturn(optionalPerson);
-        when(roleRepository.findByRoleType(roleType)).thenReturn(optionalRole);
+        when(roleRepository.findByRoleType(roleType)).thenReturn(optionalRole.get());
         when(personRepository.save(existingPerson)).thenReturn(existingPerson);
 
         // Act
-        assertDoesNotThrow(() -> adminService.addRole(roleType, username));
+        assertDoesNotThrow(() -> adminService.addRole(String.valueOf(roleType), username));
 
         // Assert
         assertTrue(existingPerson.getRoles().contains(existingRole));
@@ -197,7 +195,7 @@ class AdminServiceTests {
         when(personRepository.findByUsername(username)).thenReturn(Optional.empty());
 
         // Act & Assert
-        assertThrows(ResourceNotFoundException.class, () -> adminService.addRole(roleType, username));
+        assertThrows(ResourceNotFoundException.class, () -> adminService.addRole(String.valueOf(roleType), username));
 
         verify(personRepository, times(1)).findByUsername(username);
         verify(roleRepository, times(1)).findByRoleType(roleType);
@@ -209,24 +207,21 @@ class AdminServiceTests {
     public void addRole_RoleDoesNotExist_ThrowsResourceNotFoundException() {
         // Arrange
         String username = "existingUser";
-        RoleType roleType = RoleType.ADMIN;
+        String type = "NOT EXISTING ROLE";
 
         Person existingPerson = new Person();
         existingPerson.setUsername(username);
 
         Optional<Person> optionalPerson = Optional.of(existingPerson);
-        Optional<Role> optionalRole = Optional.empty();
 
         when(personRepository.findByUsername(username)).thenReturn(optionalPerson);
-        when(roleRepository.findByRoleType(roleType)).thenReturn(optionalRole);
 
         // Act & Assert
-        assertThrows(ResourceNotFoundException.class, () -> adminService.addRole(roleType, username));
+        assertThrows(ResourceNotFoundException.class, () -> adminService.addRole(type, username));
 
         verify(personRepository, times(1)).findByUsername(username);
-        verify(roleRepository, times(1)).findByRoleType(roleType);
         verifyNoMoreInteractions(personRepository);
-        verifyNoMoreInteractions(roleRepository);
+        verifyNoInteractions(roleRepository);
     }
 
     @Test
@@ -245,10 +240,10 @@ class AdminServiceTests {
         Optional<Role> optionalRole = Optional.of(existingRole);
 
         when(personRepository.findByUsername(username)).thenReturn(optionalPerson);
-        when(roleRepository.findByRoleType(roleType)).thenReturn(optionalRole);
+        when(roleRepository.findByRoleType(roleType)).thenReturn(optionalRole.get());
 
         // Act & Assert
-        assertThrows(RuntimeException.class, () -> adminService.addRole(roleType, username));
+        assertThrows(RuntimeException.class, () -> adminService.addRole(String.valueOf(roleType), username));
 
         verify(personRepository, times(1)).findByUsername(username);
         verify(roleRepository, times(1)).findByRoleType(roleType);
@@ -276,11 +271,11 @@ class AdminServiceTests {
         Optional<Role> optionalRole = Optional.of(existingRole);
 
         when(personRepository.findByUsername(username)).thenReturn(optionalPerson);
-        when(roleRepository.findByRoleType(roleType)).thenReturn(optionalRole);
+        when(roleRepository.findByRoleType(roleType)).thenReturn(optionalRole.get());
         when(personRepository.save(existingPerson)).thenReturn(existingPerson);
 
         // Act
-        assertDoesNotThrow(() -> adminService.removeRole(roleType, username));
+        assertDoesNotThrow(() -> adminService.removeRole(String.valueOf(roleType), username));
 
         // Assert
         assertFalse(existingPerson.getRoles().contains(existingRole));
@@ -299,7 +294,7 @@ class AdminServiceTests {
         when(personRepository.findByUsername(username)).thenReturn(Optional.empty());
 
         // Act & Assert
-        assertThrows(ResourceNotFoundException.class, () -> adminService.removeRole(roleType, username));
+        assertThrows(ResourceNotFoundException.class, () -> adminService.removeRole(String.valueOf(roleType), username));
 
         verify(personRepository, times(1)).findByUsername(username);
         verify(roleRepository, times(1)).findByRoleType(roleType);
@@ -311,24 +306,21 @@ class AdminServiceTests {
     public void removeRole_RoleDoesNotExist_ThrowsResourceNotFoundException() {
         // Arrange
         String username = "existingUser";
-        RoleType roleType = RoleType.ADMIN;
+        String roleType = "NOT EXISTING ROLE";
 
         Person existingPerson = new Person();
         existingPerson.setUsername(username);
 
         Optional<Person> optionalPerson = Optional.of(existingPerson);
-        Optional<Role> optionalRole = Optional.empty();
 
         when(personRepository.findByUsername(username)).thenReturn(optionalPerson);
-        when(roleRepository.findByRoleType(roleType)).thenReturn(optionalRole);
 
         // Act & Assert
         assertThrows(ResourceNotFoundException.class, () -> adminService.removeRole(roleType, username));
 
         verify(personRepository, times(1)).findByUsername(username);
-        verify(roleRepository, times(1)).findByRoleType(roleType);
         verifyNoMoreInteractions(personRepository);
-        verifyNoMoreInteractions(roleRepository);
+        verifyNoInteractions(roleRepository);
     }
 
     @Test
@@ -347,10 +339,10 @@ class AdminServiceTests {
         Optional<Role> optionalRole = Optional.of(existingRole);
 
         when(personRepository.findByUsername(username)).thenReturn(optionalPerson);
-        when(roleRepository.findByRoleType(roleType)).thenReturn(optionalRole);
+        when(roleRepository.findByRoleType(roleType)).thenReturn(optionalRole.get());
 
         // Act & Assert
-        assertThrows(RuntimeException.class, () -> adminService.removeRole(roleType, username));
+        assertThrows(RuntimeException.class, () -> adminService.removeRole(String.valueOf(roleType), username));
 
         verify(personRepository, times(1)).findByUsername(username);
         verify(roleRepository, times(1)).findByRoleType(roleType);

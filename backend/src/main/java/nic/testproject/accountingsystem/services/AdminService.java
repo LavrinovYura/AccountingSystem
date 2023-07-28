@@ -98,7 +98,7 @@ public class AdminService {
         try {
             roleType = RoleType.valueOf(type);
         } catch (IllegalArgumentException e) {
-            throw new ConflictException("There is no such role exist");
+            throw new ResourceNotFoundException("There is no such role exist");
         }
 
         return roleRepository.findByRoleType(roleType);

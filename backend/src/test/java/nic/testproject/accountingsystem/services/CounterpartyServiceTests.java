@@ -3,6 +3,7 @@ package nic.testproject.accountingsystem.services;
 import nic.testproject.accountingsystem.dto.contracts.CounterpartyDTO;
 import nic.testproject.accountingsystem.exceptions.ConflictException;
 import nic.testproject.accountingsystem.exceptions.ResourceNotFoundException;
+import nic.testproject.accountingsystem.exceptions.ValidationException;
 import nic.testproject.accountingsystem.models.contracts.details.ContractCounterparties;
 import nic.testproject.accountingsystem.models.contracts.details.Counterparty;
 import nic.testproject.accountingsystem.repositories.contracts.CounterpartyRepository;
@@ -78,7 +79,7 @@ public class CounterpartyServiceTests {
 
         // Мокируем необходимые методы и их возвращаемые значения
         when(modelMapper.map(counterpartyDTO, Counterparty.class)).thenReturn(counterparty);
-        doThrow(ConflictException.class).when(validation).validate(counterparty,errors);
+        doThrow(ConflictException.class).when(validation).saveValidation(counterparty);
 
         // Вызываем метод saveCounterparty и проверяем, что он вызывает исключение ConflictException
         assertThrows(ConflictException.class, () -> counterpartyService.saveCounterparty(counterpartyDTO));
@@ -126,6 +127,7 @@ public class CounterpartyServiceTests {
 
         // Мокируем необходимые методы и их возвращаемые значения
         when(counterpartyRepository.findByName(name)).thenReturn(optionalCounterparty);
+        doNothing().when(modelMapper).map(any(CounterpartyDTO.class), any(Counterparty.class));
         when(counterpartyRepository.save(counterparty)).thenReturn(counterparty);
         when(modelMapper.map(counterparty, CounterpartyDTO.class)).thenReturn(counterpartyDTO);
         // Вызываем метод updateCounterparty
@@ -159,7 +161,7 @@ public class CounterpartyServiceTests {
     }
 
     @Test
-    void updateCounterparty_ThrowsConflictException() throws ConflictException {
+    void updateCounterparty_ThrowsValidationException() throws ConflictException {
         // Создаем тестовые данные
         CounterpartyDTO counterpartyDTO = new CounterpartyDTO();
         // Задаем значения свойств counterpartyDTO
@@ -168,14 +170,13 @@ public class CounterpartyServiceTests {
 
         Optional<Counterparty> optionalCounterparty = Optional.of(new Counterparty());
         Counterparty counterparty = optionalCounterparty.get();
-        BindingResult errors = new BeanPropertyBindingResult(counterparty, "counterparty");
 
         // Мокируем необходимые методы и их возвращаемые значения
         when(counterpartyRepository.findByName(name)).thenReturn(optionalCounterparty);
 
-        doThrow(ConflictException.class).when(validation).validate(counterparty, errors);
+        doThrow(ValidationException.class).when(validation).updateValidation(counterparty, counterpartyDTO);
         // Вызываем метод updateCounterparty и проверяем, что он вызывает исключение ConflictException
-        assertThrows(ConflictException.class, () -> counterpartyService.updateCounterparty(counterpartyDTO, name));
+        assertThrows(ValidationException.class, () -> counterpartyService.updateCounterparty(counterpartyDTO, name));
         // Проверяем, что метод findByName был вызван один раз с заданным именем
         verify(counterpartyRepository, times(1)).findByName(name);
     }

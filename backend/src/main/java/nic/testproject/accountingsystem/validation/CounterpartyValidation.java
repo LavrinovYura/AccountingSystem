@@ -1,16 +1,14 @@
 package nic.testproject.accountingsystem.validation;
 
-import nic.testproject.accountingsystem.exceptions.ConflictException;
-import nic.testproject.accountingsystem.models.contracts.Contract;
+import nic.testproject.accountingsystem.dto.contracts.CounterpartyDTO;
+import nic.testproject.accountingsystem.exceptions.ValidationException;
 import nic.testproject.accountingsystem.models.contracts.details.Counterparty;
 import nic.testproject.accountingsystem.repositories.contracts.CounterpartyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.validation.Errors;
-import org.springframework.validation.Validator;
 
 @Component
-public class CounterpartyValidation implements Validator {
+public class CounterpartyValidation {
     private final CounterpartyRepository counterpartyRepository;
 
     @Autowired
@@ -18,24 +16,23 @@ public class CounterpartyValidation implements Validator {
         this.counterpartyRepository = counterpartyRepository;
     }
 
-    @Override
-    public boolean supports(Class<?> clazz) {
-        return Contract.class.equals(clazz);
-    }
-
-    @Override
-    public void validate(Object target, Errors bindingResult) {
-
-        Counterparty counterparty = (Counterparty) target;
+    public void saveValidation(Counterparty counterparty) throws ValidationException {
 
         if (counterpartyRepository.existsByName(counterparty.getName()))
-            bindingResult.rejectValue("counterparty", "counterparty.duplicate",
-                    "Counterparty with name " + counterparty.getName() + " already exists");
-        if (counterpartyRepository.existsByInn(counterparty.getInn()))
-            bindingResult.rejectValue("counterparty", "counterparty.duplicate",
-                    "Counterparty with inn " + counterparty.getInn() + " already exists");
+            throw new ValidationException("name", "A counterparty with the same name already exists");
 
-        if (bindingResult.hasErrors())
-            throw new ConflictException(bindingResult.toString());
+        if (counterpartyRepository.existsByInn(counterparty.getInn()))
+            throw new ValidationException("inn", "A counterparty with the same INN already exists");
     }
+
+    public void updateValidation(Counterparty counterparty, CounterpartyDTO counterpartyDTO) throws ValidationException {
+
+        if (!counterparty.getName().equals(counterpartyDTO.getName()) && counterpartyRepository.existsByName(counterpartyDTO.getName()))
+            throw new ValidationException("name", "A counterparty with the same name already exists");
+
+        if (!counterparty.getInn().equals(counterpartyDTO.getInn()) && counterpartyRepository.existsByInn(counterpartyDTO.getInn()))
+            throw new ValidationException("inn", "A counterparty with the same INN already exists");
+    }
+
 }
+

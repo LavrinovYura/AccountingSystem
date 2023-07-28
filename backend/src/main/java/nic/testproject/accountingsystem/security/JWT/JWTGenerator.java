@@ -28,13 +28,12 @@ public class JWTGenerator {
         String username = authentication.getName();
         Date currentDate = new Date();
         Date expireDate = new Date(currentDate.getTime() + JWT_EXPIRATION);
-        String token = Jwts.builder()
+        return Jwts.builder()
                 .setSubject(username)
- //               .setIssuedAt(new Date())
- //               .setExpiration(expireDate)
+                .setIssuedAt(new Date())
+                .setExpiration(expireDate)
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                 .compact();
-        return token;
     }
 
     private String populateAuthorities(Collection<? extends GrantedAuthority> collection) {

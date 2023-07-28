@@ -7,7 +7,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
+import java.util.ArrayList;
+import java.util.List;
 
 @ControllerAdvice
 public class RestExceptionHandler {
@@ -30,16 +33,24 @@ public class RestExceptionHandler {
         return new ResponseEntity<>(new ErrorResponse(message), HttpStatus.UNAUTHORIZED);
     }
 
-//    @ExceptionHandler(ConstraintViolationException.class)
-//    public ResponseEntity<ErrorResponse> handleValidationException(ConstraintViolationException exception) {
-//        return new ResponseEntity<>(new ErrorResponse(exception.getMessage()), HttpStatus.BAD_REQUEST);
-//    }
+    @ExceptionHandler(ValidationException.class)
+    public ResponseEntity<ErrorResponse> handleValidationException(ValidationException exception) {
+        String message = exception.getMessage();
+        return new ResponseEntity<>(new ErrorResponse(message), HttpStatus.BAD_REQUEST);
+    }
 
-//    @ExceptionHandler(Exception.class)
-//    public ResponseEntity<ErrorResponse> handleGenericException(Exception exception) {
-//        String message = "An unexpected error occurred.";
-//        return new ResponseEntity<>(new ErrorResponse(message), HttpStatus.INTERNAL_SERVER_ERROR);
-//    }
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ValidationErrorResponse> handleValidationException(ConstraintViolationException exception) {
+        List<ValidationError> validationErrors = new ArrayList<>();
+
+        for (ConstraintViolation<?> violation : exception.getConstraintViolations()) {
+            String field = violation.getPropertyPath().toString();
+            String message = violation.getMessage();
+            validationErrors.add(new ValidationError(field, message));
+        }
+
+        return new ResponseEntity<>(new ValidationErrorResponse(validationErrors), HttpStatus.BAD_REQUEST);
+    }
 
     @Getter
     @Setter
@@ -50,6 +61,27 @@ public class RestExceptionHandler {
         public ErrorResponse(String message) {
             this.message = message;
             this.timestamp = System.currentTimeMillis();
+        }
+    }
+
+    @Getter
+    static class ValidationErrorResponse {
+        private final List<ValidationError> errors;
+
+        public ValidationErrorResponse(List<ValidationError> errors) {
+            this.errors = errors;
+        }
+    }
+
+    @Getter
+    @Setter
+    static class ValidationError {
+        private String field;
+        private String message;
+
+        public ValidationError(String field, String message) {
+            this.field = field;
+            this.message = message;
         }
     }
 }

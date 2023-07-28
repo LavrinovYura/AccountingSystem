@@ -10,8 +10,6 @@ import java.util.List;
 @Table(name = "counterparties")
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class Counterparty {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

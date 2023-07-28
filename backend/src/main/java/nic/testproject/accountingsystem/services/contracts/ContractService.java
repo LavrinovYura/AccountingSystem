@@ -14,10 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.BeanPropertyBindingResult;
-import org.springframework.validation.BindingResult;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,16 +24,16 @@ public class ContractService {
 
     private final ContractRepository contractRepository;
     private final ModelMapper modelMapper;
-    private final ContractValidation saveValidation;
+    private final ContractValidation validation;
     private final Util util;
 
     @Autowired
     public ContractService(ContractRepository contractRepository,
                            ModelMapper modelMapper,
-                           ContractValidation saveValidation, Util util) {
+                           ContractValidation validation, Util util) {
         this.contractRepository = contractRepository;
         this.modelMapper = modelMapper;
-        this.saveValidation = saveValidation;
+        this.validation = validation;
         this.util = util;
     }
 
@@ -46,14 +44,12 @@ public class ContractService {
         return page;
     }
 
+    @Transactional
     public ContractDTO saveContract(ContractDTO contractDTO) {
 
         Contract contract = modelMapper.map(contractDTO, Contract.class);
 
-        BindingResult errors = new BeanPropertyBindingResult(contract, "contract");
-        saveValidation.validate(contract, errors);
-
-        System.out.println(contract);
+        validation.saveValidation(contract);
 
         Contract savedContract = contractRepository.save(contract);
 
@@ -74,10 +70,10 @@ public class ContractService {
         }
 
         Contract contract = optionalContract.get();
-        modelMapper.map(contractDTO, contract);
 
-        BindingResult errors = new BeanPropertyBindingResult(contract, "contract");
-        saveValidation.validate(contract, errors);
+        validation.updateValidation(contract, contractDTO.getName());
+
+        modelMapper.map(contractDTO, contract);
 
         Contract savedContract = contractRepository.save(contract);
 

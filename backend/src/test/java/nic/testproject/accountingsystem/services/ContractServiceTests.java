@@ -19,7 +19,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.validation.BeanPropertyBindingResult;
-import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
 
 import java.util.ArrayList;
@@ -92,7 +91,6 @@ public class ContractServiceTests {
         ContractDTO contractDTO = new ContractDTO();
         Contract contract = new Contract();
         Contract savedContract = new Contract();
-        BindingResult errors = new BeanPropertyBindingResult(contract, "contract");
 
         when(modelMapper.map(contractDTO, Contract.class)).thenReturn(contract);
         when(contractRepository.save(contract)).thenReturn(savedContract);
@@ -107,7 +105,7 @@ public class ContractServiceTests {
                 ArgumentMatchers.any()
         );
 
-        doNothing().when(contractValidation).validate(any(Contract.class), any(BindingResult.class));
+        doNothing().when(contractValidation).saveValidation(any(Contract.class));
 
         // Act
         ContractDTO result = contractService.saveContract(contractDTO);
@@ -115,7 +113,7 @@ public class ContractServiceTests {
         // Assert
         assertSame(contractDTO, result);
         verify(contractRepository).save(contract);
-        verify(contractValidation).validate(contract, errors);
+        verify(contractValidation).saveValidation(contract);
         verify(util).linkContractIdToContractCounterparties(
                 ArgumentMatchers.any(),
                 ArgumentMatchers.any(Contract.class)
@@ -139,11 +137,11 @@ public class ContractServiceTests {
         ConflictException expectedException = new ConflictException(bindingResult.toString());
 
         when(modelMapper.map(contractDTO, Contract.class)).thenReturn(contract);
-        doThrow(expectedException).when(contractValidation).validate(eq(contract), any(Errors.class));
+        doThrow(expectedException).when(contractValidation).saveValidation(eq(contract));
 
         // Act & Assert
         assertThrows(ConflictException.class, () -> contractService.saveContract(contractDTO));
-        verify(contractValidation).validate(eq(contract), any(Errors.class));
+        verify(contractValidation).saveValidation(eq(contract));
     }
 
 
@@ -170,7 +168,7 @@ public class ContractServiceTests {
         Optional<Contract> optionalContract = Optional.of(contract);
 
         when(contractRepository.findContractByName(name)).thenReturn(optionalContract);
-        when(contractRepository.saveAndFlush(contract)).thenReturn(savedContract);
+        when(contractRepository.save(contract)).thenReturn(savedContract);
 
         // Define behavior for the first invocation
         when(modelMapper.map(contract, ContractDTO.class)).thenReturn(contractDTO);
@@ -192,7 +190,7 @@ public class ContractServiceTests {
         // Assert
         assertSame(contractDTO, result);
         verify(contractRepository).findContractByName(name);
-        verify(contractRepository).saveAndFlush(contractCaptor.capture());
+        verify(contractRepository).save(contractCaptor.capture());
         verify(modelMapper).map(savedContract, ContractDTO.class);
         verify(modelMapper).map(contractDTO, contract);
 
