@@ -1,0 +1,35 @@
+version: '3.8'
+services:
+  # Сервис базы данных MySQL
+  db:
+    image: mysql:8.0
+    container_name: my-mysql-db
+    env_file: ./.env
+    environment:
+      MYSQL_ROOT_PASSWORD: $MYSQLDB_ROOT_PASSWORD
+      MYSQL_DATABASE: $MYSQLDB_DATABASE
+    ports:
+      -  $MYSQLDB_LOCAL_PORT:$MYSQLDB_DOCKER_PORT
+    volumes:
+          - db:/var/lib/mysql
+
+  app:
+    image: openjdk:8-jdk-alpine
+    container_name: accounting-app
+    env_file: ./.env
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - "db"
+    ports:
+      - $SPRING_LOCAL_PORT:$SPRING_DOCKER_PORT
+    environment:
+          SPRING_APPLICATION_JSON: $SPRING_JSON
+    stdin_open: true
+    tty: true
+    volumes:
+      - .m2:/root/.m2
+
+volumes:
+  db:
