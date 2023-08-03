@@ -185,9 +185,9 @@ export default {
         },
     },
 
-    activated() {
-        this.getContractt()
-    }
+   // activated() {
+    //    this.getContractt()
+    //}
 }
 
 </script>

@@ -27,40 +27,46 @@
                     <v-divider></v-divider>
                     <section > 
                         <h4>Этапы</h4>
-                        <v-row> 
+                        <v-row  v-for="(phase, index) in newContract.phases" :key=" phase.id"> 
+                            <v-divider></v-divider>
+                            <h6>Этап {{ index+1 }}</h6>
                             <v-col v-for="name in textPhases" cols="3">
                                 <label>{{ name.name1 }}
-                                    <v-text-field :type="name.type1" v-model="newContract.phases[name.model1]">
+                                    <v-text-field :type="name.type1" v-model="phase[name.model1]">
                                     </v-text-field>
                                 </label>
                             </v-col>
                         </v-row>
-                        <v-btn outlined  icon color="blue"> 
+                        <v-btn outlined  icon color="blue" @click="addPhase"> 
                             <v-icon >mdi-plus</v-icon>
                         </v-btn>
                     </section>
                     <v-divider></v-divider>
-
+                    {{ newContract.phases }} 
                     <section>
                         <h4>Договор с контрагентом</h4>
                         <v-divider></v-divider>
 
-                        <v-row>
-                            <v-col v-for="(name, index) in textPhases" :key="index" cols="3">
+                        <v-row v-for="(agent, id) in newContract.contractCounterparties" :key="agent.id">
+                            <h6>Контрагент {{ id+1 }}</h6>
+                            <v-col v-for="(name, index) in textPhases" cols="3">
                                 <label>{{ name.name2 }}</label>
                                 <template v-if="name.model2 === 'type'">
-                                    <v-select :items="type" :menu-props="{ top: true, offsetY: true }" v-model="newContract.contractCounterparties[name.model2]"></v-select>
+                                    <v-select :items="type"  v-model="agent[name.model2]"></v-select>
+                                    
                                 </template>
                                 <template v-else>
-                                    <v-text-field :type="name.type1" v-model="newContract.contractCounterparties[name.model2]"></v-text-field>
+                                    <v-text-field :type="name.type1" v-model="agent[name.model2]"></v-text-field>
                                 </template>
                             </v-col>
+                            
                         </v-row>
-                        <v-btn outlined  icon color="blue"> 
+                        <v-btn outlined  icon color="blue" @click="addContragent"> 
                             <v-icon >mdi-plus</v-icon>
                         </v-btn>
                         <v-divider></v-divider>
                     </section>
+                    {{ newContract.contractCounterparties }}
                 </v-card-text>
                 <v-card-actions>
                     <v-spacer></v-spacer>
@@ -113,102 +119,66 @@ export default {
     name: 'MyCreateContract',
     data() {
         return {
-            newContract:
-                {
+            newContract:{
+                name: '',
+                type: '',
+                plannedStartDate: '',
+                plannedEndDate: '',
+                actualStartDate: '',
+                actualEndDate: '',
+                amount: '',
+                phases: [{ 
+                    id: '',
                     name: '',
+                    amount: '',
+                    planAmount: '',
+                    factAmount: '',
+                    plannedStartDate: '',
+                    plannedEndDate: '',
+                    actualStartDate: '',
+                    actualEndDate: '',
+                }],
+                contractCounterparties: [{ 
+                    name: '',
+                    amount: '',
+                    organization: '',
                     type: '',
                     plannedStartDate: '',
                     plannedEndDate: '',
                     actualStartDate: '',
                     actualEndDate: '',
-                    amount: '',
-                    phases: [{ 
-                        name: '',
-                        amount: '',
-                        planAmount: '',
-                        factAmount: '',
-                        plannedStartDate: '',
-                        plannedEndDate: '',
-                        actualStartDate: '',
-                        actualEndDate: '',
-                    }],
-                    contractCounterparties: [{ 
-                        name: '',
-                        amount: '',
-                        organization: '',
-                        type: '',
-                        plannedStartDate: '',
-                        plannedEndDate: '',
-                        actualStartDate: '',
-                        actualEndDate: '',
-                    }]
-                },
+                }]
+            },
+            phase: { 
+                id: '',
+                name: '',
+                amount: '',
+                planAmount: '',
+                factAmount: '',
+                plannedStartDate: '',
+                plannedEndDate: '',
+                actualStartDate: '',
+                actualEndDate: '',
+            }    ,
+            
             textPhases: [
-                {
-                    name1: 'Название',
-                    name2: 'Название',
-                    type1: '',                    
-                    model1: 'name',
-                    model2: 'name',
-                },
-                {
-                    name1: 'Сумма',
-                    name2: 'Организация',
-                    type1: '',                   
-                    model1: 'amount',
-                    model2: 'organization',
-                },
-                {
-                    name1: 'Плановые расходы',
-                    name2: 'Сумма договора',
-                    type1: '',                   
-                    model1: 'planAmount',
-                    model2: 'amount',
-                },
-                {
-                    name1: 'Фактические расходы',
-                    name2: 'Тип договора',
-                    type1: '',                                      
-                    model1: 'factAmount',
-                    model2: 'type',
-                },
-                {
-                    name1: 'Плановая дата начала',
-                    name2: 'Плановая дата начала',
-                    type1: 'Date',                   
-                    model1: 'plannedStartDate',
-                    model2: 'plannedStartDate',
-                },
-                {
-                    name1: 'Плановая дата окончания',
-                    name2: 'Плановая дата окончания',
-                    type1: 'Date',                   
-                    model1: 'plannedEndDate',
-                    model2: 'plannedEndDate',
-                }, 
-                {
-                    name1: 'Фактическая дата начала',
-                    name2: 'Фактическая дата начала',
-                    type1: 'Date',                   
-                    model1: 'actualStartDate',
-                    model2: 'actualStartDate',
-                },
-                {
-                    name1: 'Фактическая дата окончания',
-                    name2: 'Фактическая дата окончания',
-                    type1: 'Date',                    
-                    model1: 'actualEndDate',
-                    model2: 'actualEndDate',
-                },
+                {name1: 'Название',name2: 'Название',type1: '', model1: 'name',model2: 'name'},
+                {name1: 'Сумма',name2: 'Сумма договора',type1: '',model1: 'amount',model2: 'amount'},
+                {name1: 'Плановые расходы',name2: 'Организация ',type1: '',model1: 'planAmount', model2: 'organization'},
+                {name1: 'Фактические расходы',name2: 'Тип договора',type1: '',model1: 'factAmount',model2: 'type'},
+                {name1: 'Плановая дата начала',name2: 'Плановая дата начала',type1: 'Date',model1: 'plannedStartDate',model2: 'plannedStartDate'},
+                {name1: 'Плановая дата окончания',name2: 'Плановая дата окончания',type1: 'Date',model1: 'plannedEndDate',model2: 'plannedEndDate'}, 
+                {name1: 'Фактическая дата начала',name2: 'Фактическая дата начала',type1: 'Date',model1: 'actualStartDate',model2: 'actualStartDate'},
+                {name1: 'Фактическая дата окончания', name2: 'Фактическая дата окончания', type1: 'Date', model1: 'actualEndDate', model2: 'actualEndDate'},
             ],
             fields: [
-        { label: 'Название', model: 'name', type: 'text' },
-        { label: 'Тип', model: 'type', type: 'select', options: ['option1', 'option2'] },
-        { label: 'Плановая дата начала', model: 'plannedStartDate', type: 'date' },
-        { label: 'Плановая дата окончания', model: 'plannedEndDate', type: 'date' },
-        { label: 'Фактическая дата начала', model: 'actualStartDate', type: 'date' },
-        { label: 'Фактическая дата окончания', model: 'actualEndDate', type: 'date' },
-        { label: 'Сумма договора', model: 'amount', type: 'text' }
+                { label: 'Название', model: 'name', type: 'text' },
+                { label: 'Тип', model: 'type', type: 'select', options: ['option1', 'option2'] },
+                { label: 'Плановая дата начала', model: 'plannedStartDate', type: 'date' },
+                { label: 'Плановая дата окончания', model: 'plannedEndDate', type: 'date' },
+                { label: 'Фактическая дата начала', model: 'actualStartDate', type: 'date' },
+                { label: 'Фактическая дата окончания', model: 'actualEndDate', type: 'date' },
+                { label: 'Сумма договора', model: 'amount', type: 'text' }
       ],
             
             dialog2: false,
@@ -221,6 +191,40 @@ export default {
             addAllContracts: 'ADD_ALL_CONTRACTS',
             closeDialog: 'CLOSE_DIALOG'
         }),
+
+        addPhase() {
+            const phases= { 
+                id: Date.now(),
+                name: '',
+                amount: '',
+                planAmount: '',
+                factAmount: '',
+                plannedStartDate: '',
+                plannedEndDate: '',
+                actualStartDate: '',
+                actualEndDate: '',
+            }    
+            
+            this.newContract.phases = [...this.newContract.phases, phase];
+},
+
+        addContragent() {
+            const contractCounterparties= { 
+                id: Date.now(),
+                name: '',
+                amount: '',
+                organization: '',
+                type: '',
+                plannedStartDate: '',
+                plannedEndDate: '',
+                actualStartDate: '',
+                actualEndDate: '',           
+            }
+            
+            this.newContract.contractCounterparties.push(contractCounterparties)
+        },
+
+
         sndNewContract() {
             
             const res = {};
