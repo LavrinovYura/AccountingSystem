@@ -15,7 +15,7 @@
                         <template v-slot:activator="{ on, attrs }"> 
                             <v-btn 
                                 outlined  
-                                icon color="blue" 
+                                icon color="green" 
                                 v-bind="attrs" 
                                 v-on="on">
                                     <v-icon >mdi-plus</v-icon>
@@ -54,7 +54,7 @@
                                 <td>{{ item.actualStartDate }}</td>
                                 <td>{{ item.actualEndDate }}</td>
                                 <td>{{ item.amount }}</td>
-                                <td><div v-for="items in item.phases">{{ items.name }}</div></td>
+                                <td><div v-for="(items,id) in item.phases" :key='id'>{{ items.name }}</div></td>
                                 <td>{{ item.contractCounterparties[0].name }}</td>
                                 <td>
                                     <router-link class="btn" :to="{name:'contractPage', params: {name: `${item.name}`}}">

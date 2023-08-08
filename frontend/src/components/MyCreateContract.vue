@@ -12,17 +12,17 @@
                     <template>
                         <v-row>
                             <v-col v-for="(field, index) in fields" :key="index" cols="3">
-                                <template v-if="field.type === 'select'">
-                                    <v-select :items="type" v-model="newContract[field.model]"></v-select>
-                                </template>
+                                <label> {{ field.label }}</label>
+                                    <template v-if="field.type === 'select'">
+                                        <v-select :items="type" v-model="newContract[field.model]"></v-select>
+                                    </template>
+                                
                                 <template v-else>
-                                    <v-text-field :type="field.type" v-model="newContract[field.model]" :label="field.label"></v-text-field>
+                                    <v-text-field :type="field.type" v-model="newContract[field.model]" ></v-text-field>
                                 </template>
                             </v-col>
                         </v-row>
                         </template>
-                    <v-divider></v-divider>
-                    <v-divider></v-divider>
 
                     <v-divider></v-divider>
                     <section > 
@@ -42,7 +42,7 @@
                         </v-btn>
                     </section>
                     <v-divider></v-divider>
-                    {{ newContract.phases }} 
+                    
                     <section>
                         <h4>Договор с контрагентом</h4>
                         <v-divider></v-divider>
@@ -205,7 +205,7 @@ export default {
                 actualEndDate: '',
             }    
             
-            this.newContract.phases = [...this.newContract.phases, phase];
+            this.newContract.phases = [...this.newContract.phases, phases];
 },
 
         addContragent() {

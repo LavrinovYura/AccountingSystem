@@ -10,7 +10,7 @@ Vue.use(Vuex)
 export const store = new Vuex.Store({
   state: {
     
-    url: 'http://212.118.43.99:8080',   
+    url: 'http://192.168.24.112:8080',   
     token: '',
     tokenType: 'Bearer',
     name: '',

@@ -1,8 +1,12 @@
-# vue-loader [![ci](https://github.com/vuejs/vue-loader/actions/workflows/ci.yml/badge.svg?branch=next)](https://github.com/vuejs/vue-loader/actions/workflows/ci.yml)
+# vue-loader [![ci](https://github.com/vuejs/vue-loader/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/vuejs/vue-loader/actions/workflows/ci.yml)
 
 > webpack loader for Vue Single-File Components
 
 - [Documentation](https://vue-loader.vuejs.org)
+
+## v17.2.1+ Only Options
+
+- `experimentalInlineMatchResource: boolean`: enable [Inline matchResource](https://webpack.js.org/api/loaders/#inline-matchresource) for rule matching for vue-loader.
 
 ## v16+ Only Options
 

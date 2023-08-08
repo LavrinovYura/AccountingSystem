@@ -14,7 +14,7 @@
                     <template v-slot:activator="{ on, attrs }">
                         <v-btn 
                             outlined  
-                            icon color="blue" 
+                            icon color="green" 
                             v-bind="attrs" 
                             v-on="on"
                             >
@@ -24,10 +24,11 @@
                     <v-card>
                         <v-card-title>Добавить Организации-Контрагенты</v-card-title>
                         <v-card-text v-for="(item, name, id) in Agents">
+                            <label>{{ name }}</label>
                             <v-text-field 
                                 :name="name"
                                 :key="id"
-                                :placeholder="name"
+                                
                                 v-model = "Agents[name]"                               
                                 >
                             </v-text-field>
@@ -37,7 +38,7 @@
                             <v-btn
                                 color="blue darken-1"
                                 text
-                                @click="dialog2 = true"
+                                @click="dialog2 = !dialog2"
                                 >Закрыть
                             </v-btn>
                             <v-row>
@@ -68,7 +69,7 @@
                             <v-btn
                                 color="blue darken-1"
                                 text 
-                                @click="dialog1 = false, sendNewOrganization()"                               
+                                @click="dialog1 = !dialog1, sendNewOrganization()"                               
                                 >Сохранить
                             </v-btn>
                         </v-card-actions>
@@ -177,7 +178,7 @@
                                                 <v-btn
                                                     color="blue darken-1"
                                                     text 
-                                                    @click="dialog1 = false"                               
+                                                    @click="dialog3 = !dialog3"                               
                                                     >Сохранить
                                                 </v-btn>
                                             </v-card-actions>
