@@ -11,10 +11,10 @@
                         </v-list-item-icon>
                         <v-list-item-content>
                             <v-list-item-title>
-                                {{ "name" }}
+                                {{ name }}
                             </v-list-item-title>
                             <v-list-item-subtitle>
-                                {{ "name "}}
+                                {{ surname}}
                             </v-list-item-subtitle>
                         </v-list-item-content>
                     </v-list-item>
@@ -27,6 +27,7 @@
                 </v-list>               
             </v-navigation-drawer>
         </v-card>
+        
     </v-app>
 </template>
 
@@ -35,7 +36,8 @@ export default {
     name: 'MyMenu',
     data() {
         return {
-            name: localStorage.name,
+            name: '',
+            surname: '',
             menuList: [
                 {
                     name: 'contract',
@@ -56,6 +58,11 @@ export default {
             ]
         }
     },
+
+    activated() {
+        this.name= localStorage.name
+        this.surname= localStorage.surname
+    }
 }
 
 

@@ -57,6 +57,7 @@
                 </v-card>
             </v-container>
         </v-form>
+        
     </v-app>
 </template>
   
@@ -115,7 +116,8 @@ import axios from 'axios';
                     }  
                     if  (this.success == true) {
                         this.addToken(response.data.accessToken)
-                        this.addName(response.data.fullName)
+                        this.addFirstName(response.data.firstName)
+                        this.addSurName(response.data.secondName)
                 }                      
                 } 
                 catch(e) {

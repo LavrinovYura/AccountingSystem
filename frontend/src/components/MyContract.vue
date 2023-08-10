@@ -170,7 +170,7 @@ export default {
             try {
                 const response = await axios.get(this.$store.state.url + '/api/menu/contracts/show', 
                 {headers: {
-                    "Authorization":  "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbm5ubmEifQ.8uH8-TkwiqueuYwOaA7VpFpjQZyvXZbgJWyBc99tN2E",               
+                    "Authorization":  "Bearer" + localStorage.token,               
                 }})
                 console.log(response)
                 for (let i = 0; i<response.data.length; i++)  {
@@ -185,9 +185,9 @@ export default {
         },
     },
 
-   // activated() {
-    //    this.getContractt()
-    //}
+   activated() {
+      this.getContractt()
+    }
 }
 
 </script>

@@ -7,7 +7,7 @@
         <section class="content">
             <h1>Организации-Контрагенты</h1>
             <v-divider></v-divider>
-            <v-container >
+            <span class="btn">
                 <v-dialog v-model="dialog1"
                     persistent
                     max-width="600px">
@@ -69,14 +69,15 @@
                             <v-btn
                                 color="blue darken-1"
                                 text 
-                                @click="dialog1 = !dialog1, sendNewOrganization()"                               
+                                @click="dialog1 = !dialog1, //sendNewOrganization(), 
+                                createNewOrganization()"                               
                                 >Сохранить
                             </v-btn>
                         </v-card-actions>
                     </v-card>
                 </v-dialog>
-            </v-container>
-            <v-container>
+            </span>
+            <span class="btn">
                 <v-dialog v-model="dialogDelete" 
                     persistent
                     max-width="600px">
@@ -94,12 +95,82 @@
                         </v-card-text>
                         <v-card-actions>
                             <v-btn @click="dialogDelete=!dialogDelete">Отмена</v-btn>
-                            <v-btn @click="dialogDelete=!dialogDelete, deleteContragent(NameDelete.name) ">Только контрагента</v-btn>
+                            <v-btn @click="dialogDelete=!dialogDelete, deleteOrganization()">Только контрагента</v-btn>
                             <v-btn @click="dialogDelete=!dialogDelete">Вместе с контрактами</v-btn>
                         </v-card-actions>
                     </v-card>
                 </v-dialog>
-            </v-container>
+            </span>
+            <span class="btn">
+                <v-dialog v-model="dialog3"
+                    persistent
+                    max-width="600px">
+                    <template v-slot:activator="{ on, attrs }">
+                        <v-btn 
+                            outlined  
+                            icon color="blue" 
+                            v-bind="attrs" 
+                            v-on="on"
+                            >
+                            <v-icon >mdi-pencil</v-icon>
+                        </v-btn>                       
+                    </template>
+                    <v-card>
+                        <v-card-title> Редактировать Организацию-Контрагента</v-card-title>
+                        <v-card-text v-for="(item, name, id) in  NameDelete">
+                            <label> {{ name }}
+                            <v-text-field 
+                                :name="name"
+                                :key="id"
+                                :value="item"
+                                @input="Agents[name] = $event"                               
+                                > {{ item }}
+                            </v-text-field> 
+                        </label>
+                        </v-card-text>
+                        <v-card-actions>
+                            <v-spacer></v-spacer>
+                            <v-btn
+                                color="blue darken-1"
+                                text
+                                @click="dialog2 = true"
+                                >Закрыть
+                            </v-btn>
+                            <v-row>
+                                <v-dialog width="600px" justify-center
+                                    v-model="dialog2"
+                                    >
+                                    <v-card >
+                                        <v-card-title >
+                                            <div>Вы уверены, что хотите закрыть окно?</div>
+                                            <div>Все несохраненные данные будут утеряны</div>
+                                        </v-card-title>
+                                        <v-card-actions>
+                                            <v-spacer></v-spacer>
+                                                <v-btn color="blue darken-1"
+                                                    text
+                                                    @click="dialog3 = false"
+                                                    >Закрыть
+                                                </v-btn>
+                                                <v-btn color="blue darken-1"
+                                                    text
+                                                    @click="dialog2 = false"
+                                                    >Остаться
+                                                </v-btn>
+                                        </v-card-actions>
+                                    </v-card>
+                                </v-dialog>
+                            </v-row>
+                            <v-btn
+                                color="blue darken-1"
+                                text 
+                                @click="dialog3 = !dialog3"                               
+                                >Сохранить
+                            </v-btn>
+                        </v-card-actions>
+                    </v-card>
+                </v-dialog>
+            </span>
             <v-divider></v-divider>
             <v-container>
                 <v-simple-table class="table">
@@ -116,74 +187,7 @@
                                 >
                                 <td v-for="value in item">{{ value }}</td>
                                 <td>  
-                                    <v-dialog v-model="dialog3"
-                                        persistent
-                                        max-width="600px">
-                                        <template v-slot:activator="{ on, attrs }">
-                                            <v-btn 
-                                                outlined  
-                                                icon color="blue" 
-                                                v-bind="attrs" 
-                                                v-on="on"
-                                                >
-                                                <v-icon >mdi-pencil</v-icon>
-                                            </v-btn>                       
-                                        </template>
-                                        <v-card>
-                                            <v-card-title> Редактировать Организацию-Контрагента</v-card-title>
-                                            <v-card-text v-for="(item, name, id) in  NameDelete">
-                                                <label> {{ name }}
-                                                <v-text-field 
-                                                    :name="name"
-                                                    :key="id"
-                                                    :value="item"
-                                                    @input="Agents[name] = $event"                               
-                                                    > {{ item }}
-                                                </v-text-field> 
-                                            </label>
-                                            </v-card-text>
-                                            <v-card-actions>
-                                                <v-spacer></v-spacer>
-                                                <v-btn
-                                                    color="blue darken-1"
-                                                    text
-                                                    @click="dialog2 = true"
-                                                    >Закрыть
-                                                </v-btn>
-                                                <v-row>
-                                                    <v-dialog width="600px" justify-center
-                                                        v-model="dialog2"
-                                                        >
-                                                        <v-card >
-                                                            <v-card-title >
-                                                                <div>Вы уверены, что хотите закрыть окно?</div>
-                                                                <div>Все несохраненные данные будут утеряны</div>
-                                                            </v-card-title>
-                                                            <v-card-actions>
-                                                                <v-spacer></v-spacer>
-                                                                    <v-btn color="blue darken-1"
-                                                                        text
-                                                                        @click="dialog3 = false"
-                                                                        >Закрыть
-                                                                    </v-btn>
-                                                                    <v-btn color="blue darken-1"
-                                                                        text
-                                                                        @click="dialog2 = false"
-                                                                        >Остаться
-                                                                    </v-btn>
-                                                            </v-card-actions>
-                                                        </v-card>
-                                                    </v-dialog>
-                                                </v-row>
-                                                <v-btn
-                                                    color="blue darken-1"
-                                                    text 
-                                                    @click="dialog3 = !dialog3"                               
-                                                    >Сохранить
-                                                </v-btn>
-                                            </v-card-actions>
-                                        </v-card>
-                                    </v-dialog>
+                                    
                                 </td>   
                             </tr>
                         </tbody>
@@ -289,7 +293,7 @@ export default {
                     inn: this.Agents.inn                   
                 },
                 {headers: {
-                    "Authorization":  "Bearer " + "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbm5ubmEifQ.8uH8-TkwiqueuYwOaA7VpFpjQZyvXZbgJWyBc99tN2E",
+                    "Authorization":  "Bearer " + localStorage.token,
                 }});
                 console.log(response) 
                              
@@ -304,7 +308,7 @@ export default {
             try {
                 const response = await axios.get(this.$store.state.url + '/api/menu/counterparties/show', 
                 {headers: {
-                    "Authorization":  "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbm5ubmEifQ.8uH8-TkwiqueuYwOaA7VpFpjQZyvXZbgJWyBc99tN2E",                   
+                    "Authorization":  "Bearer" + localStorage.token,                   
                 }})
                 console.log(response)
                 for (let i = 0; i<response.data.length; i++)  {
@@ -322,11 +326,11 @@ export default {
             try {
                 const response = await axios.delete(this.$store.state.url + '/api/menu/counterparties/delete',
                 {
-                    name: this.NameDelete
+                    name: this.NameDelete.name
                 },
 
                 {headers: {
-                    "Authorization":  "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbm5ubmEifQ.8uH8-TkwiqueuYwOaA7VpFpjQZyvXZbgJWyBc99tN2E",                  
+                    "Authorization":  "Bearer" + localStorage.token,                  
                 }})
                 console.log(item.name)
                 console.log(response)
@@ -347,7 +351,7 @@ export default {
                 },
 
                 {headers: {
-                    "Authorization":  "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbm5ubmEifQ.8uH8-TkwiqueuYwOaA7VpFpjQZyvXZbgJWyBc99tN2E",                  
+                    "Authorization":  "Bearer" + localStorage.token,                  
                 }})
                 console.log(item.name)
                 console.log(response)
@@ -379,7 +383,7 @@ h1 {
     position: fixed;
 }
 .btn {
-    margin-left:20px
+    margin-left:15px;
 }
 .table {
     border: 1px solid black;

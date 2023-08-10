@@ -75,7 +75,8 @@ export default {
     methods: { 
         ...mapMutations({
             addToken: 'ADD_TOKEN',
-            addName: 'ADD_NAME'
+            addFirstName: 'ADD_FIRST_NAME',
+            addSurName: 'ADD_SUR_NAME'
         }),
         showPas() {
             this.showPassword = !this.showPassword
@@ -97,7 +98,8 @@ export default {
                     } 
                 if  (this.success == true) {
                     this.addToken(response.data.accessToken)
-                    //this.addName(response.data.fullName)
+                    this.addFirstName(response.data.firstName)
+                    this.addSurName(response.data.secondName)
                 }                
             } 
             catch(e) {

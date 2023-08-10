@@ -10,11 +10,12 @@ Vue.use(Vuex)
 export const store = new Vuex.Store({
   state: {
     
-    url: 'http://192.168.24.112:8080',   
+    url: 'http://6.tcp.eu.ngrok.io:14351',   
     token: '',
     tokenType: 'Bearer',
     name: '',
-    fullname: '',
+    firstname: '',
+    surname: '',
     dialog1: false,
     dialog8: false,
     contragents: [{
@@ -78,13 +79,19 @@ export const store = new Vuex.Store({
   mutations: {
     ADD_TOKEN(state, payload) {
       state.token = payload
-      localStorage.setItem('token', "50")      
+      localStorage.setItem('token', state.token)      
     },
 
-    ADD_NAME(state,payload) {
-      state.name = payload
-      state.fullname = state.name.split(' ', 2)
-      localStorage.setItem('name', state.fullname)
+    ADD_FIRST_NAME(state,payload) {
+      state.firstname = payload
+      
+      localStorage.setItem('name', state.firstname)
+    },
+
+    ADD_SUR_NAME(state,payload) {
+      state.surname = payload
+      
+      localStorage.setItem('surname', state.surname)
     },
 
     CLOSE_DIALOG(state) {
@@ -100,10 +107,7 @@ export const store = new Vuex.Store({
         state.contragents.push(payload)
     },
 
-    DELETE_CONTRAGENT(state, index) {
-        state.contragents.splice(index, 1);
-      },
-    
+      
     
 
     ADD_NEW_CONTRACT(state, payload) {
@@ -115,8 +119,11 @@ export const store = new Vuex.Store({
     },
 
     DELETE_CONTRACT(state, index) {
-        state.contracts.splice(index, 1);
-      },
+      state.contracts.splice(index, 1);
+    },
+    DELETE_CONTRAGENT(state, index) {
+      state.contragents.splice(index, 1);
+    },
   },
   
   
