@@ -183,7 +183,8 @@
                         <tbody>
                             <tr v-for="item in contragents"
                                 :key="item.idndex"
-                                @click="Show(item),NameDelete = item"
+                                @click="Show(item),NameDelete = item, setActive=item.name"
+                                :class = "{'blue lighten-5': setActive===item.name}"
                                 >
                                 <td v-for="value in item">{{ value }}</td>
                                 <td>  
@@ -195,8 +196,8 @@
                 </v-simple-table>
             </v-container>
         </section> 
-        {{ Agents }} jhguyg{{ NameDelete }}
-            {{ contragents }}
+        {{ Agents }} jhguyg{{ NameDelete.name }}
+            
         organization 
         <span>   
             <router-link class="btn" :to="{name: 'menu'}">
@@ -231,6 +232,7 @@ export default {
             dialog2: false,
             dialog3: false,
             dialogDelete: false,
+            setActive: '',
             NameDelete: {
                 name: '',
                 address: '',
@@ -306,7 +308,7 @@ export default {
 
         async getOrganization() {
             try {
-                const response = await axios.get(this.$store.state.url + '/api/menu/counterparties/show', 
+                const response = await axios.post(this.$store.state.url + '/api/menu/counterparties/show', 
                 {headers: {
                     "Authorization":  "Bearer" + localStorage.token,                   
                 }})
@@ -333,11 +335,13 @@ export default {
                     "Authorization":  "Bearer" + localStorage.token,                  
                 }})
                 console.log(item.name)
+                console.log(NameDelete.name)
                 console.log(response)
                  
             }
             catch(e) {
                 alert('Error is true')
+                console.log(this.NameDelete.name)
             }
             
             
@@ -363,6 +367,9 @@ export default {
         },
 
         
+    }, 
+    activated() {
+        this.getOrganization()
     }
 }
 </script>

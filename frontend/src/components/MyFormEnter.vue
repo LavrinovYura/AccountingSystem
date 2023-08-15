@@ -9,7 +9,7 @@
                 </v-card-title>
                 <v-card-text>
                     
-                        <v-text-field placeholder="Username" 
+                        <v-text-field placeholder="Имя Пользователя" 
                             prepend-icon="mdi-account-circle" 
                             name="username"
                             v-model="username"
@@ -18,7 +18,7 @@
                         ></v-text-field>
                         <p v-if="err" class="er">Неверный логин или пароль</p>
                         <v-text-field  
-                            placeholder="Password" 
+                            placeholder="Пароль" 
                             prepend-icon="mdi-lock" 
                             :type='pasType' 
                             name="password"

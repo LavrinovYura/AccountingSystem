@@ -10,7 +10,7 @@ Vue.use(Vuex)
 export const store = new Vuex.Store({
   state: {
     
-    url: 'http://6.tcp.eu.ngrok.io:14351',   
+    url: 'http://0.tcp.eu.ngrok.io:18280',   
     token: '',
     tokenType: 'Bearer',
     name: '',
@@ -53,15 +53,26 @@ export const store = new Vuex.Store({
           }
         ],
       contractCounterparties: [{ 
-          name: 'ann',
-          amount: '',
-          organization: '',
-          type: '',
-          plannedStartDate: '',
-          plannedEndDate: '',
-          actualStartDate: '',
-          actualEndDate: '',
-      }]
+        name: 'ann',
+        amount: '',
+        organization: '',
+        type: '',
+        plannedStartDate: '',
+        plannedEndDate: '',
+        actualStartDate: '',
+        actualEndDate: '',
+      },
+      { 
+        name: 'ann2',
+        amount: '',
+        organization: '',
+        type: '',
+        plannedStartDate: '',
+        plannedEndDate: '',
+        actualStartDate: '',
+        actualEndDate: '',
+    }
+    ]
   },],
 
   },

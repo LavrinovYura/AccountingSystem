@@ -35,7 +35,7 @@
             </v-container>        
             <v-divider></v-divider>
             <v-container>
-                <v-simple-table height="700px" class="table" >
+                <v-simple-table height="300px" class="table" >
                     <template  v-slot:default>
                         <thead>
                             <th v-for="item in headers" :key="item.text">
@@ -55,7 +55,7 @@
                                 <td>{{ item.actualEndDate }}</td>
                                 <td>{{ item.amount }}</td>
                                 <td><div v-for="(items,id) in item.phases" :key='id'>{{ items.name }}</div></td>
-                                <td>{{ item.contractCounterparties[0].name }}</td>
+                                <td><div v-for="(items,id) in item.contractCounterparties" :key='id'>{{ items.name }}</div></td>
                                 <td>
                                     <router-link class="btn" :to="{name:'contractPage', params: {name: `${item.name}`}}">
                                         <v-btn outlined small depressed>
@@ -168,7 +168,11 @@ export default {
 
         async getContractt() {
             try {
-                const response = await axios.get(this.$store.state.url + '/api/menu/contracts/show', 
+                const Body = {};
+                const response = await axios.post(this.$store.state.url + '/api/menu/contracts/show', 
+                
+                    Body,
+                
                 {headers: {
                     "Authorization":  "Bearer" + localStorage.token,               
                 }})

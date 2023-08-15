@@ -14,7 +14,7 @@
                             <v-col v-for="(field, index) in fields" :key="index" cols="3">
                                 <label> {{ field.label }}</label>
                                     <template v-if="field.type === 'select'">
-                                        <v-select :items="type" v-model="newContract[field.model]"></v-select>
+                                        <v-select clearable :items="type" v-model="newContract[field.model]"></v-select>
                                     </template>
                                 
                                 <template v-else>
@@ -52,8 +52,22 @@
                             <v-col v-for="(name, index) in textPhases" cols="3">
                                 <label>{{ name.name2 }}</label>
                                 <template v-if="name.model2 === 'type'">
-                                    <v-select :items="type"  v-model="agent[name.model2]"></v-select>
+                                    <v-select 
+                                    clearable :items="type" 
                                     
+                                    v-model="agent[name.model2]"></v-select>
+                                    
+                                </template>
+                                <template v-else-if="name.model2==='organization'">
+                                    <v-autocomplete 
+                                        
+                                        @input='filterAgents'
+                                        :items="filteredWords"
+                                        hide-no-data
+                                        claerable
+                                        v-model.lazy="agent[name.model2]"
+                                    ></v-autocomplete>
+
                                 </template>
                                 <template v-else>
                                     <v-text-field :type="name.type1" v-model="agent[name.model2]"></v-text-field>
@@ -61,6 +75,7 @@
                             </v-col>
                             
                         </v-row>
+                        
                         <v-btn outlined  icon color="blue" @click="addContragent"> 
                             <v-icon >mdi-plus</v-icon>
                         </v-btn>
@@ -105,7 +120,7 @@
                     <v-btn
                         color="blue darken-1"
                         text                                
-                        @click="sndNewContract(), closeDialog()"
+                        @click="sndNewContract(), closeDialog(),createNewContract()"
                         >Сохранить
                     </v-btn>
                 </v-card-actions>
@@ -179,8 +194,9 @@ export default {
                 { label: 'Фактическая дата начала', model: 'actualStartDate', type: 'date' },
                 { label: 'Фактическая дата окончания', model: 'actualEndDate', type: 'date' },
                 { label: 'Сумма договора', model: 'amount', type: 'text' }
-      ],
-            
+            ],
+            selectedWord: '',
+            filteredWords: ['one', 'two'],
             dialog2: false,
             
         }
@@ -237,11 +253,29 @@ export default {
             };
             
         },
+
+        async filterAgents() {
+            try {
+                const response = await axios.post(this.$store.state.url + '/api/menu/counterparties/show',
+                {
+                    name: this.selectedWord,},
+                {headers: {
+                    "Authorization":  "Bearer " + localStorage.token,
+                }});
+                console.log(response)
+                console.log(this.selectedWord)
+            }
+            
+            catch(e) {
+                alert('Неверно')
+                }
+        },
+
         async createNewContract() {
             try {
                 const response = await axios.post(this.$store.state.url + '/api/menu/contracts/save',
                 {
-                    name: this.newContract.name,
+                    name: "Contr5act45783",
                     type: "WORKS",
                     plannedStartDate: '2023-09-15',
                     plannedEndDate: '2023-09-30',
@@ -250,7 +284,7 @@ export default {
                     amount: 5000.0,
                     phases: [
                         {
-                            name: "Phase 1",
+                            name: "Phase 1123",
                             plannedStartDate: "2023-09-15",
                             plannedEndDate: "2023-09-30",
                             actualStartDate: "2023-05-01",
@@ -264,13 +298,9 @@ export default {
                     ],
                     contractCounterparties: [
                         {
-                            name: "Contract 1",
+                            name: "Contract 1123",
                             type: "PROCUREMENT",
-                            counterparty: {
-                                name: "Counterparty 5",
-                                address: "123 Main St",
-                                inn: "555-5555"
-                            },
+                            counterparty: {name: 'Counterparty 4'},
                             amount: 100000.0,
                             plannedStartDate: "2023-04-01",
                             plannedEndDate: "2023-05-31",
@@ -280,7 +310,7 @@ export default {
                     ],
                 },
                 {headers: {
-                    "Authorization":  "Bearer " + "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbm5ubmEifQ.8uH8-TkwiqueuYwOaA7VpFpjQZyvXZbgJWyBc99tN2E",
+                    "Authorization":  "Bearer " + localStorage.token,
                 }});
                 console.log(response)
                 
@@ -294,7 +324,7 @@ export default {
             try {
                 const response = await axios.get(this.$store.state.url + '/api/menu/contracts/show', 
                 {headers: {
-                    "Authorization":  "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbm5ubmEifQ.8uH8-TkwiqueuYwOaA7VpFpjQZyvXZbgJWyBc99tN2E",               
+                    "Authorization":  "Bearer" + localStorage.token,               
                 }})
                 console.log(response)
                 for (let i = 0; i<response.data.length; i++)  {

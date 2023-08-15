@@ -8,33 +8,26 @@
                     </v-card-title>
                     <v-card-text>
                         <section>
-                            <v-text-field placeholder="Surname" 
-                                name="surname"
-                                v-model.trim="secondName"
-                                
-                            ></v-text-field>
-                            <v-text-field placeholder="Name" 
-                                name="name"
-                                v-model.trim="firstName"
-                            ></v-text-field>
-                            <v-text-field placeholder="Middle name" 
-                                name="Middle name"
-                                v-model.trim="middleName"
-                            ></v-text-field>
-                        </section>
-                        <v-text-field placeholder="Username" 
-                            name="username"
-                            v-model="username"                            
-                        ></v-text-field>
-                        <v-text-field  
-                            placeholder="Password" 
-                            :type='pasType' 
-                            name="password"
-                            :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
-                            @click:append="showPas"
-                            v-model="password"
-                        ></v-text-field>  
-                    </v-card-text>         
+                            <span v-for="(field, index) in fields">
+                                <template v-if="field.model==='password'">
+                                    <v-text-field :placeholder=field.placeholder
+                                    :type='pasType' 
+                                    :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                                    @click:append="showPas"
+                                    v-model="user[field.model]"
+                                    >
+                                    </v-text-field>
+                                </template>
+                                <template v-else>
+                                    <v-text-field :placeholder=field.placeholder
+                                    v-model="user[field.model]"
+                                    >
+                                    </v-text-field>
+                                </template>
+                            </span>
+                    </section>
+                    </v-card-text>  
+                    {{ user }}       
                     <v-card-actions>
                         <router-link class="btn" :to="{name: 'FormEnter'}">
                             <v-btn color=" light"> Назад</v-btn>
@@ -53,6 +46,7 @@
                                 @click=addLocal()
                                 > ghbdth</v-btn>
                         </router-link>
+                        
                     </v-card-actions>
                 </v-card>
             </v-container>
@@ -76,16 +70,25 @@ import axios from 'axios';
             return {
                 showPassword: false,
                 pasType: 'password',
-                firstName: '',
-                secondName: '',
-                middleName: '',
-                password: "",
-                username: "",
                 fullname: '',
                 names: '',
                 data: 201,
                 success: false,
-                registr: '',               
+                registr: '',    
+                user: {
+                    firstName: '',
+                    secondName: '',
+                    middleName: '',
+                    password: "",
+                    username: "",
+                },
+                fields:[
+                    {placeholder: 'Имя', model: 'firstName'},
+                    {placeholder: 'Фамилия', model: 'secondName'},
+                    {placeholder: 'Отчество', model: 'middleName'},
+                    {placeholder: 'Имя Пользователя', model: 'username'},
+                    {placeholder: 'Пароль', model: 'password'}
+                ]     
             }
         },
         
@@ -102,11 +105,11 @@ import axios from 'axios';
             async registrate() {
                 try {
                     const response = await axios.post(this.$store.state.url + '/api/auth/register', {
-                        username: this.username,
-                        password: this.password,
-                        firstName: this.firstName,
-                        secondName: this.secondName,
-                        middleName: this.middleName,
+                        username: this.user.username,
+                        password: this.user.password,
+                        firstName: this.user.firstName,
+                        secondName: this.user.secondName,
+                        middleName: this.user.middleName,
                         
                     });
                     console.log(response)
@@ -135,16 +138,6 @@ import axios from 'axios';
         add() {
             setTimeout(this.goToMenu, 1000)           
         },
-        addLocal() {
-            localStorage.setItem('tok', '50');
-        },
-        
-
-        Name() {
-            this.names = this.fullname.split(' ', 2)
-            return this.names
-        },
-    
         }
     }
 </script>
