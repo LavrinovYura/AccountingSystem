@@ -2,41 +2,32 @@ export default {
     namespaced: true,
     state: {       
         headers: [
-            {
-                text: 'Название',
+            {text: 'Название',
                 align: 'start',
                 value: 'name',
             },
-            {
-                text: 'Тип',
+            {text: 'Тип',
                 value: 'type',
             },
-            {
-                text: 'Плановая дата начала',
+            {text: 'Плановая дата начала',
                 value: 'plannedStartDate',
             },
-            {
-                text: 'Плановая дата окончания',
+            {text: 'Плановая дата окончания',
                 value: 'plannedEndDate',
             },
-            {
-                text: 'Фактическая дата начала',
+            {text: 'Фактическая дата начала',
                 value: 'actualStartDate',
             },
-            {
-                text: 'Фактическая дата окончания',
+            {text: 'Фактическая дата окончания',
                 value: 'actualEndDate',
             },
-            {
-                text: 'Сумма договора',
+            {text: 'Сумма договора',
                 value: 'amount',
             },
-            {
-                text: 'Этапы',
+            {text: 'Этапы',
                 value: 'stage'
             },
-            {
-                text: 'Договор с контрагентом ',
+            {text: 'Договор с контрагентом ',
                 value: 'contract'
             }
 

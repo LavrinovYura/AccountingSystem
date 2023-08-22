@@ -74,7 +74,7 @@ export const store = new Vuex.Store({
     }
     ]
   },],
-
+    users: [],
   },
 
   getters: {
@@ -84,6 +84,12 @@ export const store = new Vuex.Store({
     contracts(state) {
       return state.contracts
     },
+    users(state) {
+      return state.users.map(user => {
+        user.roles = user.roles.reduce((accum, role) => accum + role.roleType + ' ', '');
+        return user;
+      })
+    }
   },
 
 
@@ -115,18 +121,20 @@ export const store = new Vuex.Store({
     },
 
     ADD_NEW_CONTRAGENTS(state, payload){
-        state.contragents.push(payload)
+      state.contragents.push(payload)
     },
 
       
-    
+    ADD_USERS(state,payload){
+      state.users.push(payload)
+    },
 
     ADD_NEW_CONTRACT(state, payload) {
-        state.contracts.push(payload)
+      state.contracts.push(payload)
     },
 
     ADD_ALL_CONTRACTS(state, payload){
-        state.contracts.push(payload)
+      state.contracts.push(payload)
     },
 
     DELETE_CONTRACT(state, index) {

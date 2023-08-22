@@ -308,9 +308,11 @@ export default {
 
         async getOrganization() {
             try {
+                const Body = {};
                 const response = await axios.post(this.$store.state.url + '/api/menu/counterparties/show', 
+                    Body,
                 {headers: {
-                    "Authorization":  "Bearer" + localStorage.token,                   
+                    "Authorization":  "Bearer " + localStorage.token,                   
                 }})
                 console.log(response)
                 for (let i = 0; i<response.data.length; i++)  {
@@ -332,7 +334,7 @@ export default {
                 },
 
                 {headers: {
-                    "Authorization":  "Bearer" + localStorage.token,                  
+                    "Authorization":  "Bearer " + localStorage.token,                  
                 }})
                 console.log(item.name)
                 console.log(NameDelete.name)
@@ -355,7 +357,7 @@ export default {
                 },
 
                 {headers: {
-                    "Authorization":  "Bearer" + localStorage.token,                  
+                    "Authorization":  "Bearer " + localStorage.token,                  
                 }})
                 console.log(item.name)
                 console.log(response)
@@ -394,5 +396,10 @@ h1 {
 }
 .table {
     border: 1px solid black;
+    height: 314px;
+    overflow-y: auto;
+    text-align: center;
 }
+
+
 </style>

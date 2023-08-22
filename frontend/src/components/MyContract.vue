@@ -1,6 +1,7 @@
 <template class="main">
     <v-app>   
         <section >
+        
         <my-menu></my-menu>
         </section>
         <section class="content" >
@@ -27,11 +28,30 @@
                         <v-btn class="btn"
                             outlined  
                             icon color="blue" 
+                            @click="search=!search"
                             >
                                 <v-icon >mdi-magnify</v-icon>
                         </v-btn>
                     </template>               
                 </v-row>
+                <section v-show="search" class="search">
+                    <v-row>
+                        <v-col v-for="(field, index) in fields" :key="index" cols="2,5">  
+                                                     
+                                <template class="input" v-if="field.type === 'select'">
+                                    <v-select :items="type" v-model="forSearch[field.model]"></v-select>
+                                </template>                               
+                                <template class="input" v-else>
+                                    <v-text-field  :type="field.type" v-model="forSearch[field.model]" ></v-text-field>
+                                </template>
+                                <label class="label"> {{ field.name }}</label> 
+                            </v-col>
+                    </v-row>
+                    
+                    <template>
+                        <v-btn rounded  outlined color="green">Найти</v-btn>
+                    </template>
+                </section>
             </v-container>        
             <v-divider></v-divider>
             <v-container>
@@ -45,7 +65,8 @@
                         <tbody>
                             <tr v-for="(item) in contracts"
                                 :key="item.idndex"
-                                @click="Show(item)"
+                                @click="Show(item), setActive=item.name"
+                                :class = "{'blue lighten-5': setActive===item.name}"
                                 >
                                 <td>{{ item.name}}</td>
                                 <td>{{ item.type }}</td>
@@ -94,14 +115,28 @@ export default {
         MyMenu,
         MyCreateContract,
     },
-
-    props: {
-        
-    },
-
     data() { 
-        return {           
+        return {  
+            setActive: '',    
+            forSearch: {
+                name: '',
+                type: '',
+                plannedStartDate: '',
+                plannedEndDate: '',
+                actualStartDate: '',
+                actualEndDate: '',
+                amount: '',
+            },     
             dialog2: false,
+            search: false,
+            fields: 
+            [{name: 'Название', model: 'name', type: ''},
+            {name: 'Тип', model: 'type', type: 'select'},
+            {name: 'Плановая Дата Начала', model: 'plannedStartDate', type: 'date'},
+            {name: 'Плановая дата окончания', model: 'plannedEndDate', type: 'date'},
+            {name: 'Фактическая дата начала', model: 'actualSartDate', type: 'date'},
+            {name: 'Фактическая дата окончания', model: 'actualEndDate', type: 'date'},
+            {name: 'Сумма', model: 'amount', type: ''}],
             newContract:
                 {
                     name: '',
@@ -132,7 +167,7 @@ export default {
                         actualEndDate: '',
                     }]
                 },
-            testLocal: localStorage.tok,
+                testLocal: localStorage.tok,
         }
     },
     computed:{
@@ -174,7 +209,7 @@ export default {
                     Body,
                 
                 {headers: {
-                    "Authorization":  "Bearer" + localStorage.token,               
+                    "Authorization":  "Bearer " + localStorage.token,               
                 }})
                 console.log(response)
                 for (let i = 0; i<response.data.length; i++)  {
@@ -189,7 +224,7 @@ export default {
         },
     },
 
-   activated() {
+    activated() {
       this.getContractt()
     }
 }
@@ -207,9 +242,24 @@ export default {
 }
 .table {
     border: 1px solid black;
+    overflow-y: auto;
+    width: 1500px;
 }
 th {
     width: 250px;
+}
+.search {
+    padding-top: 20px;
+}
+.label {
+    color: rgb(168, 165, 165);
+    padding-bottom: 50px;
+}
+.input{
+    padding-top: 50px;
+}
+.v-data-table_wrapper {
+    overflow-y: auto;
 }
 </style>
 
