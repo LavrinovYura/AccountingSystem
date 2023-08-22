@@ -89,7 +89,6 @@ public class ContractReportService {
                 Row row = sheet.createRow(rowNum++);
                 row.createCell(0).setCellValue(rowNum - 1);
                 row.createCell(1).setCellValue("Основной");
-                System.out.println(contract);
                 row.createCell(2).setCellValue(contract.getName());
                 row.createCell(3).setCellValue(contract.getType().name());
                 row.createCell(4).setCellValue(contract.getPlannedStartDate().toString());

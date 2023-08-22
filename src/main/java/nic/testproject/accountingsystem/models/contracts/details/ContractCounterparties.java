@@ -54,7 +54,7 @@ public class ContractCounterparties {
     @JoinColumn(name = "contract_id", referencedColumnName = "id")
     private Contract contract2;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "counterparty_id")
     private Counterparty counterparty;
 }

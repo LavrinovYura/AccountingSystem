@@ -43,9 +43,9 @@ public class CounterpartyController {
         return ResponseEntity.ok(savedCounterparty);
     }
 
-    @GetMapping("show")
+    @PostMapping("show")
     public ResponseEntity<List<CounterpartyDTO>> getCounterparties(
-            @ModelAttribute CounterpartyDTO criteria,
+            @RequestBody CounterpartyDTO criteria,
             @RequestParam(name = "page", defaultValue = "0") int page,
             @RequestParam(name = "size", defaultValue = "50") int size) {
 

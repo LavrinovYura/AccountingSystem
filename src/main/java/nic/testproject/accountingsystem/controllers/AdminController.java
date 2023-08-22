@@ -65,7 +65,7 @@ public class AdminController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("users/usersByRole")
+    @PostMapping("users/usersByRole")
     public ResponseEntity<List<UserDTO>> getUsersByRole(
             @RequestParam(name = "page", defaultValue = "0") int page,
             @RequestParam(name = "size", defaultValue = "50") int size,

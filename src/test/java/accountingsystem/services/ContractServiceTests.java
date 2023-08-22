@@ -1,6 +1,7 @@
 package accountingsystem.services;
 
 import nic.testproject.accountingsystem.Util;
+import nic.testproject.accountingsystem.dto.contracts.ContractCriteriaDTO;
 import nic.testproject.accountingsystem.dto.contracts.ContractDTO;
 import nic.testproject.accountingsystem.exceptions.ConflictException;
 import nic.testproject.accountingsystem.exceptions.ResourceNotFoundException;
@@ -56,7 +57,7 @@ public class ContractServiceTests {
     @Test
     public void testGetContracts_WhenPageIsEmpty_ThrowsResourceNotFoundException() {
         // Arrange
-        ContractDTO criteria = new ContractDTO();
+        ContractCriteriaDTO criteria = new ContractCriteriaDTO();
         Pageable pageable = Pageable.ofSize(10);
 
         when(contractRepository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(Page.empty());
@@ -68,7 +69,7 @@ public class ContractServiceTests {
     @Test
     public void testGetContracts_WhenPageIsNotEmpty_ReturnsPageOfContracts() {
         // Arrange
-        ContractDTO criteria = new ContractDTO();
+        ContractCriteriaDTO criteria = new ContractCriteriaDTO();
         Pageable pageable = Pageable.ofSize(10);
         Contract contract1 = new Contract();
         Contract contract2 = new Contract();

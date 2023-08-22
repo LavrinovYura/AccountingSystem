@@ -1,6 +1,7 @@
 package nic.testproject.accountingsystem.controllers;
 
 import nic.testproject.accountingsystem.dto.RequestName;
+import nic.testproject.accountingsystem.dto.contracts.ContractCriteriaDTO;
 import nic.testproject.accountingsystem.dto.contracts.ContractDTO;
 import nic.testproject.accountingsystem.models.contracts.Contract;
 import nic.testproject.accountingsystem.services.contracts.ContractService;
@@ -37,9 +38,9 @@ public class ContractController {
         return ResponseEntity.ok(savedContract);
     }
 
-    @GetMapping("show")
+    @PostMapping("show")
     public ResponseEntity<List<ContractDTO>> getContracts(
-            @RequestBody ContractDTO criteria,
+            @RequestBody ContractCriteriaDTO criteria,
             @RequestParam(name = "page", defaultValue = "0") int page,
             @RequestParam(name = "size", defaultValue = "50") int size) {
 

@@ -29,15 +29,6 @@ public class ContractValidation {
         if (contractRepository.existsByName(contract.getName()))
             throw new ValidationException("name", "A contract with the same name already exists");
 
-        contractCounterparties.forEach(it -> {
-            if (counterpartyRepository.existsByName(it.getCounterparty().getName()))
-                throw new ValidationException("name", "A counterparty with the same name already exists");
-
-            if (counterpartyRepository.existsByInn(it.getCounterparty().getInn()))
-                throw new ValidationException("inn", "A counterparty with the same INN already exists");
-
-        });
-
     }
 
     public void updateValidation(Contract contract, String contractDTO) {

@@ -2,6 +2,7 @@ package accountingsystem.controllers;
 
 import nic.testproject.accountingsystem.controllers.ContractController;
 import nic.testproject.accountingsystem.dto.RequestName;
+import nic.testproject.accountingsystem.dto.contracts.ContractCriteriaDTO;
 import nic.testproject.accountingsystem.dto.contracts.ContractDTO;
 import nic.testproject.accountingsystem.exceptions.ResourceNotFoundException;
 import nic.testproject.accountingsystem.models.contracts.Contract;
@@ -52,7 +53,7 @@ class ContractControllerTests {
 
     @Test
     void testGetContracts() {
-        ContractDTO criteria = new ContractDTO();
+        ContractCriteriaDTO criteria = new ContractCriteriaDTO();
         criteria.setName("test"); // Установите значение для поля name
         int page = 0;
         int size = 50;
@@ -66,7 +67,7 @@ class ContractControllerTests {
 
     @Test
     void testGetContractsNotEmpty() {
-        ContractDTO criteria = new ContractDTO();
+        ContractCriteriaDTO criteria = new ContractCriteriaDTO();
         int page = 0;
         int size = 50;
         Pageable pageable = PageRequest.of(page, size);

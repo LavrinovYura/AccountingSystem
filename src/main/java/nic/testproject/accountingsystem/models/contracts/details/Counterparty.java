@@ -29,6 +29,6 @@ public class Counterparty {
 
     @JsonIgnore
     @ToString.Exclude
-    @OneToMany(mappedBy = "counterparty",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "counterparty")
     private List<ContractCounterparties> contractCounterparties;
 }

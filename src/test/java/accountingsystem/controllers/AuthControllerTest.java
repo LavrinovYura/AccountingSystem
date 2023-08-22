@@ -6,8 +6,8 @@ import nic.testproject.accountingsystem.dto.authorization.LoginResponseDTO;
 import nic.testproject.accountingsystem.dto.authorization.RegisterDTO;
 import nic.testproject.accountingsystem.dto.authorization.RegisterResponseDTO;
 import nic.testproject.accountingsystem.models.user.Person;
-import nic.testproject.accountingsystem.security.JWT.JWTGenerator;
-import nic.testproject.accountingsystem.services.user.LoginService;
+import nic.testproject.accountingsystem.security.JWT.JWTProvider;
+import nic.testproject.accountingsystem.services.user.AuthService;
 import nic.testproject.accountingsystem.services.user.RegistrationService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,13 +31,13 @@ public class AuthControllerTest {
     private AuthenticationManager authenticationManager;
 
     @Mock
-    private JWTGenerator jwtGenerator;
+    private JWTProvider jwtProvider;
 
     @Mock
     private ModelMapper modelMapper;
 
     @Mock
-    private LoginService loginService;
+    private AuthService authService;
 
     @Mock
     private RegistrationService registrationService;
@@ -93,10 +93,10 @@ public class AuthControllerTest {
         person.setFirstName("John");
         person.setSecondName("Doe");
         person.setMiddleName("Smith");
-        when(loginService.findPersonByUsername(loginDTO.getUsername())).thenReturn(person);
+        when(authService.findPersonByUsername(loginDTO.getUsername())).thenReturn(person);
 
         String token = "testtoken";
-        when(jwtGenerator.generateToken(authentication)).thenReturn(token);
+        when(jwtProvider.generateAccessToken(authentication)).thenReturn(token);
 
         LoginResponseDTO expectedResponse = new LoginResponseDTO();
         expectedResponse.setAccessToken(token);
@@ -112,8 +112,8 @@ public class AuthControllerTest {
         assertEquals(expectedResponse, response.getBody());
 
         verify(authenticationManager, times(1)).authenticate(any(UsernamePasswordAuthenticationToken.class));
-        verify(loginService, times(1)).findPersonByUsername(loginDTO.getUsername());
-        verify(jwtGenerator, times(1)).generateToken(authentication);
-        verifyNoMoreInteractions(authenticationManager, loginService, jwtGenerator, modelMapper);
+        verify(authService, times(1)).findPersonByUsername(loginDTO.getUsername());
+        verify(jwtProvider, times(1)).generateAccessToken(authentication);
+        verifyNoMoreInteractions(authenticationManager, authService, jwtProvider, modelMapper);
     }
 }

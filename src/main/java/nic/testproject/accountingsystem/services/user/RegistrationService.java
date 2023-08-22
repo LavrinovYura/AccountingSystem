@@ -14,6 +14,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import javax.transaction.Transactional;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Collections;
 import java.util.Date;
 
@@ -25,7 +28,7 @@ public class RegistrationService {
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
 
-    @Value("${RegistrationService.USER_DATE_EXPIRE}")
+    @Value("${RegistrationService.user.expiration}")
     private long EXPIRE_DATE;
 
     @Autowired
@@ -50,8 +53,9 @@ public class RegistrationService {
         person.setSecondName(StringUtils.capitalize(registerDTO.getSecondName().trim()));
         person.setMiddleName(StringUtils.capitalize(registerDTO.getMiddleName().trim()));
 
-        Date date = new Date();
-        person.setExpireDate(new Date(date.getTime() + EXPIRE_DATE));
+        LocalDateTime now = LocalDateTime.now();
+        Instant userExpireInstant = now.plusDays(EXPIRE_DATE).atZone(ZoneId.systemDefault()).toInstant();
+        person.setExpireDate(Date.from(userExpireInstant));
 
         Role role = roleRepository.findByRoleType(RoleType.USER);
         person.setRoles(Collections.singleton(role));
