@@ -52,9 +52,6 @@ import axios from 'axios';
 import { mapGetters, mapMutations } from 'vuex';
 export default {
     name: 'MyFormEnter',
-    props: {
-        
-    },
 
     data() {
         return {
@@ -66,9 +63,6 @@ export default {
             
             registr: '',
             err: false,
-            
-            
-            
         }
     },
     
@@ -118,8 +112,6 @@ export default {
                 this.username=''
                 this.password=''
             }     
-              
-            
         },
         
         Add() {
@@ -130,8 +122,6 @@ export default {
     activated() {
         this.success = false,
         this.err=false
-        
-
     },
 
     computed: {

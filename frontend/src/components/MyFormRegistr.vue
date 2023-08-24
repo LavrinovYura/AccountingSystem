@@ -26,8 +26,7 @@
                                 </template>
                             </span>
                     </section>
-                    </v-card-text>  
-                    {{ user }}       
+                    </v-card-text>      
                     <v-card-actions>
                         <router-link class="btn" :to="{name: 'FormEnter'}">
                             <v-btn color=" light"> Назад</v-btn>

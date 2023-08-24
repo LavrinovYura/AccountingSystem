@@ -32,7 +32,29 @@
                             >
                                 <v-icon >mdi-magnify</v-icon>
                         </v-btn>
-                    </template>               
+                    </template>  
+                    <v-dialog v-model="dialogDelete" 
+                    persistent
+                    max-width="350px">
+                    <template v-slot:activator="{ on, attrs }">
+                        <v-btn outlined
+                        class="btn"  
+                            icon color="red"
+                            v-bind="attrs" 
+                            v-on="on">
+                                <v-icon>mdi-delete</v-icon>
+                        </v-btn>
+                    </template>
+                    <v-card>
+                        <v-card-text>
+                            Вы уверены, что хотите удалить контракт?
+                        </v-card-text>
+                        <v-card-actions>
+                            <v-btn @click="dialogDelete=!dialogDelete">Отмена</v-btn>
+                            <v-btn @click="dialogDelete=!dialogDelete">Удалить</v-btn>
+                        </v-card-actions>
+                    </v-card>
+                    </v-dialog>             
                 </v-row>
                 <section v-show="search" class="search">
                     <v-row>
@@ -52,6 +74,7 @@
                         <v-btn rounded  outlined color="green">Найти</v-btn>
                     </template>
                 </section>
+                
             </v-container>        
             <v-divider></v-divider>
             <v-container>
@@ -110,7 +133,7 @@ import { mapGetters, mapMutations,mapActions } from 'vuex';
 import MyMenu from '../components/MyMenu.vue';
 import MyCreateContract from '../components/MyCreateContract.vue';
 export default {
-    name: 'MyContract',
+    
     components: {
         MyMenu,
         MyCreateContract,
@@ -168,6 +191,7 @@ export default {
                     }]
                 },
                 testLocal: localStorage.tok,
+                dialogDelete: false,
         }
     },
     computed:{
