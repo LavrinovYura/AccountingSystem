@@ -10,11 +10,11 @@ import java.util.Set;
 @Data
 public class ContractDTO extends AbstractContract{
 
-    private long id;
+    private Long id;
 
     @NotBlank
     private Set<ContractPhaseDTO> phases;
 
     @NotBlank
-    private Set<ContractCounterpartiesDTO> contractCounterparties;
+    private Set<ContractCounterpartyDTO> contractCounterparties;
 }

@@ -6,6 +6,7 @@ import javax.validation.constraints.NotBlank;
 
 @Data
 public class CounterpartyDTO {
+
     private Long id;
 
     @NotBlank(message = "Please enter name of counterparty")

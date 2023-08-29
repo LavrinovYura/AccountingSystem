@@ -2,9 +2,7 @@ package nic.testproject.accountingsystem.models.contracts.details;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import nic.testproject.accountingsystem.models.contracts.Contract;
 
 import javax.persistence.Entity;
@@ -22,7 +20,8 @@ import java.time.LocalDate;
 
 @Entity
 @Table(name = "contract_phases")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 public class ContractPhase {
     @Id
