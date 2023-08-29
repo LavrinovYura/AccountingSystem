@@ -19,7 +19,7 @@ public class RestExceptionHandler {
     public ResponseEntity<ErrorResponse> handleResourceNotFoundException(ResourceNotFoundException exception) {
         String message = exception.getMessage();
         return new ResponseEntity<>(new ErrorResponse(message), HttpStatus.NOT_FOUND);
-    }
+}
 
     @ExceptionHandler(ConflictException.class)
     public ResponseEntity<ErrorResponse> handleConflictException(ConflictException exception) {

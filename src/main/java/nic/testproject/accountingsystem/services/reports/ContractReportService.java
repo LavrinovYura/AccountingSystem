@@ -9,7 +9,13 @@ import nic.testproject.accountingsystem.repositories.contracts.projections.Contr
 import nic.testproject.accountingsystem.repositories.contracts.projections.ContractPhaseProjection;
 import nic.testproject.accountingsystem.repositories.contracts.projections.ContractProjection;
 import nic.testproject.accountingsystem.repositories.contracts.projections.ContractWithPhasesProjection;
-import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.FillPatternType;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +24,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
+
+import static org.apache.poi.ss.usermodel.BorderStyle.MEDIUM;
+import static org.apache.poi.ss.usermodel.BorderStyle.THIN;
 
 @Service
 public class ContractReportService {
@@ -37,7 +46,7 @@ public class ContractReportService {
             List<ContractCounterpartiesProjection> contractsCounterparties = contracts.getContractCounterparties();
 
             contractsCounterparties.forEach(it -> {
-                if (!contractsMain.contains(it.getContract2())) contractsMain.add(it.getContract2());
+                if (!contractsMain.contains(it.getContract())) contractsMain.add(it.getContract());
             });
 
             Sheet sheet = workbook.createSheet("Contracts");
@@ -171,9 +180,9 @@ public class ContractReportService {
     private CellStyle createCellStyle(Workbook workbook) {
         CellStyle cellStyle = workbook.createCellStyle();
         cellStyle.setAlignment(HorizontalAlignment.CENTER);
-        cellStyle.setBorderBottom(BorderStyle.THIN);
-        cellStyle.setBorderLeft(BorderStyle.MEDIUM);
-        cellStyle.setBorderRight(BorderStyle.MEDIUM);
+        cellStyle.setBorderBottom(THIN);
+        cellStyle.setBorderLeft(MEDIUM);
+        cellStyle.setBorderRight(MEDIUM);
         return cellStyle;
     }
 
@@ -183,24 +192,26 @@ public class ContractReportService {
         headerStyle.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
         headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
         headerStyle.setWrapText(true);
-        headerStyle.setBorderTop(BorderStyle.MEDIUM);
-        headerStyle.setBorderBottom(BorderStyle.MEDIUM);
-        headerStyle.setBorderLeft(BorderStyle.MEDIUM);
-        headerStyle.setBorderRight(BorderStyle.MEDIUM);
+        headerStyle.setBorderTop(MEDIUM);
+        headerStyle.setBorderBottom(MEDIUM);
+        headerStyle.setBorderLeft(MEDIUM);
+        headerStyle.setBorderRight(MEDIUM);
         return headerStyle;
     }
 
     public AllContracts getAllContractsByPeriod(LocalDate startDate, LocalDate endDate) {
-        if (endDate.isBefore(startDate))
+        if (endDate.isBefore(startDate)) {
             throw new ConflictException("End date can't be before start date");
+        }
 
         List<ContractProjection> contracts = contractRepository
                 .findByPlannedStartDateBetween(startDate, endDate);
         List<ContractCounterpartiesProjection> contractCounterparties = contractCounterpartyRepository
                 .findByPlannedStartDateBetween(startDate, endDate);
 
-        if (contracts.isEmpty() || contractCounterparties.isEmpty())
+        if (contracts.isEmpty() || contractCounterparties.isEmpty()) {
             throw new ResourceNotFoundException("There is no contracts in this period");
+        }
 
         return new AllContracts(contracts, contractCounterparties);
     }

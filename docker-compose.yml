@@ -14,7 +14,6 @@ services:
           - db:/var/lib/mysql
 
   app:
-    image: openjdk:8-jdk-alpine
     container_name: accounting-app
     env_file: ./.env
     build:

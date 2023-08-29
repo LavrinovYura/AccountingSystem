@@ -31,8 +31,11 @@ public class AdminService {
 
     public Page<Person> getUsers(Pageable pageable) {
         Page<Person> page = personRepository.findAll(pageable);
-        if (page.isEmpty())
+
+        if (page.isEmpty()) {
             throw new EntityNotFoundException("No users in database");
+        }
+
         return page;
     }
 
@@ -41,55 +44,48 @@ public class AdminService {
 
         Page<Person> page = personRepository.findAllByRoles(role, pageable);
 
-        if (page.isEmpty())
+        if (page.isEmpty()) {
             throw new EntityNotFoundException("There are no users with this role in the database");
+        }
 
         return page;
     }
 
-
     public void deleteUser(String name) {
-        Optional<Person> optionalPerson = personRepository.findByUsername(name);
-        if (!optionalPerson.isPresent())
-            throw new ResourceNotFoundException("There is no person with name" + name);
+        Person person = personRepository.findByUsername(name)
+                .orElseThrow(() -> new ResourceNotFoundException("There is no person with name" + name));
 
-        personRepository.delete(optionalPerson.get());
+        personRepository.delete(person);
     }
 
     public void addRole(String type, String name) {
-        Optional<Person> optionalPerson = personRepository.findByUsername(name);
+        Person person = personRepository.findByUsername(name)
+                .orElseThrow(() -> new ResourceNotFoundException("There is no person with name" + name));
+
         Role role = getRoleByType(type);
 
-        if (optionalPerson.isPresent()) {
-            Person person = optionalPerson.get();
-
-            if (person.getRoles().contains(role)) {
-                throw new ConflictException("This person already has this role.");
-            }
-
-            person.getRoles().add(role);
-            personRepository.save(person);
-        } else {
-            throw new ResourceNotFoundException("There is no person with name" + name);
+        if (person.getRoles().contains(role)) {
+            throw new ConflictException("This person already has this role.");
         }
+
+        person.getRoles().add(role);
+        personRepository.save(person);
     }
 
     public void removeRole(String type, String name) {
-        Optional<Person> optionalPerson = personRepository.findByUsername(name);
+        Person person = personRepository.findByUsername(name)
+                .orElseThrow(() -> new ConflictException("This person doesn't have this role"));
         Role role = getRoleByType(type);
 
-        if (optionalPerson.isPresent()) {
-            Person person = optionalPerson.get();
 
-            if (person.getRoles().stream().noneMatch(r -> r.equals(role))) {
-                throw new ConflictException("This person doesn't have this role");
-            }
-            person.getRoles().remove(role);
-
-            personRepository.save(person);
-        } else {
-            throw new ResourceNotFoundException("There is no person with name" + name);
+        if (person.getRoles().stream().noneMatch(role::equals)) {
+            throw new ConflictException("This person doesn't have this role");
         }
+
+        person.getRoles().remove(role);
+
+        personRepository.save(person);
+
     }
 
     private Role getRoleByType(String type) {

@@ -1,19 +1,17 @@
 package nic.testproject.accountingsystem.dto.contracts;
 
 import lombok.Data;
-import nic.testproject.accountingsystem.models.contracts.ContractType;
+import lombok.EqualsAndHashCode;
 
-import java.time.LocalDate;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
-public class ContractCounterpartiesDTO {
-    private String name;
-    private ContractType type;
-    private Double amount;
-    private LocalDate plannedStartDate;
-    private LocalDate plannedEndDate;
-    private LocalDate actualStartDate;
-    private LocalDate actualEndDate;
+public class ContractCounterpartiesDTO extends AbstractContract{
+
+    private Long id;
 
     private CounterpartyDTO counterparty;
+
 }

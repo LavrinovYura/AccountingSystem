@@ -1,12 +1,11 @@
 package accountingsystem.services;
 
-import nic.testproject.accountingsystem.Util;
 import nic.testproject.accountingsystem.dto.contracts.ContractCriteriaDTO;
 import nic.testproject.accountingsystem.dto.contracts.ContractDTO;
 import nic.testproject.accountingsystem.exceptions.ConflictException;
 import nic.testproject.accountingsystem.exceptions.ResourceNotFoundException;
 import nic.testproject.accountingsystem.models.contracts.Contract;
-import nic.testproject.accountingsystem.models.contracts.details.ContractCounterparties;
+import nic.testproject.accountingsystem.models.contracts.details.ContractCounterparty;
 import nic.testproject.accountingsystem.repositories.contracts.ContractRepository;
 import nic.testproject.accountingsystem.services.contracts.ContractService;
 import nic.testproject.accountingsystem.validation.ContractValidation;
@@ -246,8 +245,8 @@ public class ContractServiceTests {
         // Arrange
         String name = "Contract Name";
         Contract contract = new Contract();
-        ContractCounterparties contractCounterparty1 = new ContractCounterparties();
-        ContractCounterparties contractCounterparty2 = new ContractCounterparties();
+        ContractCounterparty contractCounterparty1 = new ContractCounterparty();
+        ContractCounterparty contractCounterparty2 = new ContractCounterparty();
 
         Optional<Contract> optionalContract = Optional.of(contract);
 

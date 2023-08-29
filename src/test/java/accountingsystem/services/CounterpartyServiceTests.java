@@ -4,7 +4,7 @@ import nic.testproject.accountingsystem.dto.contracts.CounterpartyDTO;
 import nic.testproject.accountingsystem.exceptions.ConflictException;
 import nic.testproject.accountingsystem.exceptions.ResourceNotFoundException;
 import nic.testproject.accountingsystem.exceptions.ValidationException;
-import nic.testproject.accountingsystem.models.contracts.details.ContractCounterparties;
+import nic.testproject.accountingsystem.models.contracts.details.ContractCounterparty;
 import nic.testproject.accountingsystem.models.contracts.details.Counterparty;
 import nic.testproject.accountingsystem.repositories.contracts.CounterpartyRepository;
 import nic.testproject.accountingsystem.services.contracts.CounterpartyService;
@@ -186,7 +186,7 @@ public class CounterpartyServiceTests {
         // Arrange
         String name = "ExistingName";
         Counterparty existingCounterparty = new Counterparty();
-        List<ContractCounterparties> counterparties = new ArrayList<>();
+        List<ContractCounterparty> counterparties = new ArrayList<>();
         existingCounterparty.setName(name);
         existingCounterparty.setContractCounterparties(counterparties);
         Optional<Counterparty> optionalCounterparty = Optional.of(existingCounterparty);

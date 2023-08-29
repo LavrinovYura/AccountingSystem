@@ -1,13 +1,22 @@
 package nic.testproject.accountingsystem.controllers;
 
-import nic.testproject.accountingsystem.dto.authorization.*;
+import nic.testproject.accountingsystem.dto.authorization.JwtResponse;
+import nic.testproject.accountingsystem.dto.authorization.LoginDTO;
+import nic.testproject.accountingsystem.dto.authorization.LoginResponseDTO;
+import nic.testproject.accountingsystem.dto.authorization.RefreshJwtRequest;
+import nic.testproject.accountingsystem.dto.authorization.RegisterDTO;
+import nic.testproject.accountingsystem.dto.authorization.RegisterResponseDTO;
 import nic.testproject.accountingsystem.services.user.AuthService;
 import nic.testproject.accountingsystem.services.user.RegistrationService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @CrossOrigin
 @RestController
