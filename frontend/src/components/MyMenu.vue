@@ -18,7 +18,7 @@
                             </v-list-item-subtitle>
                             <div>   
                                 <router-link class="btn" :to="{name: 'FormEnter'}">
-                                    <v-btn flat small
+                                    <v-btn small
                                     @click="clearToken"> Выйти </v-btn>
                                 </router-link> 
                             </div> 

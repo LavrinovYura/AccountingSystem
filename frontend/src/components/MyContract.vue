@@ -5,7 +5,7 @@
         <my-menu></my-menu>
         </section>
         <section class="content" >
-        <h1>Контракты</h1>
+        <h1>Контракты</h1> {{ choiceName }}
         <v-divider></v-divider>
             <v-container>
                 <v-row>
@@ -23,7 +23,24 @@
                             </v-btn>
                         </template>
                         <my-create-contract></my-create-contract>
-                    </v-dialog>               
+                    </v-dialog>    
+                    <v-dialog 
+                        v-model="$store.state.dialog8"
+                        persistent
+                        max-width="1000px">
+                        <template v-slot:activator="{ on, attrs }"> 
+                            <v-btn class="btn"
+                                outlined  
+                                icon color="blue" 
+                                v-bind="attrs" 
+                                v-on="on">
+                                    <v-icon >mdi-pencil</v-icon>
+                            </v-btn>
+                        </template>
+                        <my-edit-contract
+                            :EditContract='choiceName'
+                        ></my-edit-contract>
+                    </v-dialog>            
                     <template>
                         <v-btn class="btn"
                             outlined  
@@ -74,7 +91,24 @@
                         <v-btn rounded  outlined color="green">Найти</v-btn>
                     </template>
                 </section>
-                
+                <v-dialog 
+                        v-model="$store.state.dialog7"
+                        persistent
+                        max-width="1000px">
+                        <template v-slot:activator="{ on, attrs }"> 
+                            <v-btn class="btn"
+                                 
+                                small
+                                v-bind="attrs" 
+                                v-on="on">
+                                    Просмотр
+                            </v-btn>
+                        </template>
+                        <my-edit-contract
+                            :EditContract='choiceName'
+                            :disabled="true"
+                        ></my-edit-contract>
+                    </v-dialog>     
             </v-container>        
             <v-divider></v-divider>
             <v-container>
@@ -88,7 +122,7 @@
                         <tbody>
                             <tr v-for="(item) in contracts"
                                 :key="item.idndex"
-                                @click="Show(item), setActive=item.name"
+                                @click="Show(item), setActive=item.name, choiceName= item"
                                 :class = "{'blue lighten-5': setActive===item.name}"
                                 >
                                 <td>{{ item.name}}</td>
@@ -131,15 +165,18 @@
 <script>
 import { mapGetters, mapMutations,mapActions } from 'vuex';
 import MyMenu from '../components/MyMenu.vue';
+import MyEditContract from '../components/MyEditContract.vue';
 import MyCreateContract from '../components/MyCreateContract.vue';
 export default {
     
     components: {
         MyMenu,
+        MyEditContract,
         MyCreateContract,
     },
     data() { 
-        return {  
+        return { 
+            choiceName: '', 
             setActive: '',    
             forSearch: {
                 name: '',
@@ -248,7 +285,7 @@ export default {
         },
     },
 
-    activated() {
+    created() {
       this.getContractt()
     }
 }

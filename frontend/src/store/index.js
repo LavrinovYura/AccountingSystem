@@ -10,7 +10,7 @@ Vue.use(Vuex)
 export const store = new Vuex.Store({
   state: {
     
-    url: 'http://0.tcp.eu.ngrok.io:18280',   
+    url: 'http://0.tcp.eu.ngrok.io:19385',   
     token: '',
     tokenType: 'Bearer',
     name: '',
@@ -18,24 +18,26 @@ export const store = new Vuex.Store({
     surname: '',
     dialog1: false,
     dialog8: false,
+    dialog7: false,
     contragents: [{
+      id: 0,
       name: 'ann',
       inn: "fgnhn",
       address: 'dfvdf'
       }],
     contracts: [{
       name: 'ann',
-      type: '',
+      type: 'WORKS',
       plannedStartDate: '',
       plannedEndDate: '',
-      actualStartDate: '',
-      actualEndDate: '',
-      amount: '',
+      actualStartDate: '2023-05-07',
+      actualEndDate: '2023-05-07',
+      amount: 1000,
       phases: [{ 
           name: 'phasa1',
-          amount: '50005',
-          planAmount: '',
-          factAmount: '',
+          amount: 50005,
+          planAmount: 222,
+          factAmount: 333,
           plannedStartDate: '',
           plannedEndDate: '',
           actualStartDate: '',
@@ -43,9 +45,9 @@ export const store = new Vuex.Store({
           },
           {
             name: 'phasa2',
-            amount: '50005',
-            planAmount: '',
-            factAmount: '',
+            amount: 50005,
+            planAmount: 777,
+            factAmount: 666,
             plannedStartDate: '',
             plannedEndDate: '',
             actualStartDate: '',
@@ -53,10 +55,10 @@ export const store = new Vuex.Store({
           }
         ],
       contractCounterparties: [{ 
-        name: 'ann',
-        amount: '',
-        organization: '',
-        type: '',
+        name: 'ann1',
+        amount: 777,
+        organization: 'ann',
+        type: 'WORKS',
         plannedStartDate: '',
         plannedEndDate: '',
         actualStartDate: '',
@@ -114,6 +116,7 @@ export const store = new Vuex.Store({
     CLOSE_DIALOG(state) {
       state.dialog1 = false
       state.dialog8 = false
+      state.dialog7 = false
     },
 
     ADD_ALL_CONTRAGENTS(state, payload){

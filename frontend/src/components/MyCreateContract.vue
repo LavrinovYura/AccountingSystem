@@ -7,7 +7,7 @@
                     </span>
                 </v-card-title>
                 <v-card-text>
-
+ 
                     <v-divider></v-divider>
                     <template>
                         <v-row>
@@ -123,6 +123,7 @@
                         @click="sndNewContract(), closeDialog(),createNewContract()"
                         >Сохранить
                     </v-btn>
+                     
                 </v-card-actions>
             </v-card>
             

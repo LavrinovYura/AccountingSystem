@@ -117,7 +117,7 @@
                     </template>
                     <v-card>
                         <v-card-title> Редактировать Организацию-Контрагента</v-card-title>
-                        <v-card-text v-for="(item, name, id) in  NameDelete">
+                        <v-card-text v-if="name!='id'" v-for="(item, name, id) in  NameDelete">
                             <label> {{ name }}
                             <v-text-field 
                                 :name="name"
@@ -227,18 +227,20 @@ export default {
 
     data() {
         return {
-            headers:['Название', 'Адрес', 'ИНН'],
+            headers:['ID', 'Название', 'Адрес', 'ИНН'],
             dialog1: false,
             dialog2: false,
             dialog3: false,
             dialogDelete: false,
             setActive: '',
             NameDelete: {
+                id: '',
                 name: '',
                 address: '',
                 inn: ''
             },
             Agents: {
+                 
                 name: '',
                 address: '',
                 inn: ''
@@ -279,6 +281,7 @@ export default {
         Show(item) {
             console.log(item.name)
             this.NameDelete = item
+            console.log(this.NameDelete.id)
         },
 
 
@@ -328,10 +331,8 @@ export default {
 
         async deleteOrganization() {
             try {
-                const response = await axios.delete(this.$store.state.url + '/api/menu/counterparties/delete',
-                {
-                    name: this.NameDelete.name
-                },
+                const response = await axios.delete(this.$store.state.url + '/api/menu/counterparties/' + this.NameDelete.id + '/delete',
+                
 
                 {headers: {
                     "Authorization":  "Bearer " + localStorage.token,                  
@@ -370,7 +371,8 @@ export default {
 
         
     }, 
-    activated() {
+    mounted() { 
+        
         this.getOrganization()
     }
 }

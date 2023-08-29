@@ -33,7 +33,7 @@ export default {
 
         ],
         contracts: [],
-        type: ['Закупка', "Поставка", "Работы"],
+        type: ['WORKS', "DELIVERY", "PROCEREMENT"],
         
 
         
