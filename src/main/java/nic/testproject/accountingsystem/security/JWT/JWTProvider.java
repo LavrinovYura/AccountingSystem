@@ -75,23 +75,14 @@ public class JWTProvider {
     }
 
     public boolean validateToken(@NonNull String token, @NonNull SecretKey secret) {
-        try {
+
             Jwts
                     .parserBuilder()
                     .setSigningKey(secret)
                     .build()
                     .parseClaimsJws(token);
             return true;
-        } catch (ExpiredJwtException expEx) {
-            log.error("Token expired", expEx);
-        } catch (UnsupportedJwtException unsEx) {
-            log.error("Unsupported jwt", unsEx);
-        } catch (MalformedJwtException mjEx) {
-            log.error("Malformed jwt", mjEx);
-        } catch (Exception e) {
-            log.error("invalid token", e);
-        }
-        return false;
+
     }
     public Claims getAccessClaims(@NonNull String token) {
         return getClaims(token, jwtAccessSecret);

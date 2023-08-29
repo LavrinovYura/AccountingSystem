@@ -1,5 +1,6 @@
 package nic.testproject.accountingsystem.exceptions;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.http.HttpStatus;
@@ -32,7 +33,11 @@ public class RestExceptionHandler {
         String message = exception.getMessage();
         return new ResponseEntity<>(new ErrorResponse(message), HttpStatus.UNAUTHORIZED);
     }
-
+    @ExceptionHandler(ExpiredJwtException.class)
+    public ResponseEntity<ErrorResponse> jwtException(ExpiredJwtException exception) {
+        String message = exception.getMessage();
+        return new ResponseEntity<>(new ErrorResponse(message), HttpStatus.UNAUTHORIZED);
+    }
     @ExceptionHandler(ValidationException.class)
     public ResponseEntity<ErrorResponse> handleValidationException(ValidationException exception) {
         String message = exception.getMessage();

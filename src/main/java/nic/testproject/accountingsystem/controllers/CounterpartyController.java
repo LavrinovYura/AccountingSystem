@@ -71,7 +71,7 @@ public class CounterpartyController {
         return ResponseEntity.ok(counterparty);
     }
 
-    @DeleteMapping("/{id}/delete")
+    @DeleteMapping("{id}/delete")
     public ResponseEntity<Void> deleteCounterparty(@PathVariable Long id) {
         counterpartyService.deleteCounterparty(id);
         return ResponseEntity.ok().build();

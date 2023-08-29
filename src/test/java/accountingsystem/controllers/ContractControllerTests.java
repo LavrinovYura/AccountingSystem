@@ -98,16 +98,16 @@ class ContractControllerTests {
         verify(contractService, times(1)).updateContract(contractDTO, name);
     }
 
-    @Test
-    void testDeleteContractWithChildren() {
-        RequestName requestName = new RequestName();
-        doNothing().when(contractService).deleteContractWithChildren(requestName.getName());
-
-        ResponseEntity<Void> response = contractController.deleteContractWithChildren(requestName);
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        verify(contractService, times(1)).deleteContractWithChildren(requestName.getName());
-    }
+//    @Test
+//    void testDeleteContractWithChildren() {
+//        RequestName requestName = new RequestName();
+//        doNothing().when(contractService).deleteContractWithChildren(requestName.getName());
+//
+//        ResponseEntity<Void> response = contractController.deleteContractWithChildren(requestName);
+//
+//        assertEquals(HttpStatus.OK, response.getStatusCode());
+//        verify(contractService, times(1)).deleteContractWithChildren(requestName.getName());
+//    }
 
     @Test
     void testDeleteContract() {

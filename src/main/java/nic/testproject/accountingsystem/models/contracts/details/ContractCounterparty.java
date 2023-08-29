@@ -67,10 +67,4 @@ public class ContractCounterparty {
     @ManyToOne()
     @JoinColumn(name = "counterparty_id", referencedColumnName = "id")
     private Counterparty counterparty;
-
-    @PrePersist
-    public void check(){
-        System.out.println(this.contract);
-        System.out.println(contract);
-    }
 }

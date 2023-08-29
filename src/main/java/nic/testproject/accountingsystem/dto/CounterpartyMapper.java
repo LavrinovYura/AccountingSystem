@@ -9,8 +9,8 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 
 @Mapper(componentModel = "spring")
 public interface CounterpartyMapper {
-
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     Counterparty updateCounterpartyFromDto(CounterpartyDTO dto, @MappingTarget Counterparty entity);
 
+    Counterparty counterpartyDTOtoCounterparty(CounterpartyDTO counterpartyDTO);
 }

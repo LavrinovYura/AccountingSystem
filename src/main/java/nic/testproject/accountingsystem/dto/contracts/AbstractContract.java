@@ -18,7 +18,7 @@ abstract class AbstractContract {
     @NotBlank(message = "Please enter contract name")
     private String name;
 
-    @Enumerated(EnumType.STRING)
+    @Enumerated
     @NotNull(message = "Please enter contract type")
     private ContractType type;
 
