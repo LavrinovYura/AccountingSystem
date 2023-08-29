@@ -1,7 +1,6 @@
 package nic.testproject.accountingsystem.services.contracts.specs;
 
 import nic.testproject.accountingsystem.dto.contracts.ContractCriteriaDTO;
-import nic.testproject.accountingsystem.dto.contracts.ContractDTO;
 import nic.testproject.accountingsystem.models.contracts.Contract;
 import org.springframework.data.jpa.domain.Specification;
 

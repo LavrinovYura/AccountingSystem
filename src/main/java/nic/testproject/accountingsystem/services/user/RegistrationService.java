@@ -41,8 +41,9 @@ public class RegistrationService {
     public Person register(RegisterDTO registerDTO){
         String username = registerDTO.getUsername();
 
-        if (personRepository.existsByUsername(username))
+        if (personRepository.existsByUsername(username)) {
             throw new ConflictException("Username " + username + " already taken");
+        }
 
         Person person = new Person();
 

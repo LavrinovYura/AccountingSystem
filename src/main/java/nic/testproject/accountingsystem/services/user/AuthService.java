@@ -11,8 +11,6 @@ import nic.testproject.accountingsystem.exceptions.ValidationException;
 import nic.testproject.accountingsystem.models.user.Person;
 import nic.testproject.accountingsystem.repositories.user.PersonRepository;
 import nic.testproject.accountingsystem.security.JWT.JWTProvider;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -21,7 +19,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -32,7 +29,7 @@ public class AuthService {
     private final PersonRepository personRepository;
     private final Map<String, String> refreshStorage = new HashMap<>();
 
-    public LoginResponseDTO login(LoginDTO loginDTO){
+    public LoginResponseDTO login(LoginDTO loginDTO) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginDTO.getUsername(), loginDTO.getPassword()));
 
@@ -69,6 +66,7 @@ public class AuthService {
         }
         return new JwtResponse(null, null);
     }
+
     public JwtResponse refreshTokens(@NonNull String refreshToken) {
         if (jwtProvider.validateRefreshToken(refreshToken)) {
             Claims claims = jwtProvider.getRefreshClaims(refreshToken);
@@ -85,10 +83,9 @@ public class AuthService {
         }
         throw new ValidationException("Token", "Невалидный JWT токен");
     }
-    public Person findPersonByUsername(String username){
-        Optional<Person> optionalPerson = personRepository.findByUsername(username);
-        if(!optionalPerson.isPresent())
-            throw new UserNotFoundException("There is no person with name" + username);
-        return optionalPerson.get();
+
+    public Person findPersonByUsername(String username) {
+        return personRepository.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException("There is no person with name" + username));
     }
 }

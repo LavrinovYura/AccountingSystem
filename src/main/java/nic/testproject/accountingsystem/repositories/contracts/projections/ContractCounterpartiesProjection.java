@@ -12,5 +12,5 @@ public interface ContractCounterpartiesProjection {
     LocalDate getActualStartDate();
     LocalDate getActualEndDate();
     ContractType getType();
-    ContractProjection getContract2();
+    ContractProjection getContract();
 }

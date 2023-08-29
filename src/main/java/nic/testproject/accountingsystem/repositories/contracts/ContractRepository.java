@@ -18,5 +18,4 @@ public interface ContractRepository extends JpaRepository<Contract, Long>, JpaSp
     Optional<ContractWithPhasesProjection> findByName(String name);
     Optional<Contract> findContractByName(String name);
     List<ContractProjection> findByPlannedStartDateBetween(LocalDate startDate, LocalDate endDate);
-
 }
