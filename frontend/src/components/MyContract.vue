@@ -5,7 +5,7 @@
         <my-menu></my-menu>
         </section>
         <section class="content" >
-        <h1>Контракты</h1> {{ choiceName }}
+        <h1>Контракты</h1> {{ choiceName.id }}
         <v-divider></v-divider>
             <v-container>
                 <v-row>
@@ -52,7 +52,7 @@
                     </template>  
                     <v-dialog v-model="dialogDelete" 
                     persistent
-                    max-width="350px">
+                    max-width="450px">
                     <template v-slot:activator="{ on, attrs }">
                         <v-btn outlined
                         class="btn"  
@@ -68,10 +68,30 @@
                         </v-card-text>
                         <v-card-actions>
                             <v-btn @click="dialogDelete=!dialogDelete">Отмена</v-btn>
-                            <v-btn @click="dialogDelete=!dialogDelete">Удалить</v-btn>
+                            <v-btn @click="dialogDelete=!dialogDelete, deleteContractt()">Удалить</v-btn>
+                            <v-btn @click="dialogDelete=!dialogDelete, deleteAllContractt()">Удалить c агентом</v-btn>
                         </v-card-actions>
                     </v-card>
-                    </v-dialog>             
+                    </v-dialog> 
+                    <v-col>
+                    <v-dialog 
+                        v-model="$store.state.dialog7"
+                        persistent
+                        max-width="1000px">
+                        <template v-slot:activator="{ on, attrs }"> 
+                            <v-btn class="btn"
+                                 
+                                small
+                                v-bind="attrs" 
+                                v-on="on">
+                                    Просмотр
+                            </v-btn>
+                        </template>
+                        <my-edit-contract
+                            :EditContract='choiceName'
+                            :disabled="true"
+                        ></my-edit-contract>
+                    </v-dialog> </v-col>                
                 </v-row>
                 <section v-show="search" class="search">
                     <v-row>
@@ -91,24 +111,7 @@
                         <v-btn rounded  outlined color="green">Найти</v-btn>
                     </template>
                 </section>
-                <v-dialog 
-                        v-model="$store.state.dialog7"
-                        persistent
-                        max-width="1000px">
-                        <template v-slot:activator="{ on, attrs }"> 
-                            <v-btn class="btn"
-                                 
-                                small
-                                v-bind="attrs" 
-                                v-on="on">
-                                    Просмотр
-                            </v-btn>
-                        </template>
-                        <my-edit-contract
-                            :EditContract='choiceName'
-                            :disabled="true"
-                        ></my-edit-contract>
-                    </v-dialog>     
+                
             </v-container>        
             <v-divider></v-divider>
             <v-container>
@@ -134,13 +137,6 @@
                                 <td>{{ item.amount }}</td>
                                 <td><div v-for="(items,id) in item.phases" :key='id'>{{ items.name }}</div></td>
                                 <td><div v-for="(items,id) in item.contractCounterparties" :key='id'>{{ items.name }}</div></td>
-                                <td>
-                                    <router-link class="btn" :to="{name:'contractPage', params: {name: `${item.name}`}}">
-                                        <v-btn outlined small depressed>
-                                            Открыть
-                                        </v-btn>
-                                    </router-link>
-                                </td>
                             </tr>
                         </tbody>
                     </template>
@@ -283,6 +279,50 @@ export default {
                 alert('Error is true')
             }      
         },
+
+        async deleteContractt() {
+            try {
+                
+                const response = await axios.delete(this.$store.state.url + '/api/menu/contracts/' + this.choiceName.id + '/delete' ,
+                
+                   
+                
+                {headers: {
+                    "Authorization":  "Bearer " + localStorage.token,               
+                }})
+                console.log(response)
+                for (let i = 0; i<response.data.length; i++)  {
+                    console.log(i);
+                    this.addAllContracts(response.data[i])
+                    console.log(response.data[i]);                   
+                }                         
+            } 
+            catch(e) {
+                alert('Error is true')
+            }      
+        },
+
+        async deleteAllContractt() {
+            try {
+                
+                const response = await axios.delete(this.$store.state.url + '/api/menu/contracts/' + this.choiceName.id + '/deleteAll' ,
+                
+                   
+                
+                {headers: {
+                    "Authorization":  "Bearer " + localStorage.token,               
+                }})
+                console.log(response)
+                for (let i = 0; i<response.data.length; i++)  {
+                    console.log(i);
+                    this.addAllContracts(response.data[i])
+                    console.log(response.data[i]);                   
+                }                         
+            } 
+            catch(e) {
+                alert('Error is true')
+            }      
+        },
     },
 
     created() {
@@ -304,7 +344,8 @@ export default {
 .table {
     border: 1px solid black;
     overflow-y: auto;
-    width: 1500px;
+    
+    text-align: center;
 }
 th {
     width: 250px;

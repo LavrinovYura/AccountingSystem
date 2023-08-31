@@ -301,7 +301,7 @@ export default {
                         {
                             name: "Contract 1123",
                             type: "PROCUREMENT",
-                            counterparty: {name: 'Counterparty 4'},
+                            counterpartyId: 28,
                             amount: 100000.0,
                             plannedStartDate: "2023-04-01",
                             plannedEndDate: "2023-05-31",

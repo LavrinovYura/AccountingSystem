@@ -8,7 +8,7 @@ import MyMenu from '../components/MyMenu';
 import MyOrganization from '../components/MyOrganization';
 import MyReport from '../components/MyReport';
 import MyAdmin from '../components/MyAdmin';
-import MyContrPage from '../components/MyContrPage';
+
 
 Vue.use(Router);
 
@@ -57,12 +57,7 @@ let router = new Router({
             component: MyAdmin,
             props: true
         },
-        {
-            path: '/Contracts/:name',
-            name: 'contractPage',
-            component: MyContrPage,
-            props: true
-        },
+        
         
         
 

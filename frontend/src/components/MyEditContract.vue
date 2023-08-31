@@ -15,11 +15,11 @@
                             <v-col v-for="(field, names, index) in fields" :key="index" cols="3">
                                 <label> {{ field.label }}</label>
                                     <template v-if="field.type === 'select'">
-                                        <v-select :disabled="disabled" :items="type" v-model="EditContract[field.model]"></v-select>
+                                        <v-select :readonly="disabled" :items="type" v-model="EditContract[field.model]"></v-select>
                                     </template>
                                 
                                 <template v-else>
-                                    <v-text-field :disabled="disabled" :type="field.type" v-model="EditContract[field.model]" ></v-text-field>
+                                    <v-text-field :readonly="disabled" :type="field.type" v-model="EditContract[field.model]" ></v-text-field>
                                 </template>
                             </v-col>
                         </v-row>
@@ -33,12 +33,12 @@
                             <h6>Этап {{ index+1 }}</h6>
                             <v-col v-for="name in textPhases" cols="3">
                                 <label>{{ name.name1 }}
-                                    <v-text-field :disabled="disabled" :type="name.type1" v-model="phase[name.model1]">
+                                    <v-text-field :readonly="disabled" :type="name.type1" v-model="phase[name.model1]">
                                     </v-text-field>
                                 </label>
                             </v-col>
                         </v-row>
-                        <v-btn :disabled="disabled" outlined  icon color="blue" @click="addPhase"> 
+                        <v-btn :readonly="disabled" outlined  icon color="blue" @click="addPhase"> 
                             <v-icon >mdi-plus</v-icon>
                         </v-btn>
                     </section>
@@ -55,14 +55,14 @@
                                 <template v-if="name.model2 === 'type'">
                                     <v-select 
                                     clearable :items="type" 
-                                    :disabled="disabled"
+                                    :readonly="disabled"
                                     v-model="agent[name.model2]"></v-select>
                                     
                                 </template>
                                 <template v-else-if="name.model2==='organization'">
                                     <v-autocomplete 
                                         
-                                    :disabled="disabled"
+                                    :readonly="disabled"
                                         :items="filteredWords"
                                         hide-no-data
                                         claerable
@@ -71,13 +71,13 @@
 
                                 </template>
                                 <template v-else>
-                                    <v-text-field :disabled="disabled" :type="name.type1" v-model="agent[name.model2]"></v-text-field>
+                                    <v-text-field :readonly="disabled" :type="name.type1" v-model="agent[name.model2]"></v-text-field>
                                 </template>
                             </v-col>
                             
                         </v-row>
                         
-                        <v-btn :disabled="disabled" outlined  icon color="blue" @click="addContragent"> 
+                        <v-btn :readonly="disabled" outlined  icon color="blue" @click="addContragent"> 
                             <v-icon >mdi-plus</v-icon>
                         </v-btn>
                         <v-divider></v-divider>

@@ -96,7 +96,7 @@
                         <v-card-actions>
                             <v-btn @click="dialogDelete=!dialogDelete">Отмена</v-btn>
                             <v-btn @click="dialogDelete=!dialogDelete, deleteOrganization()">Только контрагента</v-btn>
-                            <v-btn @click="dialogDelete=!dialogDelete">Вместе с контрактами</v-btn>
+                            <v-btn @click="dialogDelete=!dialogDelete, deleteAllOrganization()">Вместе с контрактами</v-btn>
                         </v-card-actions>
                     </v-card>
                 </v-dialog>
@@ -116,14 +116,14 @@
                         </v-btn>                       
                     </template>
                     <v-card>
-                        <v-card-title> Редактировать Организацию-Контрагента</v-card-title>
+                        <v-card-title> Редактировать Организацию-Контрагента</v-card-title>{{ NameDelete }}
                         <v-card-text v-if="name!='id'" v-for="(item, name, id) in  NameDelete">
+                            
                             <label> {{ name }}
                             <v-text-field 
                                 :name="name"
                                 :key="id"
-                                :value="item"
-                                @input="Agents[name] = $event"                               
+                                v-model="NameDelete[name]"                              
                                 > {{ item }}
                             </v-text-field> 
                         </label>
@@ -164,7 +164,7 @@
                             <v-btn
                                 color="blue darken-1"
                                 text 
-                                @click="dialog3 = !dialog3"                               
+                                @click="dialog3 = !dialog3, updateOrganization()"                               
                                 >Сохранить
                             </v-btn>
                         </v-card-actions>
@@ -352,10 +352,8 @@ export default {
 
         async deleteAllOrganization() {
             try {
-                const response = await axios.delete(this.$store.state.url + '/api/menu/counterparties/deleteAll',
-                {
-                    name: this.NameDelete
-                },
+                const response = await axios.delete(this.$store.state.url + '/api/menu/counterparties/' + this.NameDelete.id + '/deleteAll',
+                
 
                 {headers: {
                     "Authorization":  "Bearer " + localStorage.token,                  
@@ -368,10 +366,33 @@ export default {
             }
             
         },
+ 
+        async updateOrganization() {
+            try {
+                const response = await axios.put(this.$store.state.url + '/api/menu/counterparties/update'+ this.NameDelete.id ,
+                {
+                    name:NameDelete.name,
+                    address: NameDelete.address,
+                    
+                },
+
+                {headers: {
+                    "Authorization":  "Bearer " + localStorage.token,                  
+                }})
+                console.log(item.name)
+                console.log(response)
+            }
+            catch(e) {
+                alert('Error is trrue')
+            }
+            
+        },
+
+
 
         
     }, 
-    mounted() { 
+    activated() { 
         
         this.getOrganization()
     }
