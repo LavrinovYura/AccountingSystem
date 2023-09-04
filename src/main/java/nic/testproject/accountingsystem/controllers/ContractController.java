@@ -42,7 +42,7 @@ public class ContractController {
 
     @PostMapping("show")
     public ResponseEntity<Set<ContractDTO>> getContracts(
-            @RequestBody @Valid ContractCriteriaDTO criteria,
+            @RequestBody ContractCriteriaDTO criteria,
             @RequestParam(name = "page", defaultValue = "0") int page,
             @RequestParam(name = "size", defaultValue = "50") int size) {
 

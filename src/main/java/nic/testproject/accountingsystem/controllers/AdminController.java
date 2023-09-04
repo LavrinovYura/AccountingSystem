@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -53,14 +54,14 @@ public class AdminController {
 
     @PutMapping("users/addRole")
     public ResponseEntity<?> addRole(
-            @RequestBody RequestRole requestRole) {
+            @RequestBody @Valid RequestRole requestRole) {
         adminService.addRole(requestRole.getRoleType(), requestRole.getId());
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping("users/removeRole")
     public ResponseEntity<?> removeRole(
-            @RequestBody RequestRole requestRole) {
+            @RequestBody @Valid RequestRole requestRole) {
         adminService.removeRole(requestRole.getRoleType(), requestRole.getId());
         return ResponseEntity.noContent().build();
     }
@@ -69,7 +70,7 @@ public class AdminController {
     public ResponseEntity<Set<PersonDTO>> getUsersByRole(
             @RequestParam(name = "page", defaultValue = "0") int page,
             @RequestParam(name = "size", defaultValue = "50") int size,
-            @RequestBody RequestRole requestRole) {
+            @RequestBody @Valid RequestRole requestRole) {
         Pageable pageable = PageRequest.of(page, size);
 
         Set<PersonDTO> persons = adminService.getUsersByRole(pageable, requestRole.getRoleType());
