@@ -1,4 +1,4 @@
-package nic.testproject.accountingsystem.dto.report;
+package nic.testproject.accountingsystem.dtos.report;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

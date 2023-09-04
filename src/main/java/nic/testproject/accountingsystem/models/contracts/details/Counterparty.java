@@ -36,7 +36,7 @@ public class Counterparty {
     @OneToMany(mappedBy = "counterparty")
     private List<ContractCounterparty> contractCounterparties;
 
-    //ToDo а можно ли вообще удалять контрагента ? И что делать с контрактом с этим контрагентом если я удаляю его контрагента ?
+    //ToDo() а можно ли вообще удалять контрагента ? И что делать с контрактом с этим контрагентом если я удаляю его контрагента ?
     @PreRemove
     private void unlinkContractCounterparties(){
         this.getContractCounterparties().forEach(it -> it.setCounterparty(null));

@@ -1,6 +1,6 @@
 package nic.testproject.accountingsystem.validation;
 
-import nic.testproject.accountingsystem.dto.contracts.CounterpartyDTO;
+import nic.testproject.accountingsystem.dtos.contracts.CounterpartyDTO;
 import nic.testproject.accountingsystem.exceptions.ValidationException;
 import nic.testproject.accountingsystem.models.contracts.details.Counterparty;
 import nic.testproject.accountingsystem.repositories.contracts.CounterpartyRepository;

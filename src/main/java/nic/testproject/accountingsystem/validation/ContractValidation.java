@@ -23,11 +23,4 @@ public class ContractValidation {
         }
 
     }
-
-    public void updateValidation(Contract contract, String contractDTO) {
-        if (!contract.getName().equals(contractDTO) && contractRepository.existsByName(contract.getName())) {
-            throw new ValidationException("name", "A contract with the same name already exists");
-        }
-    }
-
 }

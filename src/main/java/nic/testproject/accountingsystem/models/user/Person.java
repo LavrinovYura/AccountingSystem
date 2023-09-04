@@ -14,10 +14,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -30,28 +27,13 @@ public class Person {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
-    @NotBlank(message = "Please enter your name")
-    @NotNull
-    @Size(min = 1, max = 100, message = "Name must be between 1 and 100 characters")
-    @Pattern(regexp = "^[A-Za-zА-Юа-ю]+$", message = "Name must consist of only letters")
     private String firstName;
-
-    @NotBlank(message = "Please enter your last name")
-    @NotNull
-    @Size(min = 1, max = 100, message = "Last name must be between 1 and 100 characters")
-    @Pattern(regexp = "^[A-Za-zА-Юа-ю]+$", message = "Last name must consist of only letters")
     private String secondName;
-
-    @NotBlank(message = "Please enter your middle name")
-    @NotNull
-    @Size(min = 5, max = 100, message = "Middle name must be between 5 and 100 characters")
-    @Pattern(regexp = "^[A-Za-zА-Юа-ю]+$", message = "Middle name must consist of only letters")
     private String middleName;
 
-    @Column(unique=true)
-    @NotNull
+    @Column(unique = true)
     private String username;
 
     @NotNull

@@ -25,7 +25,9 @@ public class Contract {
     @Column(unique = true)
     private String name;
 
+    @Enumerated(EnumType.STRING)
     private ContractType type;
+
     private LocalDate plannedStartDate;
     private LocalDate plannedEndDate;
     private LocalDate actualStartDate;
@@ -37,11 +39,4 @@ public class Contract {
 
     @OneToMany(mappedBy = "contract", cascade = CascadeType.ALL, targetEntity = ContractCounterparty.class, fetch = FetchType.EAGER)
     private Set<ContractCounterparty> contractCounterparties = new HashSet<>();
-
-    //@PrePersist
-    //private void linkIds(){
-    //    System.out.println(this);
-    //    this.phases.forEach(it -> it.setContract(this));
-    //    this.contractCounterparties.forEach(it -> it.setContract(this));
-    //}
 }

@@ -1,7 +1,9 @@
 package nic.testproject.accountingsystem.services.user;
 
-import nic.testproject.accountingsystem.dto.authorization.RegisterDTO;
-import nic.testproject.accountingsystem.exceptions.ConflictException;
+import lombok.RequiredArgsConstructor;
+import nic.testproject.accountingsystem.dtos.authorization.RegisterDTO;
+import nic.testproject.accountingsystem.dtos.authorization.RegisterResponseDTO;
+import nic.testproject.accountingsystem.mappers.PersonMapper;
 import nic.testproject.accountingsystem.models.user.Person;
 import nic.testproject.accountingsystem.models.user.Role;
 import nic.testproject.accountingsystem.models.user.RoleType;
@@ -22,29 +24,18 @@ import java.util.Date;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class RegistrationService {
 
     private final PersonRepository personRepository;
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
+    private final PersonMapper personMapper;
 
     @Value("${RegistrationService.user.expiration}")
     private long EXPIRE_DATE;
 
-    @Autowired
-    public RegistrationService(PersonRepository personRepository, PasswordEncoder passwordEncoder, RoleRepository roleRepository) {
-        this.personRepository = personRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.roleRepository = roleRepository;
-    }
-
-    public Person register(RegisterDTO registerDTO){
-        String username = registerDTO.getUsername();
-
-        if (personRepository.existsByUsername(username)) {
-            throw new ConflictException("Username " + username + " already taken");
-        }
-
+    public RegisterResponseDTO register(RegisterDTO registerDTO){
         Person person = new Person();
 
         person.setUsername(registerDTO.getUsername());
@@ -61,7 +52,7 @@ public class RegistrationService {
         Role role = roleRepository.findByRoleType(RoleType.USER);
         person.setRoles(Collections.singleton(role));
 
-        return personRepository.save(person);
+        return personMapper.personToRegisterResponseDTO(personRepository.save(person));
     }
 
 }

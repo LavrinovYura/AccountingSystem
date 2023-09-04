@@ -1,11 +1,11 @@
-package nic.testproject.accountingsystem.dto.contracts;
+package nic.testproject.accountingsystem.dtos.contracts;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import nic.testproject.accountingsystem.models.contracts.ContractType;
 
-import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.validation.Valid;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -13,6 +13,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Data
+@Valid
 abstract class AbstractContract {
 
     @NotBlank(message = "Please enter contract name")

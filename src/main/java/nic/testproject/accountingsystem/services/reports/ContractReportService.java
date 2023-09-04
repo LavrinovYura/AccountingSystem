@@ -1,6 +1,7 @@
 package nic.testproject.accountingsystem.services.reports;
 
-import nic.testproject.accountingsystem.dto.report.AllContracts;
+import lombok.RequiredArgsConstructor;
+import nic.testproject.accountingsystem.dtos.report.AllContracts;
 import nic.testproject.accountingsystem.exceptions.ConflictException;
 import nic.testproject.accountingsystem.exceptions.ResourceNotFoundException;
 import nic.testproject.accountingsystem.repositories.contracts.ContractCounterpartyRepository;
@@ -29,25 +30,22 @@ import static org.apache.poi.ss.usermodel.BorderStyle.MEDIUM;
 import static org.apache.poi.ss.usermodel.BorderStyle.THIN;
 
 @Service
+@RequiredArgsConstructor
 public class ContractReportService {
 
     private final ContractRepository contractRepository;
     private final ContractCounterpartyRepository contractCounterpartyRepository;
-
-    @Autowired
-    public ContractReportService(ContractRepository contractRepository, ContractCounterpartyRepository contractCounterpartyRepository) {
-        this.contractRepository = contractRepository;
-        this.contractCounterpartyRepository = contractCounterpartyRepository;
-    }
 
     public ByteArrayOutputStream generateContractsExcelReport(AllContracts contracts) throws IOException {
         try (Workbook workbook = new XSSFWorkbook()) {
             List<ContractProjection> contractsMain = contracts.getContracts();
             List<ContractCounterpartiesProjection> contractsCounterparties = contracts.getContractCounterparties();
 
-            contractsCounterparties.forEach(it -> {
-                if (!contractsMain.contains(it.getContract())) contractsMain.add(it.getContract());
-            });
+            contractsCounterparties.forEach(it -> contractsMain.forEach(contract -> {
+                if (!contract.getName().equals(it.getContract().getName())){
+                    contractsMain.add(it.getContract());
+                }
+            }));
 
             Sheet sheet = workbook.createSheet("Contracts");
             // создаем стили для ячеек заголовка
@@ -66,13 +64,6 @@ public class ContractReportService {
             headerRow.createCell(6).setCellValue("Фактические сроки начала");
             headerRow.createCell(7).setCellValue("Фактические сроки окончания");
             headerRow.createCell(8).setCellValue("Сумма");
-
-            // применяем стили к ячейкам заголовка
-            for (int i = 0; i < headerRow.getLastCellNum(); i++) {
-                headerRow.getCell(i).setCellStyle(headerStyle);
-                // настройка авто-размера ячеек
-                sheet.autoSizeColumn(i);
-            }
 
             for (ContractCounterpartiesProjection contractCounterparties : contractsCounterparties) {
                 Row row = sheet.createRow(rowNum++);
@@ -114,10 +105,8 @@ public class ContractReportService {
                 }
             }
 
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
-            workbook.write(out);
-
-            return out;
+            // применяем стили к ячейкам заголовка
+            return writeBook(workbook, sheet, headerStyle, headerRow);
         }
     }
 
@@ -143,13 +132,6 @@ public class ContractReportService {
             headerRow.createCell(9).setCellValue("Плановые траты\nна зарплату");
             headerRow.createCell(10).setCellValue("Фактические траты\nна зарплату");
 
-            // применяем стили к ячейкам заголовка
-            for (int i = 0; i < headerRow.getLastCellNum(); i++) {
-                headerRow.getCell(i).setCellStyle(headerStyle);
-                // настройка авто-размера ячеек
-                sheet.autoSizeColumn(i);
-            }
-
             for (ContractPhaseProjection contractPhase : contractPhases) {
                 Row row = sheet.createRow(rowNum++);
                 row.createCell(0).setCellValue(rowNum - 1);
@@ -169,14 +151,23 @@ public class ContractReportService {
                     row.getCell(i).setCellStyle(cellStyle);
                 }
             }
-
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
-            workbook.write(out);
-
-            return out;
+            // применяем стили к ячейкам заголовка
+            return writeBook(workbook, sheet, headerStyle, headerRow);
         }
     }
 
+    private ByteArrayOutputStream writeBook(Workbook workbook, Sheet sheet, CellStyle headerStyle, Row headerRow) throws IOException {
+        for (int i = 0; i < headerRow.getLastCellNum(); i++) {
+            headerRow.getCell(i).setCellStyle(headerStyle);
+            // настройка авто-размера ячеек
+            sheet.autoSizeColumn(i);
+        }
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        workbook.write(out);
+
+        return out;
+    }
     private CellStyle createCellStyle(Workbook workbook) {
         CellStyle cellStyle = workbook.createCellStyle();
         cellStyle.setAlignment(HorizontalAlignment.CENTER);
@@ -216,9 +207,9 @@ public class ContractReportService {
         return new AllContracts(contracts, contractCounterparties);
     }
 
-    public List<ContractPhaseProjection> getAllPhasesByContract(String name) {
-        ContractWithPhasesProjection contract = contractRepository.findByName(name)
-                .orElseThrow(() -> new ResourceNotFoundException("There is no contract with name " + name));
+    public List<ContractPhaseProjection> getAllPhasesByContract(Long id) {
+        ContractWithPhasesProjection contract = contractRepository.findContractById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("There is no contract with id " + id));
         return contract.getPhases();
     }
 
