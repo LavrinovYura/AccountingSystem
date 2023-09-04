@@ -2,10 +2,9 @@ package nic.testproject.accountingsystem.dtos.contracts;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.springframework.validation.annotation.Validated;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.Set;
 
 @EqualsAndHashCode(callSuper = true)
@@ -15,9 +14,9 @@ public class ContractDTO extends AbstractContract{
 
     private Long id;
 
-    @NotBlank
+    @NotNull(message = "Min 1 phase needed")
     private Set<@Valid ContractPhaseDTO> phases;
 
-    @NotBlank
+    @NotNull(message = "Min 1 contract with counterparty needed")
     private Set<@Valid ContractCounterpartyDTO> contractCounterparties;
 }

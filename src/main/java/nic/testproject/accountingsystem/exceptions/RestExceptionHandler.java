@@ -12,8 +12,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
 
 @ControllerAdvice
 public class RestExceptionHandler {
@@ -61,14 +62,12 @@ public class RestExceptionHandler {
 
         return new ResponseEntity<>(new ValidationErrorResponse(validationErrors), HttpStatus.BAD_REQUEST);
     }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ValidationErrorResponse> onMethodArgumentNotValidException(
-            MethodArgumentNotValidException e
-    ) {
-        final List<Violation> violations = e.getBindingResult().getFieldErrors().stream()
-                .map(error -> new Violation(error.getField(), error.getDefaultMessage()))
-                .collect(Collectors.toList());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ValidationErrorResponse(violations));
+    private ResponseEntity<ValidationErrorResponse> handleValidationException(MethodArgumentNotValidException e) {
+        List<ValidationError> validationErrors = new ArrayList<>();
+        e.getBindingResult().getFieldErrors().forEach((error) -> validationErrors.add(new ValidationError(error.getField(), error.getDefaultMessage())));
+        return new ResponseEntity<>(new ValidationErrorResponse(validationErrors), HttpStatus.BAD_REQUEST);
     }
 
     @Getter

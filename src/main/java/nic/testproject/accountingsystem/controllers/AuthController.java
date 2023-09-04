@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 @CrossOrigin
 @RestController
 @RequestMapping("api/auth/")
@@ -26,13 +28,13 @@ public class AuthController {
     private final RegistrationService registrationService;
 
     @PostMapping("login")
-    public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginDTO loginDTO) {
+    public ResponseEntity<LoginResponseDTO> login(@RequestBody @Valid LoginDTO loginDTO) {
         LoginResponseDTO response = authService.login(loginDTO);
         return ResponseEntity.ok(response);
     }
 
     @PostMapping("refresh")
-    public ResponseEntity<JwtResponse> getNewRefreshToken(@RequestBody RefreshJwtRequest request) {
+    public ResponseEntity<JwtResponse> getNewRefreshToken(@RequestBody @Valid RefreshJwtRequest request) {
         JwtResponse response = authService.refreshTokens(request.getRefreshToken());
         return ResponseEntity.ok(response);
     }
@@ -44,7 +46,7 @@ public class AuthController {
     }
 
     @PostMapping("register")
-    public ResponseEntity<RegisterResponseDTO> register(@RequestBody RegisterDTO registerDTO) {
+    public ResponseEntity<RegisterResponseDTO> register(@RequestBody @Valid RegisterDTO registerDTO) {
         RegisterResponseDTO response = registrationService.register(registerDTO);
 
         return ResponseEntity

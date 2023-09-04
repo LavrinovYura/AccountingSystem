@@ -17,7 +17,7 @@ public class ContractPhaseDTO {
 
     private Long id;
 
-    @NotBlank(message = "Please enter contract name")
+    @NotBlank(message = "Please enter phase name")
     private String name;
 
     @JsonFormat(pattern="yyyy-MM-dd")
