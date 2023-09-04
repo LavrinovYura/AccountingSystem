@@ -33,12 +33,8 @@ public class PersonDTO {
     @Pattern(regexp = "^[A-Za-zА-Юа-ю]+$", message = "Middle name must consist of only letters")
     private String middleName;
 
-    @Column(unique=true)
     @NotNull
     private String username;
-
-    @NotNull
-    private String password;
 
     private List<Role> roles;
     private String expireDate;

@@ -12,7 +12,7 @@ services:
       -  $MYSQLDB_LOCAL_PORT:$MYSQLDB_DOCKER_PORT
     volumes:
           - db:/var/lib/mysql
-
+  # Приложение Spring Boot
   app:
     container_name: accounting-app
     env_file: ./.env
@@ -26,9 +26,10 @@ services:
     environment:
           SPRING_APPLICATION_JSON: $SPRING_JSON
     stdin_open: true
+    restart: always
     tty: true
     volumes:
-      - .m2:/root/.m2
+      - .app:/root/accounting-system
 
 volumes:
   db:

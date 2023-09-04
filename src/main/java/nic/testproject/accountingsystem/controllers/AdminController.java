@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -35,7 +36,7 @@ public class AdminController {
 
     private final AdminService adminService;
 
-    @GetMapping("users")
+    @PostMapping("users")
     public ResponseEntity<Set<PersonDTO>> getUsers(
             @RequestParam(name = "page", defaultValue = "0") int page,
             @RequestParam(name = "size", defaultValue = "50") int size) {
@@ -43,7 +44,7 @@ public class AdminController {
         Pageable pageable = PageRequest.of(page, size);
         Set<PersonDTO> persons = adminService.getUsers(pageable);
 
-        return ResponseEntity.ok(persons);
+        return ResponseEntity.ok().body(persons);
     }
 
     @DeleteMapping("users/{id}/delete")
@@ -52,17 +53,20 @@ public class AdminController {
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("users/addRole")
-    public ResponseEntity<?> addRole(
-            @RequestBody @Valid RequestRole requestRole) {
-        adminService.addRole(requestRole.getRoleType(), requestRole.getId());
+    @PutMapping("users/{personId}/addRole")
+    public ResponseEntity<Void> addRole(
+            @RequestBody @Valid RequestRole requestRole,
+            @PathVariable Long personId
+    ) {
+        adminService.addRole(requestRole.getRoleType(), personId);
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("users/removeRole")
-    public ResponseEntity<?> removeRole(
-            @RequestBody @Valid RequestRole requestRole) {
-        adminService.removeRole(requestRole.getRoleType(), requestRole.getId());
+    @PutMapping("users/{personId}/removeRole")
+    public ResponseEntity<Void> removeRole(
+            @RequestBody @Valid RequestRole requestRole,
+            @PathVariable Long personId) {
+        adminService.removeRole(requestRole.getRoleType(), personId);
         return ResponseEntity.noContent().build();
     }
 
@@ -70,7 +74,8 @@ public class AdminController {
     public ResponseEntity<Set<PersonDTO>> getUsersByRole(
             @RequestParam(name = "page", defaultValue = "0") int page,
             @RequestParam(name = "size", defaultValue = "50") int size,
-            @RequestBody @Valid RequestRole requestRole) {
+            @RequestBody @Valid RequestRole requestRole
+    ) {
         Pageable pageable = PageRequest.of(page, size);
 
         Set<PersonDTO> persons = adminService.getUsersByRole(pageable, requestRole.getRoleType());
