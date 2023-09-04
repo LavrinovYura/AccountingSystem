@@ -13,9 +13,7 @@ import java.util.Optional;
 
 @Repository
 public interface ContractRepository extends JpaRepository<Contract, Long>, JpaSpecificationExecutor<Contract> {
-
     boolean existsByName(String name);
-    Optional<ContractWithPhasesProjection> findByName(String name);
-    Optional<Contract> findContractByName(String name);
+    Optional<ContractWithPhasesProjection> findContractById(Long id);
     List<ContractProjection> findByPlannedStartDateBetween(LocalDate startDate, LocalDate endDate);
 }

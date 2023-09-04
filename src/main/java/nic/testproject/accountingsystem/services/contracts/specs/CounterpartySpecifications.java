@@ -1,6 +1,6 @@
 package nic.testproject.accountingsystem.services.contracts.specs;
 
-import nic.testproject.accountingsystem.dto.contracts.CounterpartyDTO;
+import nic.testproject.accountingsystem.dtos.contracts.CounterpartyDTO;
 import nic.testproject.accountingsystem.models.contracts.details.Counterparty;
 import org.springframework.data.jpa.domain.Specification;
 

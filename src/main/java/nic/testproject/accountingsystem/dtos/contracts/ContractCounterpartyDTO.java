@@ -1,9 +1,9 @@
-package nic.testproject.accountingsystem.dto.contracts;
+package nic.testproject.accountingsystem.dtos.contracts;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import nic.testproject.accountingsystem.models.contracts.details.Counterparty;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 @EqualsAndHashCode(callSuper = true)
@@ -12,8 +12,8 @@ public class ContractCounterpartyDTO extends AbstractContract{
 
     private Long id;
 
+    @Valid
+
+    @NotNull(message = "Counterparty id needed")
     private Long counterpartyId;
-
-    private Counterparty counterparty;
-
 }

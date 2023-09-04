@@ -1,15 +1,14 @@
 package nic.testproject.accountingsystem.controllers;
 
-import nic.testproject.accountingsystem.dto.authorization.JwtResponse;
-import nic.testproject.accountingsystem.dto.authorization.LoginDTO;
-import nic.testproject.accountingsystem.dto.authorization.LoginResponseDTO;
-import nic.testproject.accountingsystem.dto.authorization.RefreshJwtRequest;
-import nic.testproject.accountingsystem.dto.authorization.RegisterDTO;
-import nic.testproject.accountingsystem.dto.authorization.RegisterResponseDTO;
+import lombok.RequiredArgsConstructor;
+import nic.testproject.accountingsystem.dtos.authorization.JwtResponse;
+import nic.testproject.accountingsystem.dtos.authorization.LoginDTO;
+import nic.testproject.accountingsystem.dtos.authorization.LoginResponseDTO;
+import nic.testproject.accountingsystem.dtos.authorization.RefreshJwtRequest;
+import nic.testproject.accountingsystem.dtos.authorization.RegisterDTO;
+import nic.testproject.accountingsystem.dtos.authorization.RegisterResponseDTO;
 import nic.testproject.accountingsystem.services.user.AuthService;
 import nic.testproject.accountingsystem.services.user.RegistrationService;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -21,18 +20,10 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin
 @RestController
 @RequestMapping("api/auth/")
+@RequiredArgsConstructor
 public class AuthController {
-    private final ModelMapper modelMapper;
     private final AuthService authService;
     private final RegistrationService registrationService;
-
-    @Autowired
-    public AuthController(ModelMapper modelMapper,
-                          AuthService personService, RegistrationService registrationService) {
-        this.modelMapper = modelMapper;
-        this.authService = personService;
-        this.registrationService = registrationService;
-    }
 
     @PostMapping("login")
     public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginDTO loginDTO) {
@@ -54,8 +45,7 @@ public class AuthController {
 
     @PostMapping("register")
     public ResponseEntity<RegisterResponseDTO> register(@RequestBody RegisterDTO registerDTO) {
-        RegisterResponseDTO response = modelMapper
-                .map(registrationService.register(registerDTO), RegisterResponseDTO.class);
+        RegisterResponseDTO response = registrationService.register(registerDTO);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)

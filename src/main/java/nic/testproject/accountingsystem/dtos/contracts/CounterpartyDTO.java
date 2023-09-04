@@ -1,4 +1,4 @@
-package nic.testproject.accountingsystem.dto.contracts;
+package nic.testproject.accountingsystem.dtos.contracts;
 
 import lombok.Data;
 

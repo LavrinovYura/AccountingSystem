@@ -1,13 +1,13 @@
 package nic.testproject.accountingsystem.controllers;
 
 import lombok.RequiredArgsConstructor;
-import nic.testproject.accountingsystem.dto.RequestName;
-import nic.testproject.accountingsystem.dto.contracts.ContractCriteriaDTO;
-import nic.testproject.accountingsystem.dto.contracts.ContractDTO;
-import nic.testproject.accountingsystem.models.contracts.Contract;
+import nic.testproject.accountingsystem.dtos.contracts.ContractCounterpartiesDTO;
+import nic.testproject.accountingsystem.dtos.contracts.ContractCounterpartyDTO;
+import nic.testproject.accountingsystem.dtos.contracts.ContractCriteriaDTO;
+import nic.testproject.accountingsystem.dtos.contracts.ContractDTO;
+import nic.testproject.accountingsystem.dtos.contracts.ContractPhaseDTO;
+import nic.testproject.accountingsystem.dtos.contracts.ContractPhasesDTO;
 import nic.testproject.accountingsystem.services.contracts.ContractService;
-import org.modelmapper.ModelMapper;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -21,8 +21,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import javax.validation.Valid;
+import java.util.Set;
 
 @CrossOrigin
 @RestController
@@ -31,44 +31,55 @@ import java.util.stream.Collectors;
 public class ContractController {
 
     private final ContractService contractService;
-    private final ModelMapper modelMapper;
 
     @PostMapping("save")
     public ResponseEntity<ContractDTO> saveContract(
-            @RequestBody ContractDTO contractDTO) {
+            @RequestBody @Valid ContractDTO contractDTO) {
         ContractDTO savedContract = contractService.saveContract(contractDTO);
 
         return ResponseEntity.ok(savedContract);
     }
 
     @PostMapping("show")
-    public ResponseEntity<List<ContractDTO>> getContracts(
-            @RequestBody ContractCriteriaDTO criteria,
+    public ResponseEntity<Set<ContractDTO>> getContracts(
+            @RequestBody @Valid ContractCriteriaDTO criteria,
             @RequestParam(name = "page", defaultValue = "0") int page,
             @RequestParam(name = "size", defaultValue = "50") int size) {
 
         Pageable pageable = PageRequest.of(page, size);
-        Page<Contract> contractPage = contractService.getContracts(criteria, pageable);
-
-        List<ContractDTO> contracts = contractPage.getContent().stream()
-                .map(contract -> modelMapper.map(contract, ContractDTO.class))
-                .collect(Collectors.toList());
+        Set<ContractDTO> contracts = contractService.getContracts(criteria, pageable);
 
         return ResponseEntity.ok(contracts);
     }
 
-    @PutMapping("update/{name}")
+    @PutMapping("{id}/update")
     public ResponseEntity<ContractDTO> updateContract(
-            @PathVariable String name,
-            @RequestBody ContractDTO ContractDTO) {
-        ContractDTO updatedContract = contractService.updateContract(ContractDTO, name);
+            @PathVariable Long id,
+            @RequestBody @Valid ContractDTO ContractDTO) {
+        ContractDTO updatedContract = contractService.updateContract(ContractDTO, id);
         return ResponseEntity.ok(updatedContract);
     }
 
+    @PostMapping("{id}/addPhases")
+    public ResponseEntity<Set<ContractPhaseDTO>> addContractPhases(
+            @PathVariable Long id,
+            @RequestBody @Valid ContractPhasesDTO phasesDTO) {
+        Set<ContractPhaseDTO> updatedContract = contractService.addContractPhases(phasesDTO.getContractPhases(), id);
+        return ResponseEntity.ok(updatedContract);
+    }
 
-    @DeleteMapping("delete")
-    public ResponseEntity<Void> deleteContract(@RequestBody RequestName name) {
-        contractService.deleteContract(name.getName());
+    @PostMapping("{id}/addContractCounterparty")
+    public ResponseEntity<Set<ContractCounterpartyDTO>> addContractCounterparty(
+            @PathVariable Long id,
+            @RequestBody @Valid ContractCounterpartiesDTO contractCounterpartiesDTO) {
+        Set<ContractCounterpartyDTO> updatedContract = contractService
+                .addContractCounterparty(contractCounterpartiesDTO.getContractCounterparties(), id);
+        return ResponseEntity.ok(updatedContract);
+    }
+
+    @DeleteMapping("{id}/delete")
+    public ResponseEntity<Void> deleteContract(@PathVariable Long id) {
+        contractService.deleteContract(id);
         return ResponseEntity.ok().build();
     }
 }

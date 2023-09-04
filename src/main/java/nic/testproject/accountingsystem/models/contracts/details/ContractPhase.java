@@ -28,37 +28,15 @@ public class ContractPhase {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "Please enter contract name")
     private String name;
-
-    @JsonFormat(pattern="yyyy-MM-dd")
-    @NotNull(message = "Please enter the planned start date")
     private LocalDate plannedStartDate;
-
-    @JsonFormat(pattern="yyyy-MM-dd")
-    @NotNull(message = "Please enter the planned end date")
     private LocalDate plannedEndDate;
-
-    @NotNull(message = "Please enter the planned costs of materials")
-    @DecimalMin("0.0")
     private Double plannedMaterialCosts;
-    @NotNull(message = "Please enter the planned expenditures for salaries")
-    @DecimalMin("0.0")
     private Double phaseCost;
-    @NotNull(message = "Please enter the planned expenses for the phase")
-    @DecimalMin("0.0")
     private Double plannedSalaryExpenses;
-
-    @JsonFormat(pattern="yyyy-MM-dd")
     private LocalDate actualStartDate;
-
-    @JsonFormat(pattern="yyyy-MM-dd")
     private LocalDate actualEndDate;
-
-    @DecimalMin("0.0")
     private Double actualMaterialCosts;
-
-    @DecimalMin("0.0")
     private Double actualSalaryExpenses;
 
     @JsonIgnore

@@ -1,4 +1,4 @@
-package nic.testproject.accountingsystem.dto.contracts;
+package nic.testproject.accountingsystem.dtos.contracts;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
@@ -15,8 +15,6 @@ import java.time.LocalDate;
 @Data
 public class ContractPhaseDTO {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotBlank(message = "Please enter contract name")
