@@ -1,6 +1,7 @@
 HELP.md
 .gradle
 build/
+!build/libs/accounting_system-1-docker.jar
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/

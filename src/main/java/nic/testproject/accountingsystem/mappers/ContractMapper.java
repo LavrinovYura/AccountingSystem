@@ -1,6 +1,7 @@
 package nic.testproject.accountingsystem.mappers;
 
 import nic.testproject.accountingsystem.dtos.contracts.ContractDTO;
+import nic.testproject.accountingsystem.exceptions.ValidationException;
 import nic.testproject.accountingsystem.models.contracts.Contract;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.BeanMapping;
@@ -11,6 +12,7 @@ import org.mapstruct.Named;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.springframework.data.domain.Page;
 
+import javax.validation.ConstraintViolationException;
 import java.util.Set;
 
 @Mapper(componentModel = "spring",
@@ -22,11 +24,12 @@ public interface ContractMapper {
 
     @AfterMapping
     default void ContractFromDTO(@MappingTarget Contract contract){
-        if (contract.getContractCounterparties() != null)
+        if (contract.getContractCounterparties() != null) {
             contract.getContractCounterparties().forEach(it -> it.setContract(contract));
+        } else throw new ValidationException("Contract counterparty", "at least 1 contract counterparty needed");
         if (contract.getPhases() != null) {
             contract.getPhases().forEach( it -> it.setContract(contract));
-        }
+        } else throw new ValidationException("Phases", "at least 1 phase needed");
     }
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)

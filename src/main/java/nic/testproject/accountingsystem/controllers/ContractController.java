@@ -64,8 +64,8 @@ public class ContractController {
     public ResponseEntity<Set<ContractPhaseDTO>> addContractPhases(
             @PathVariable Long id,
             @RequestBody @Valid ContractPhasesDTO phasesDTO) {
-        Set<ContractPhaseDTO> updatedContract = contractService.addContractPhases(phasesDTO.getContractPhases(), id);
-        return ResponseEntity.ok(updatedContract);
+        Set<ContractPhaseDTO> addedPhases = contractService.addContractPhases(phasesDTO.getContractPhases(), id);
+        return ResponseEntity.ok(addedPhases);
     }
 
     @PostMapping("{id}/addContractCounterparty")

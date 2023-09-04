@@ -53,14 +53,14 @@ public class AdminService {
 
     public void deleteUser(Long id) {
         Person person = personRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("There is no person with id " + id));
+                .orElseThrow(() -> new EntityNotFoundException("There is no person with id " + id));
 
         personRepository.delete(person);
     }
 
     public void addRole(String type, Long id) {
         Person person = personRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("There is no person with id " + id));
+                .orElseThrow(() -> new EntityNotFoundException("There is no person with id " + id));
 
         Role role = getRoleByType(type);
 
@@ -74,7 +74,7 @@ public class AdminService {
 
     public void removeRole(String type, Long id) {
         Person person = personRepository.findById(id)
-                .orElseThrow(() -> new ConflictException("There is no person with id " + id ));
+                .orElseThrow(() -> new EntityNotFoundException("There is no person with id " + id ));
         Role role = getRoleByType(type);
 
         if (person.getRoles().stream().noneMatch(role::equals)) {
@@ -84,7 +84,6 @@ public class AdminService {
         person.getRoles().remove(role);
 
         personRepository.save(person);
-
     }
 
     private Role getRoleByType(String type) {
@@ -93,7 +92,7 @@ public class AdminService {
         try {
             roleType = RoleType.valueOf(type);
         } catch (IllegalArgumentException e) {
-            throw new ResourceNotFoundException("There is no such role exist");
+            throw new EntityNotFoundException("There is no such role exist");
         }
 
         return roleRepository.findByRoleType(roleType);
