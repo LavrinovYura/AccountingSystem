@@ -55,8 +55,8 @@ public class ContractController {
     @PutMapping("{id}/update")
     public ResponseEntity<ContractDTO> updateContract(
             @PathVariable Long id,
-            @RequestBody @Valid ContractDTO ContractDTO) {
-        ContractDTO updatedContract = contractService.updateContract(ContractDTO, id);
+            @RequestBody ContractDTO ContractDTO) {
+        @Valid ContractDTO updatedContract = contractService.updateContract(ContractDTO, id);
         return ResponseEntity.ok(updatedContract);
     }
 
@@ -72,9 +72,9 @@ public class ContractController {
     public ResponseEntity<Set<ContractCounterpartyDTO>> addContractCounterparty(
             @PathVariable Long id,
             @RequestBody @Valid ContractCounterpartiesDTO contractCounterpartiesDTO) {
-        Set<ContractCounterpartyDTO> updatedContract = contractService
+        Set<ContractCounterpartyDTO> addedContractCounterparties = contractService
                 .addContractCounterparty(contractCounterpartiesDTO.getContractCounterparties(), id);
-        return ResponseEntity.ok(updatedContract);
+        return ResponseEntity.ok(addedContractCounterparties);
     }
 
     @DeleteMapping("{id}/delete")

@@ -37,6 +37,11 @@ public class SecurityConfig {
                         auth -> auth
                                 .antMatchers("/api/auth/login", "/api/auth/token").permitAll()
                                 .antMatchers("/api/menu/administration/**").hasAuthority("ADMIN")
+                                .antMatchers(
+                                        "api/menu/contracts/**",
+                                        "api/menu/report/**",
+                                        "api/menu/counterparty/**"
+                                ).hasAnyAuthority("ADMIN", "USER")
                                 .anyRequest().authenticated()
                                 .and()
                                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)

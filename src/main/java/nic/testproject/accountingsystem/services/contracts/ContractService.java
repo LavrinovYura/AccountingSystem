@@ -2,12 +2,12 @@ package nic.testproject.accountingsystem.services.contracts;
 
 import lombok.RequiredArgsConstructor;
 import nic.testproject.accountingsystem.dtos.contracts.ContractCounterpartyDTO;
-import nic.testproject.accountingsystem.dtos.contracts.ContractPhaseDTO;
-import nic.testproject.accountingsystem.mappers.ContractCounterpartyMapper;
-import nic.testproject.accountingsystem.mappers.ContractMapper;
 import nic.testproject.accountingsystem.dtos.contracts.ContractCriteriaDTO;
 import nic.testproject.accountingsystem.dtos.contracts.ContractDTO;
+import nic.testproject.accountingsystem.dtos.contracts.ContractPhaseDTO;
 import nic.testproject.accountingsystem.exceptions.ResourceNotFoundException;
+import nic.testproject.accountingsystem.mappers.ContractCounterpartyMapper;
+import nic.testproject.accountingsystem.mappers.ContractMapper;
 import nic.testproject.accountingsystem.mappers.ContractPhaseMapper;
 import nic.testproject.accountingsystem.models.contracts.Contract;
 import nic.testproject.accountingsystem.models.contracts.details.ContractCounterparty;
