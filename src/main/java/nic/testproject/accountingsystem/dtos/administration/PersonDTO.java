@@ -3,7 +3,6 @@ package nic.testproject.accountingsystem.dtos.administration;
 import lombok.Data;
 import nic.testproject.accountingsystem.models.user.Role;
 
-import javax.persistence.Column;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;

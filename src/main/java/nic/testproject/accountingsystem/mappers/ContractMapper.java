@@ -3,16 +3,9 @@ package nic.testproject.accountingsystem.mappers;
 import nic.testproject.accountingsystem.dtos.contracts.ContractDTO;
 import nic.testproject.accountingsystem.exceptions.ValidationException;
 import nic.testproject.accountingsystem.models.contracts.Contract;
-import org.mapstruct.AfterMapping;
-import org.mapstruct.BeanMapping;
-import org.mapstruct.IterableMapping;
-import org.mapstruct.Mapper;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.Named;
-import org.mapstruct.NullValuePropertyMappingStrategy;
+import org.mapstruct.*;
 import org.springframework.data.domain.Page;
 
-import javax.validation.ConstraintViolationException;
 import java.util.Set;
 
 @Mapper(componentModel = "spring",

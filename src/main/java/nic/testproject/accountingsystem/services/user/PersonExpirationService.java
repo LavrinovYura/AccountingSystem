@@ -3,7 +3,6 @@ package nic.testproject.accountingsystem.services.user;
 import lombok.RequiredArgsConstructor;
 import nic.testproject.accountingsystem.models.user.Person;
 import nic.testproject.accountingsystem.repositories.user.PersonRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
