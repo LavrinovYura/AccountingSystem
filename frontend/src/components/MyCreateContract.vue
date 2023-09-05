@@ -3,7 +3,8 @@
         <v-card class="card">
                 <v-card-title>
                     <span class="text-h5"
-                    >Добавить новый контракт
+                    >{{ newContract }}
+                    Добавить новый контракт
                     </span>
                 </v-card-title>
                 <v-card-text>
@@ -116,7 +117,7 @@
                             </v-card>
                         </v-dialog>
                     </v-row>
-                    {{ newContract.name }} {{ newContract.phases.name}}
+                    
                     <v-btn
                         color="blue darken-1"
                         text                                
@@ -211,7 +212,7 @@ export default {
 
         addPhase() {
             const phases= { 
-                id: Date.now(),
+                id: 0,
                 name: '',
                 amount: '',
                 planAmount: '',
@@ -227,7 +228,7 @@ export default {
 
         addContragent() {
             const contractCounterparties= { 
-                id: Date.now(),
+                id: 0,
                 name: '',
                 amount: '',
                 organization: '',
@@ -276,37 +277,37 @@ export default {
             try {
                 const response = await axios.post(this.$store.state.url + '/api/menu/contracts/save',
                 {
-                    name: "Contr5act45783",
+                    name: 'contract1',
                     type: "WORKS",
-                    plannedStartDate: '2023-09-15',
-                    plannedEndDate: '2023-09-30',
-                    actualStartDate: '2023-05-01',
-                    actualEndDate: '2023-07-15',
-                    amount: 5000.0,
+                    plannedStartDate: this.newContract.plannedStartDate,
+                    plannedEndDate: this.newContract.plannedEndDate,
+                    actualStartDate: this.newContract.actualStartDate,
+                    actualEndDate: this.newContract.actualEndDate,
+                    amount: this.newContract.amount,
                     phases: [
                         {
                             name: "Phase 1123",
-                            plannedStartDate: "2023-09-15",
-                            plannedEndDate: "2023-09-30",
+                            plannedStartDate: "2023-09-11",
+                            plannedEndDate: "2023-09-03",
                             actualStartDate: "2023-05-01",
-                            actualEndDate: "2023-07-15",
-                            phaseCost: 100000.00,
-                            actualMaterialCosts: 25000.00,
-                            plannedMaterialCosts: 20000.00,
-                            actualSalaryExpenses: 55000.00,
-                            plannedSalaryExpenses: 50000.00
+                            actualEndDate: "2023-07-11",
+                            phaseCost: 100000.0,
+                            actualMaterialCosts: 25000.0,
+                            plannedMaterialCosts: 20000.0,
+                            actualSalaryExpenses: 55000.0,
+                            plannedSalaryExpenses: 50000.0
                         }
                     ],
                     contractCounterparties: [
                         {
                             name: "Contract 1123",
                             type: "PROCUREMENT",
-                            counterpartyId: 28,
+                            counterpartyId: 1,
                             amount: 100000.0,
                             plannedStartDate: "2023-04-01",
-                            plannedEndDate: "2023-05-31",
+                            plannedEndDate: "2023-05-03",
                             actualStartDate: "2023-05-01",
-                            actualEndDate: "2023-07-15"
+                            actualEndDate: "2023-07-12"
                         }
                     ],
                 },
@@ -321,23 +322,10 @@ export default {
                 }
 
         },
-        async getContractt() {
-            try {
-                const response = await axios.get(this.$store.state.url + '/api/menu/contracts/show', 
-                {headers: {
-                    "Authorization":  "Bearer" + localStorage.token,               
-                }})
-                console.log(response)
-                for (let i = 0; i<response.data.length; i++)  {
-                    console.log(i);
-                    this.addAllContracts(response.data[i])
-                    console.log(response.data[i]);                   
-                }                         
-            } 
-            catch(e) {
-                alert('Error is true')
-            }      
-        },
+        
+
+
+        
     },
     computed:{
         ...mapGetters({

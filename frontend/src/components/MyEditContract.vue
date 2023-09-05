@@ -3,8 +3,8 @@
         <v-card class="card">
                 <v-card-title>
                     <span class="text-h5"
-                    > Редактировать {{ EditName }} {{ EditContract.id }} контракт
-                    {{ EditContract }}
+                    > Редактировать  {{ EditContract.id }} контракт
+                    
                     </span>
                 </v-card-title>
                 <v-card-text>
@@ -118,12 +118,12 @@
                             </v-card>
                         </v-dialog>
                     </v-row>
-                    {{ newContract.name }} {{ newContract.phases.name}}
+                   
                     <v-btn
                         color="blue darken-1"
                         text  
                         :disabled="disabled"                              
-                        @click=" sndNewContract(), closeDialog()"
+                        @click=" closeDialog()"
                         >Сохранить
                     </v-btn>
                 </v-card-actions>
@@ -204,7 +204,7 @@ export default {
                 { label: 'Сумма договора', model: 'amount', type: 'text' }
             ],
             selectedWord: '',
-            filteredWords: ['one', 'two'],
+            filteredWords: [],
             
             dialog2: false,
             
@@ -230,7 +230,7 @@ export default {
                 actualEndDate: '',
             }    
             
-            this.newContract.phases = [...this.newContract.phases, phases];
+            this.EditContract.phases = [...this.EditContract.phases, phases];
 },
 
 addContragent() {
@@ -246,91 +246,11 @@ addContragent() {
                 actualEndDate: '',           
             }
             
-            this.newContract.contractCounterparties.push(contractCounterparties)
+            this.EditContract.contractCounterparties.push(contractCounterparties)
         },
 
-        sndNewContract() {
-            
-            const res = {};
-            for (let item in this.newContract) {
-               res[item] = this.newContract[item];
-            }
-            this.addNewContract(res);
-            for (let item in this.newContract) {
-               this.newContract[item] = '';
-            };
-            
-        },
-        async createNewContract() {
-            try {
-                const response = await axios.post(this.$store.state.url + '/api/menu/contracts/save',
-                {
-                    name: this.newContract.name,
-                    type: "WORKS",
-                    plannedStartDate: '2023-09-15',
-                    plannedEndDate: '2023-09-30',
-                    actualStartDate: '2023-05-01',
-                    actualEndDate: '2023-07-15',
-                    amount: 5000.0,
-                    phases: [
-                        {
-                            name: "Phase 1",
-                            plannedStartDate: "2023-09-15",
-                            plannedEndDate: "2023-09-30",
-                            actualStartDate: "2023-05-01",
-                            actualEndDate: "2023-07-15",
-                            phaseCost: 100000.00,
-                            actualMaterialCosts: 25000.00,
-                            plannedMaterialCosts: 20000.00,
-                            actualSalaryExpenses: 55000.00,
-                            plannedSalaryExpenses: 50000.00
-                        }
-                    ],
-                    contractCounterparties: [
-                        {
-                            name: "Contract 1",
-                            type: "PROCUREMENT",
-                            counterparty: {
-                                name: "Counterparty 5",
-                                address: "123 Main St",
-                                inn: "555-5555"
-                            },
-                            amount: 100000.0,
-                            plannedStartDate: "2023-04-01",
-                            plannedEndDate: "2023-05-31",
-                            actualStartDate: "2023-05-01",
-                            actualEndDate: "2023-07-15"
-                        }
-                    ],
-                },
-                {headers: {
-                    "Authorization":  "Bearer " + "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbm5ubmEifQ.8uH8-TkwiqueuYwOaA7VpFpjQZyvXZbgJWyBc99tN2E",
-                }});
-                console.log(response)
-                
-            } 
-            catch(e) {
-                alert('Неверно')
-                }
-
-        },
-        async getContractt() {
-            try {
-                const response = await axios.get(this.$store.state.url + '/api/menu/contracts/show', 
-                {headers: {
-                    "Authorization":  "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbm5ubmEifQ.8uH8-TkwiqueuYwOaA7VpFpjQZyvXZbgJWyBc99tN2E",               
-                }})
-                console.log(response)
-                for (let i = 0; i<response.data.length; i++)  {
-                    console.log(i);
-                    this.addAllContracts(response.data[i])
-                    console.log(response.data[i]);                   
-                }                         
-            } 
-            catch(e) {
-                alert('Error is true')
-            }      
-        },
+        
+       
     },
     computed:{
         ...mapGetters({

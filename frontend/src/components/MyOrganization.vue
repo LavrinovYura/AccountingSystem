@@ -369,7 +369,7 @@ export default {
  
         async updateOrganization() {
             try {
-                const response = await axios.put(this.$store.state.url + '/api/menu/counterparties/update'+ this.NameDelete.id ,
+                const response = await axios.put(this.$store.state.url + '/api/menu/counterparties/'+ this.NameDelete.id + '/update' ,
                 {
                     name:NameDelete.name,
                     address: NameDelete.address,

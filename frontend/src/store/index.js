@@ -10,7 +10,7 @@ Vue.use(Vuex)
 export const store = new Vuex.Store({
   state: {
     
-    url: 'http://4.tcp.eu.ngrok.io:13408',   
+    url: 'http://7.tcp.eu.ngrok.io:10490',   
     token: '',
     tokenType: 'Bearer',
     name: '',
