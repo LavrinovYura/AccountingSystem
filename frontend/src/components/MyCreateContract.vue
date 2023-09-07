@@ -41,6 +41,7 @@
                         <v-btn outlined  icon color="blue" @click="addPhase"> 
                             <v-icon >mdi-plus</v-icon>
                         </v-btn>
+                        
                     </section>
                     <v-divider></v-divider>
                     

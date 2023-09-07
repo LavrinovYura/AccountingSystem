@@ -38,9 +38,13 @@
                                 </label>
                             </v-col>
                         </v-row>
-                        <v-btn :readonly="disabled" outlined  icon color="blue" @click="addPhase"> 
+                        <v-btn :readonly="disabled" outlined  icon color="blue" 
+                            
+                            @click="addPhase"
+                        > 
                             <v-icon >mdi-plus</v-icon>
                         </v-btn>
+                        
                     </section>
                     <v-divider></v-divider>
                     
@@ -77,9 +81,13 @@
                             
                         </v-row>
                         
-                        <v-btn :readonly="disabled" outlined  icon color="blue" @click="addContragent"> 
+                        <v-btn :readonly="disabled" outlined  icon color="blue" 
+                            
+                            @click="addContragent"> 
                             <v-icon >mdi-plus</v-icon>
                         </v-btn>
+                        
+                        
                         <v-divider></v-divider>
                     </section>
                     {{ newContract.contractCounterparties }}
@@ -142,6 +150,8 @@ export default {
     data() {
         return {
             EditName: '',
+            NewPhase: '',
+            NewAgent: '',
             newContract:
                 {
                     name: '',
@@ -172,17 +182,7 @@ export default {
                         actualEndDate: '',
                     }]
                 },
-                phase: { 
-                id: '',
-                name: '',
-                amount: '',
-                planAmount: '',
-                factAmount: '',
-                plannedStartDate: '',
-                plannedEndDate: '',
-                actualStartDate: '',
-                actualEndDate: '',
-            }    ,
+                
             
             textPhases: [
                 {name1: 'Название',name2: 'Название',type1: '', model1: 'name',model2: 'name'},
@@ -231,6 +231,7 @@ export default {
             }    
             
             this.EditContract.phases = [...this.EditContract.phases, phases];
+            this.NewPhase = [...this.NewPhase, phases];
 },
 
 addContragent() {
@@ -273,7 +274,9 @@ addContragent() {
 .card {
     width: 100%;
 }
-
+.btn {
+    margin-left:20px
+}
 
 
 </style>
