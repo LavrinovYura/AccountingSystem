@@ -1,25 +1,12 @@
 package nic.testproject.accountingsystem.controllers;
 
 import lombok.RequiredArgsConstructor;
-import nic.testproject.accountingsystem.dtos.contracts.ContractCounterpartiesDTO;
-import nic.testproject.accountingsystem.dtos.contracts.ContractCounterpartyDTO;
-import nic.testproject.accountingsystem.dtos.contracts.ContractCriteriaDTO;
-import nic.testproject.accountingsystem.dtos.contracts.ContractDTO;
-import nic.testproject.accountingsystem.dtos.contracts.ContractPhaseDTO;
-import nic.testproject.accountingsystem.dtos.contracts.ContractPhasesDTO;
+import nic.testproject.accountingsystem.dtos.contracts.*;
 import nic.testproject.accountingsystem.services.contracts.ContractService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.Set;
@@ -52,34 +39,52 @@ public class ContractController {
         return ResponseEntity.ok(contracts);
     }
 
-    @PutMapping("{id}/update")
+    @PutMapping("{contractId}/update")
     public ResponseEntity<ContractDTO> updateContract(
-            @PathVariable Long id,
+            @PathVariable Long contractId,
             @RequestBody ContractDTO ContractDTO) {
-        @Valid ContractDTO updatedContract = contractService.updateContract(ContractDTO, id);
+        @Valid ContractDTO updatedContract = contractService.updateContract(ContractDTO, contractId);
         return ResponseEntity.ok(updatedContract);
     }
 
-    @PostMapping("{id}/addPhases")
+    @PostMapping("{contractId}/addPhases")
     public ResponseEntity<Set<ContractPhaseDTO>> addContractPhases(
-            @PathVariable Long id,
+            @PathVariable Long contractId,
             @RequestBody @Valid ContractPhasesDTO phasesDTO) {
-        Set<ContractPhaseDTO> addedPhases = contractService.addContractPhases(phasesDTO.getContractPhases(), id);
+        Set<ContractPhaseDTO> addedPhases = contractService
+                .addContractPhases(phasesDTO.getContractPhases(), contractId);
         return ResponseEntity.ok(addedPhases);
     }
 
-    @PostMapping("{id}/addContractCounterparty")
+    @PostMapping("{contractId}/addContractCounterparty")
     public ResponseEntity<Set<ContractCounterpartyDTO>> addContractCounterparty(
-            @PathVariable Long id,
+            @PathVariable Long contractId,
             @RequestBody @Valid ContractCounterpartiesDTO contractCounterpartiesDTO) {
         Set<ContractCounterpartyDTO> addedContractCounterparties = contractService
-                .addContractCounterparty(contractCounterpartiesDTO.getContractCounterparties(), id);
+                .addContractCounterparty(contractCounterpartiesDTO.getContractCounterparties(), contractId);
         return ResponseEntity.ok(addedContractCounterparties);
     }
 
-    @DeleteMapping("{id}/delete")
-    public ResponseEntity<Void> deleteContract(@PathVariable Long id) {
-        contractService.deleteContract(id);
+    @PostMapping("{phaseId}/updatePhase")
+    public ResponseEntity<ContractPhaseDTO> updateContractPhase(
+            @PathVariable Long phaseId,
+            @RequestBody @Valid ContractPhaseDTO phaseDTO) {
+        ContractPhaseDTO updatedPhase = contractService.updateContractPhase(phaseDTO, phaseId);
+        return ResponseEntity.ok(updatedPhase);
+    }
+
+    @PostMapping("{contractCounterpartyId}/updatePhase")
+    public ResponseEntity<ContractCounterpartyDTO> updateContractCounterparty(
+            @PathVariable Long contractCounterpartyId,
+            @RequestBody @Valid ContractCounterpartyDTO contractCounterpartyDTO) {
+        ContractCounterpartyDTO updatedContractCounterparty = contractService
+                .updateContractCounterparty(contractCounterpartyDTO, contractCounterpartyId);
+        return ResponseEntity.ok(updatedContractCounterparty);
+    }
+
+    @DeleteMapping("{contractId}/delete")
+    public ResponseEntity<Void> deleteContract(@PathVariable Long contractId) {
+        contractService.deleteContract(contractId);
         return ResponseEntity.ok().build();
     }
 }

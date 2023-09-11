@@ -80,6 +80,23 @@ public class ContractService {
         return contractCounterpartyMapper.contractCounterpartyToDTOSet(contractCounterparties);
     }
 
+    public ContractPhaseDTO updateContractPhase(ContractPhaseDTO contractPhaseDTO, Long id){
+       ContractPhase contractPhase = contractPhaseRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("There is no phase with id" + id));
+
+        ContractPhase updatedContractPhase = contractPhaseMapper.updateContractPhaseFromDto(contractPhase, contractPhaseDTO);
+        return contractPhaseMapper.contractPhaseToDTO(updatedContractPhase);
+    }
+
+    public ContractCounterpartyDTO updateContractCounterparty(ContractCounterpartyDTO contractCounterpartyDTO, Long id){
+        ContractCounterparty contractCounterparty = contractCounterpartyRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("There is no contractCounterparty with id" + id));
+
+        ContractCounterparty updatedContractCounterparty = contractCounterpartyMapper
+                .updateContractCounterpartyFromDTO(contractCounterparty,contractCounterpartyDTO);
+        return contractCounterpartyMapper.contractCounterpartyToDTO(updatedContractCounterparty);
+    }
+
     public void deleteContract(Long id) {
         Contract contract = contractRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("There is no contract with id" + id));
