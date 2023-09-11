@@ -1,10 +1,16 @@
 package nic.testproject.accountingsystem.mappers;
 
-import nic.testproject.accountingsystem.dtos.contracts.AbstractContract;
 import nic.testproject.accountingsystem.dtos.contracts.ContractDTO;
+import nic.testproject.accountingsystem.dtos.contracts.UpdateContractDTO;
 import nic.testproject.accountingsystem.exceptions.ValidationException;
 import nic.testproject.accountingsystem.models.contracts.Contract;
-import org.mapstruct.*;
+import org.mapstruct.AfterMapping;
+import org.mapstruct.BeanMapping;
+import org.mapstruct.IterableMapping;
+import org.mapstruct.Mapper;
+import org.mapstruct.MappingTarget;
+import org.mapstruct.Named;
+import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.springframework.data.domain.Page;
 
 import java.util.Set;
@@ -27,7 +33,7 @@ public interface ContractMapper {
     }
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    Contract updateContractFromDto(@MappingTarget Contract contract, AbstractContract abstractContract);
+    Contract updateContractFromDto(@MappingTarget Contract contract, UpdateContractDTO contractDTO);
 
     @Named(value = "contractToDTO")
     ContractDTO contractToDTO(Contract contract);

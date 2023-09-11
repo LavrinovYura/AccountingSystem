@@ -12,7 +12,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 
 @ExtendWith(MockitoExtension.class)
 class PersonExpirationServiceTests {
@@ -25,7 +29,6 @@ class PersonExpirationServiceTests {
 
     @Test
     void deleteExpiredUsers_DeletesExpiredUsers() {
-        // Arrange
         List<Person> expiredUsers = new ArrayList<>();
         expiredUsers.add(new Person());
         expiredUsers.add(new Person());

@@ -1,7 +1,11 @@
 package nic.testproject.accountingsystem.services.contracts;
 
 import lombok.RequiredArgsConstructor;
-import nic.testproject.accountingsystem.dtos.contracts.*;
+import nic.testproject.accountingsystem.dtos.contracts.ContractCounterpartyDTO;
+import nic.testproject.accountingsystem.dtos.contracts.ContractCriteriaDTO;
+import nic.testproject.accountingsystem.dtos.contracts.ContractDTO;
+import nic.testproject.accountingsystem.dtos.contracts.ContractPhaseDTO;
+import nic.testproject.accountingsystem.dtos.contracts.UpdateContractDTO;
 import nic.testproject.accountingsystem.exceptions.ResourceNotFoundException;
 import nic.testproject.accountingsystem.mappers.ContractCounterpartyMapper;
 import nic.testproject.accountingsystem.mappers.ContractMapper;
@@ -13,7 +17,6 @@ import nic.testproject.accountingsystem.repositories.contracts.ContractCounterpa
 import nic.testproject.accountingsystem.repositories.contracts.ContractPhaseRepository;
 import nic.testproject.accountingsystem.repositories.contracts.ContractRepository;
 import nic.testproject.accountingsystem.services.contracts.specs.ContractSpecifications;
-import nic.testproject.accountingsystem.validation.ContractValidation;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -25,7 +28,6 @@ import java.util.Set;
 public class ContractService {
 
     private final ContractRepository contractRepository;
-    private final ContractValidation validation;
     private final ContractMapper contractMapper;
     private final ContractPhaseMapper contractPhaseMapper;
     private final ContractPhaseRepository contractPhaseRepository;
@@ -37,24 +39,19 @@ public class ContractService {
         if (page.isEmpty()) {
             throw new ResourceNotFoundException("There is no contracts with those criteria");
         }
-
         return contractMapper.contractPageToDTOSet(page);
     }
 
     public ContractDTO saveContract(ContractDTO contractDTO) {
-
         Contract contract = contractMapper.ContractFromDTO(contractDTO);
-
-        validation.saveValidation(contract);
         Contract savedContract = contractRepository.save(contract);
-
         return contractMapper.contractToDTO(savedContract);
     }
 
-    public ContractDTO updateContract(AbstractContract abstractContract, Long id) {
+    public ContractDTO updateContract(UpdateContractDTO contractDTO, Long id) {
         Contract contract = contractRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("There is no contract with id" + id));
-        Contract savedContract = contractMapper.updateContractFromDto(contract, abstractContract);
+        Contract savedContract = contractMapper.updateContractFromDto(contract, contractDTO);
         return contractMapper.contractToDTO(savedContract);
     }
 

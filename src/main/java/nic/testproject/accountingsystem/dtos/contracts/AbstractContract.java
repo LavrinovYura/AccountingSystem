@@ -21,7 +21,7 @@ public abstract class AbstractContract {
     @NotNull(message = "Please enter contract type")
     private ContractType type;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     @NotNull(message = "Please enter the planned start date")
     private LocalDate plannedStartDate;
 

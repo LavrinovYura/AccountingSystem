@@ -44,11 +44,13 @@ public class AdminControllerTests {
         when(adminService.getUsers(any())).thenReturn(new HashSet<>());
 
         mockMvc.perform(
-                        MockMvcRequestBuilders.post("/api/menu/administration/users?page=0&size=50")
+                        MockMvcRequestBuilders.post("/api/menu/administration/users")
                                 .contentType(MediaType.APPLICATION_JSON)
+                                .param("page", "0")
+                                .param("size", "50")
                                 .with(csrf())
                 ).andExpect(MockMvcResultMatchers.status().isOk());
-        verify(adminService, times(1)).getUsers(PageRequest.of(any(int.class), any(int.class)));
+        verify(adminService, times(1)).getUsers(PageRequest.of(0, 50));
     }
 
     @Test

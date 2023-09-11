@@ -6,8 +6,8 @@ import nic.testproject.accountingsystem.security.JWT.JWTAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -19,10 +19,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
     private final JWTAuthEntryPoint authEntryPoint;
-    private final JWTAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
@@ -36,19 +36,21 @@ public class SecurityConfig {
                 .and()
                 .authorizeHttpRequests(
                         auth -> auth
-                                .antMatchers("/api/auth/login", "/api/auth/token", "/api/auth/register").permitAll()
+                                .antMatchers("/api/auth/login",
+                                        "/api/auth/token",
+                                        "/api/auth/register").permitAll()
                                 .antMatchers("/api/menu/administration/**").hasAuthority("ADMIN")
                                 .antMatchers(
                                         "api/menu/contracts/**",
                                         "api/menu/report/**",
                                         "api/menu/counterparty/**"
-                                ).hasAnyAuthority("ADMIN", "USER")
+                                )
+                                .hasAnyAuthority("ADMIN", "USER")
                                 .anyRequest().authenticated()
                                 .and()
-                                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                                .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
                 )
-                .cors(Customizer.withDefaults())
-                .httpBasic();
+                .cors();
 
         return http.build();
     }
@@ -57,6 +59,11 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager(
             AuthenticationConfiguration authenticationConfiguration) throws Exception{
         return authenticationConfiguration.getAuthenticationManager();
+    }
+
+    @Bean
+    public JWTAuthenticationFilter jwtAuthenticationFilter(){
+        return new JWTAuthenticationFilter();
     }
 
     @Bean

@@ -3,6 +3,7 @@ package nic.testproject.accountingsystem.services;
 import nic.testproject.accountingsystem.dtos.contracts.ContractCriteriaDTO;
 import nic.testproject.accountingsystem.dtos.contracts.ContractDTO;
 import nic.testproject.accountingsystem.dtos.contracts.ContractPhaseDTO;
+import nic.testproject.accountingsystem.dtos.contracts.UpdateContractDTO;
 import nic.testproject.accountingsystem.exceptions.ResourceNotFoundException;
 import nic.testproject.accountingsystem.mappers.ContractMapper;
 import nic.testproject.accountingsystem.mappers.ContractPhaseMapper;
@@ -11,7 +12,6 @@ import nic.testproject.accountingsystem.models.contracts.details.ContractPhase;
 import nic.testproject.accountingsystem.repositories.contracts.ContractPhaseRepository;
 import nic.testproject.accountingsystem.repositories.contracts.ContractRepository;
 import nic.testproject.accountingsystem.services.contracts.ContractService;
-import nic.testproject.accountingsystem.validation.ContractValidation;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -40,9 +40,6 @@ public class ContractServiceTests {
 
     @Mock
     private ContractRepository contractRepository;
-    
-    @Mock
-    private ContractValidation contractValidation;
     
     @Mock
     private ContractMapper contractMapper;
@@ -88,7 +85,6 @@ public class ContractServiceTests {
         Contract contract = new Contract();
 
         when(contractMapper.ContractFromDTO(contractDTO)).thenReturn(contract);
-        doNothing().when(contractValidation).saveValidation(any(Contract.class));
         when(contractRepository.save(contract)).thenReturn(contract);
         when(contractMapper.contractToDTO(contract)).thenReturn(contractDTO);
         
@@ -102,7 +98,7 @@ public class ContractServiceTests {
 
     @Test
     public void testUpdateContract_WhenContractNotPresent_ThrowsResourceNotFoundException() {
-        ContractDTO contractDTO = new ContractDTO();
+        UpdateContractDTO contractDTO = new UpdateContractDTO();
         Long id = 1L;
 
         when(contractRepository.findById(id)).thenReturn(Optional.empty());
@@ -112,7 +108,7 @@ public class ContractServiceTests {
 
     @Test
     public void testUpdateContract_ExistingContract_ReturnsMappedContractDTO() {
-        ContractDTO contractDTO = new ContractDTO();
+        UpdateContractDTO contractDTO = new UpdateContractDTO();
         Long id = 1L;
         Contract contract = new Contract();
 

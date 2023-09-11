@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
-@CrossOrigin
+@CrossOrigin(allowCredentials = "true", originPatterns = "*")
 @RestController
 @RequestMapping("api/auth/")
 @RequiredArgsConstructor

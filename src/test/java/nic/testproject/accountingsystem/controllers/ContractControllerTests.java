@@ -7,6 +7,7 @@ import nic.testproject.accountingsystem.dtos.contracts.ContractCriteriaDTO;
 import nic.testproject.accountingsystem.dtos.contracts.ContractDTO;
 import nic.testproject.accountingsystem.dtos.contracts.ContractPhaseDTO;
 import nic.testproject.accountingsystem.dtos.contracts.ContractPhasesDTO;
+import nic.testproject.accountingsystem.dtos.contracts.UpdateContractDTO;
 import nic.testproject.accountingsystem.models.contracts.ContractType;
 import nic.testproject.accountingsystem.services.contracts.ContractService;
 import org.junit.jupiter.api.Test;
@@ -54,7 +55,7 @@ class ContractControllerTests {
         when(contractService.saveContract(any())).thenReturn(contractDTO);
 
         mockMvc.perform(
-                        MockMvcRequestBuilders.post("/api/menu/contracts/save")
+                        MockMvcRequestBuilders.post("/api/menu/contracts/saveContract")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(contractDTO))
                                 .with(csrf()))
@@ -74,7 +75,7 @@ class ContractControllerTests {
         when(contractService.getContracts(any(), any())).thenReturn(contractDTOs);
 
         mockMvc.perform(
-                        MockMvcRequestBuilders.post("/api/menu/contracts/show")
+                        MockMvcRequestBuilders.post("/api/menu/contracts/showContracts")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(criteria))
                                 .param("page", "0")
@@ -90,19 +91,19 @@ class ContractControllerTests {
     @WithMockUser(authorities = {"USER"}, username = "admin")
     public void testUpdateContract_ReturnsOk() throws Exception {
         Long id = 1L;
+        UpdateContractDTO updateContractDTO = createUpdateContractDTO();
         ContractDTO contractDTO = createContractDTO();
-
-        when(contractService.updateContract(any(ContractDTO.class), any(Long.class))).thenReturn(contractDTO);
+        when(contractService.updateContract(any(UpdateContractDTO.class), any(Long.class))).thenReturn(contractDTO);
 
         mockMvc.perform(
-                        MockMvcRequestBuilders.put("/api/menu/contracts/" + id + "/update")
+                        MockMvcRequestBuilders.put("/api/menu/contracts/" + id + "/updateContract")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(contractDTO))
                                 .with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(contractDTO.getId()));
 
-        verify(contractService, times(1)).updateContract(contractDTO, id);
+        verify(contractService, times(1)).updateContract(updateContractDTO, id);
     }
 
     @Test
@@ -113,7 +114,7 @@ class ContractControllerTests {
         doNothing().when(contractService).deleteContract(any(Long.class));
 
         mockMvc.perform(
-                        MockMvcRequestBuilders.delete("/api/menu/contracts/" + id + "/delete")
+                        MockMvcRequestBuilders.delete("/api/menu/contracts/" + id + "/deleteContract")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("{}")
                                 .with(csrf()))
@@ -153,13 +154,25 @@ class ContractControllerTests {
         when(contractService.addContractCounterparty(any(), eq(id))).thenReturn(contractCounterpartyDTO);
 
         mockMvc.perform(
-                        MockMvcRequestBuilders.post("/api/menu/contracts/" + id + "/addContractCounterparty")
+                        MockMvcRequestBuilders.post("/api/menu/contracts/" + id + "/addContractCounterparties")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(contractCounterpartiesDTO))
                                 .with(csrf()))
                 .andExpect(status().isOk());
 
         verify(contractService, times(1)).addContractCounterparty(contractCounterpartyDTO, id);
+    }
+
+    public UpdateContractDTO createUpdateContractDTO() {
+        UpdateContractDTO contractDTO = new UpdateContractDTO();
+        contractDTO.setName("Contract Name");
+        contractDTO.setType(ContractType.DELIVERY);
+        contractDTO.setPlannedStartDate(LocalDate.of(2023, 8, 10));
+        contractDTO.setPlannedEndDate(LocalDate.of(2023, 9, 10));
+        contractDTO.setActualStartDate(LocalDate.of(2023, 8, 15));
+        contractDTO.setActualEndDate(LocalDate.of(2023, 9, 5));
+        contractDTO.setAmount(new BigDecimal("10000.00"));
+        return contractDTO;
     }
 
     public ContractDTO createContractDTO() {
@@ -176,7 +189,6 @@ class ContractControllerTests {
         contractDTO.setPhases(createContractPhaseDTO());
         return contractDTO;
     }
-
     public Set<ContractCounterpartyDTO> createContractCounterpartyDTO() {
 
         ContractCounterpartyDTO contractCounterpartyDTO = new ContractCounterpartyDTO();
