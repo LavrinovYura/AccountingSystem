@@ -42,8 +42,8 @@ public class ContractController {
     @PutMapping("{contractId}/update")
     public ResponseEntity<ContractDTO> updateContract(
             @PathVariable Long contractId,
-            @RequestBody ContractDTO ContractDTO) {
-        @Valid ContractDTO updatedContract = contractService.updateContract(ContractDTO, contractId);
+            @RequestBody AbstractContract contract ) {
+        @Valid ContractDTO updatedContract = contractService.updateContract(contract, contractId);
         return ResponseEntity.ok(updatedContract);
     }
 
@@ -73,7 +73,7 @@ public class ContractController {
         return ResponseEntity.ok(updatedPhase);
     }
 
-    @PostMapping("{contractCounterpartyId}/updatePhase")
+    @PostMapping("{contractCounterpartyId}/updateContractCounterparty")
     public ResponseEntity<ContractCounterpartyDTO> updateContractCounterparty(
             @PathVariable Long contractCounterpartyId,
             @RequestBody @Valid ContractCounterpartyDTO contractCounterpartyDTO) {
@@ -85,6 +85,18 @@ public class ContractController {
     @DeleteMapping("{contractId}/delete")
     public ResponseEntity<Void> deleteContract(@PathVariable Long contractId) {
         contractService.deleteContract(contractId);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("{contractCounterpartyId}/delete")
+    public ResponseEntity<Void> deleteContractCounterparty(@PathVariable Long contractCounterpartyId) {
+        contractService.deleteContractCounterparty(contractCounterpartyId);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("{phaseId}/delete")
+    public ResponseEntity<Void> deletePhase(@PathVariable Long phaseId) {
+        contractService.deletePhase(phaseId);
         return ResponseEntity.ok().build();
     }
 }

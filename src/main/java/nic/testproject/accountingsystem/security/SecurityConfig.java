@@ -22,6 +22,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final JWTAuthEntryPoint authEntryPoint;
+    private final JWTAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
@@ -35,7 +36,7 @@ public class SecurityConfig {
                 .and()
                 .authorizeHttpRequests(
                         auth -> auth
-                                .antMatchers("/api/auth/login", "/api/auth/token").permitAll()
+                                .antMatchers("/api/auth/login", "/api/auth/token", "/api/auth/register").permitAll()
                                 .antMatchers("/api/menu/administration/**").hasAuthority("ADMIN")
                                 .antMatchers(
                                         "api/menu/contracts/**",
@@ -44,7 +45,7 @@ public class SecurityConfig {
                                 ).hasAnyAuthority("ADMIN", "USER")
                                 .anyRequest().authenticated()
                                 .and()
-                                .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
+                                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 )
                 .cors(Customizer.withDefaults())
                 .httpBasic();
@@ -61,10 +62,5 @@ public class SecurityConfig {
     @Bean
     PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
-    }
-
-    @Bean
-    public JWTAuthenticationFilter jwtAuthenticationFilter(){
-        return new JWTAuthenticationFilter();
     }
 }

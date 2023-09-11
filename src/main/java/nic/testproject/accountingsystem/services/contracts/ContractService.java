@@ -1,10 +1,7 @@
 package nic.testproject.accountingsystem.services.contracts;
 
 import lombok.RequiredArgsConstructor;
-import nic.testproject.accountingsystem.dtos.contracts.ContractCounterpartyDTO;
-import nic.testproject.accountingsystem.dtos.contracts.ContractCriteriaDTO;
-import nic.testproject.accountingsystem.dtos.contracts.ContractDTO;
-import nic.testproject.accountingsystem.dtos.contracts.ContractPhaseDTO;
+import nic.testproject.accountingsystem.dtos.contracts.*;
 import nic.testproject.accountingsystem.exceptions.ResourceNotFoundException;
 import nic.testproject.accountingsystem.mappers.ContractCounterpartyMapper;
 import nic.testproject.accountingsystem.mappers.ContractMapper;
@@ -54,10 +51,10 @@ public class ContractService {
         return contractMapper.contractToDTO(savedContract);
     }
 
-    public ContractDTO updateContract(ContractDTO contractDTO, Long id) {
+    public ContractDTO updateContract(AbstractContract abstractContract, Long id) {
         Contract contract = contractRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("There is no contract with id" + id));
-        Contract savedContract = contractMapper.updateContractFromDto(contract,contractDTO);
+        Contract savedContract = contractMapper.updateContractFromDto(contract, abstractContract);
         return contractMapper.contractToDTO(savedContract);
     }
 
@@ -102,5 +99,19 @@ public class ContractService {
                 .orElseThrow(() -> new ResourceNotFoundException("There is no contract with id" + id));
 
         contractRepository.delete(contract);
+    }
+
+    public void deleteContractCounterparty(Long id) {
+        ContractCounterparty contractCounterparty = contractCounterpartyRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("There is no contract with id" + id));
+
+        contractCounterpartyRepository.delete(contractCounterparty);
+    }
+
+    public void deletePhase(Long id) {
+        ContractPhase contractPhase = contractPhaseRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("There is no contract with id" + id));
+
+        contractPhaseRepository.delete(contractPhase);
     }
 }

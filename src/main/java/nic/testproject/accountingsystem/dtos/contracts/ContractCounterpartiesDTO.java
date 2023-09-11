@@ -9,7 +9,6 @@ import java.util.Set;
 @Data
 public class ContractCounterpartiesDTO {
 
-    @Valid
     @NotNull(message = "Set of Contract Counterparties is empty")
     Set< @Valid ContractCounterpartyDTO> contractCounterparties;
 }

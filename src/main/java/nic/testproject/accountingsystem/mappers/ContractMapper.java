@@ -1,5 +1,6 @@
 package nic.testproject.accountingsystem.mappers;
 
+import nic.testproject.accountingsystem.dtos.contracts.AbstractContract;
 import nic.testproject.accountingsystem.dtos.contracts.ContractDTO;
 import nic.testproject.accountingsystem.exceptions.ValidationException;
 import nic.testproject.accountingsystem.models.contracts.Contract;
@@ -26,7 +27,7 @@ public interface ContractMapper {
     }
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    Contract updateContractFromDto(@MappingTarget Contract contract, ContractDTO contractDTO);
+    Contract updateContractFromDto(@MappingTarget Contract contract, AbstractContract abstractContract);
 
     @Named(value = "contractToDTO")
     ContractDTO contractToDTO(Contract contract);
