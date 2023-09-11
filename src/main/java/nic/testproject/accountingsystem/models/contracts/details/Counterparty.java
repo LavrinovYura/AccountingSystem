@@ -5,8 +5,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.PreRemove;
+import javax.persistence.Table;
 import java.util.List;
 
 @Entity
@@ -18,17 +25,21 @@ public class Counterparty {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "Please enter name of counterparty")
     private String name;
-
-    @NotBlank(message = "Please enter address of counterparty")
     private String address;
 
-    @NotBlank(message = "Please enter INN of counterparty")
+    @Column(unique = true)
     private String inn;
 
     @JsonIgnore
     @ToString.Exclude
-    @OneToMany(mappedBy = "counterparty",cascade = CascadeType.ALL)
-    private List<ContractCounterparties> contractCounterparties;
+    @OneToMany(mappedBy = "counterparty")
+    private List<ContractCounterparty> contractCounterparties;
+
+    //ToDo() а можно ли вообще удалять контрагента ? И что делать с контрактом с этим контрагентом если я удаляю его контрагента ?
+    @PreRemove
+    private void unlinkContractCounterparties(){
+        this.getContractCounterparties().forEach(it -> it.setCounterparty(null));
+        this.setContractCounterparties(null);
+    }
 }

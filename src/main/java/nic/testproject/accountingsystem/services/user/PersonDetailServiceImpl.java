@@ -1,5 +1,6 @@
 package nic.testproject.accountingsystem.services.user;
 
+import lombok.RequiredArgsConstructor;
 import nic.testproject.accountingsystem.exceptions.UserNotFoundException;
 import nic.testproject.accountingsystem.models.user.Person;
 import nic.testproject.accountingsystem.models.user.Role;
@@ -18,14 +19,10 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class PersonDetailServiceImpl implements UserDetailsService {
 
     private final PersonRepository personRepository;
-
-    @Autowired
-    public PersonDetailServiceImpl(PersonRepository personRepository) {
-        this.personRepository = personRepository;
-    }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

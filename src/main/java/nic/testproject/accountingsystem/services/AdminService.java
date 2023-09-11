@@ -1,95 +1,87 @@
 package nic.testproject.accountingsystem.services;
 
+import lombok.RequiredArgsConstructor;
+import nic.testproject.accountingsystem.dtos.administration.PersonDTO;
 import nic.testproject.accountingsystem.exceptions.ConflictException;
-import nic.testproject.accountingsystem.exceptions.ResourceNotFoundException;
+import nic.testproject.accountingsystem.mappers.PersonMapper;
 import nic.testproject.accountingsystem.models.user.Person;
 import nic.testproject.accountingsystem.models.user.Role;
 import nic.testproject.accountingsystem.models.user.RoleType;
 import nic.testproject.accountingsystem.repositories.user.PersonRepository;
 import nic.testproject.accountingsystem.repositories.user.RoleRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
-import java.util.Optional;
+import java.util.Set;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class AdminService {
 
     private final PersonRepository personRepository;
     private final RoleRepository roleRepository;
+    private final PersonMapper personMapper;
 
-    @Autowired
-    public AdminService(PersonRepository personRepository, RoleRepository roleRepository) {
-        this.personRepository = personRepository;
-        this.roleRepository = roleRepository;
-    }
 
-    public Page<Person> getUsers(Pageable pageable) {
+    public Set<PersonDTO> getUsers(Pageable pageable) {
         Page<Person> page = personRepository.findAll(pageable);
-        if (page.isEmpty())
+
+        if (page.isEmpty()) {
             throw new EntityNotFoundException("No users in database");
-        return page;
+        }
+
+        return personMapper.personToDTOSet(page);
     }
 
-    public Page<Person> getUsersByRole(Pageable pageable, String type) {
+    public Set<PersonDTO> getUsersByRole(Pageable pageable, String type) {
         Role role = getRoleByType(type);
 
         Page<Person> page = personRepository.findAllByRoles(role, pageable);
 
-        if (page.isEmpty())
+        if (page.isEmpty()) {
             throw new EntityNotFoundException("There are no users with this role in the database");
+        }
 
-        return page;
+        return personMapper.personToDTOSet(page);
     }
 
+    public void deleteUser(Long id) {
+        Person person = personRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("There is no person with id " + id));
 
-    public void deleteUser(String name) {
-        Optional<Person> optionalPerson = personRepository.findByUsername(name);
-        if (!optionalPerson.isPresent())
-            throw new ResourceNotFoundException("There is no person with name" + name);
-
-        personRepository.delete(optionalPerson.get());
+        personRepository.delete(person);
     }
 
-    public void addRole(String type, String name) {
-        Optional<Person> optionalPerson = personRepository.findByUsername(name);
+    public void addRole(String type, Long id) {
+        Person person = personRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("There is no person with id " + id));
+
         Role role = getRoleByType(type);
 
-        if (optionalPerson.isPresent()) {
-            Person person = optionalPerson.get();
-
-            if (person.getRoles().contains(role)) {
-                throw new ConflictException("This person already has this role.");
-            }
-
-            person.getRoles().add(role);
-            personRepository.save(person);
-        } else {
-            throw new ResourceNotFoundException("There is no person with name" + name);
+        if (person.getRoles().contains(role)) {
+            throw new ConflictException("This person already has this role.");
         }
+
+        person.getRoles().add(role);
+        personRepository.save(person);
     }
 
-    public void removeRole(String type, String name) {
-        Optional<Person> optionalPerson = personRepository.findByUsername(name);
+    public void removeRole(String type, Long id) {
+        Person person = personRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("There is no person with id " + id ));
         Role role = getRoleByType(type);
 
-        if (optionalPerson.isPresent()) {
-            Person person = optionalPerson.get();
-
-            if (person.getRoles().stream().noneMatch(r -> r.equals(role))) {
-                throw new ConflictException("This person doesn't have this role");
-            }
-            person.getRoles().remove(role);
-
-            personRepository.save(person);
-        } else {
-            throw new ResourceNotFoundException("There is no person with name" + name);
+        if (person.getRoles().stream().noneMatch(role::equals)) {
+            throw new ConflictException("This person doesn't have this role");
         }
+
+        person.getRoles().remove(role);
+
+        personRepository.save(person);
     }
 
     private Role getRoleByType(String type) {
@@ -98,7 +90,7 @@ public class AdminService {
         try {
             roleType = RoleType.valueOf(type);
         } catch (IllegalArgumentException e) {
-            throw new ResourceNotFoundException("There is no such role exist");
+            throw new EntityNotFoundException("There is no such role exist");
         }
 
         return roleRepository.findByRoleType(roleType);

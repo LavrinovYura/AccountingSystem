@@ -1,11 +1,12 @@
 package nic.testproject.accountingsystem.security;
 
+import lombok.RequiredArgsConstructor;
 import nic.testproject.accountingsystem.security.JWT.JWTAuthEntryPoint;
 import nic.testproject.accountingsystem.security.JWT.JWTAuthenticationFilter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -17,14 +18,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
 
     private final JWTAuthEntryPoint authEntryPoint;
-
-    @Autowired
-    public SecurityConfig(JWTAuthEntryPoint authEntryPoint) {
-        this.authEntryPoint = authEntryPoint;
-    }
+    private final JWTAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
@@ -36,14 +34,23 @@ public class SecurityConfig {
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .authorizeRequests()
-                .antMatchers("/api/auth/**").permitAll()
-                .antMatchers("/api/menu/administration/**").hasAuthority("ADMIN")
-                .and()
+                .authorizeHttpRequests(
+                        auth -> auth
+                                .antMatchers("/api/auth/login", "/api/auth/token", "/api/auth/register").permitAll()
+                                .antMatchers("/api/menu/administration/**").hasAuthority("ADMIN")
+                                .antMatchers(
+                                        "api/menu/contracts/**",
+                                        "api/menu/report/**",
+                                        "api/menu/counterparty/**"
+                                ).hasAnyAuthority("ADMIN", "USER")
+                                .anyRequest().authenticated()
+                                .and()
+                                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                )
+                .cors(Customizer.withDefaults())
                 .httpBasic();
-        http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
-        return http.build();
 
+        return http.build();
     }
 
     @Bean
@@ -55,10 +62,5 @@ public class SecurityConfig {
     @Bean
     PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
-    }
-
-    @Bean
-    public JWTAuthenticationFilter jwtAuthenticationFilter(){
-        return new JWTAuthenticationFilter();
     }
 }

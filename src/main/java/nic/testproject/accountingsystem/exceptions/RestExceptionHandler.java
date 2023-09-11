@@ -1,9 +1,11 @@
 package nic.testproject.accountingsystem.exceptions;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -19,7 +21,7 @@ public class RestExceptionHandler {
     public ResponseEntity<ErrorResponse> handleResourceNotFoundException(ResourceNotFoundException exception) {
         String message = exception.getMessage();
         return new ResponseEntity<>(new ErrorResponse(message), HttpStatus.NOT_FOUND);
-    }
+}
 
     @ExceptionHandler(ConflictException.class)
     public ResponseEntity<ErrorResponse> handleConflictException(ConflictException exception) {
@@ -29,6 +31,12 @@ public class RestExceptionHandler {
 
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleUserNotFoundException(UserNotFoundException exception) {
+        String message = exception.getMessage();
+        return new ResponseEntity<>(new ErrorResponse(message), HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(ExpiredJwtException.class)
+    public ResponseEntity<ErrorResponse> jwtException(ExpiredJwtException exception) {
         String message = exception.getMessage();
         return new ResponseEntity<>(new ErrorResponse(message), HttpStatus.UNAUTHORIZED);
     }
@@ -50,6 +58,13 @@ public class RestExceptionHandler {
             validationErrors.add(new ValidationError(field, message));
         }
 
+        return new ResponseEntity<>(new ValidationErrorResponse(validationErrors), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    private ResponseEntity<ValidationErrorResponse> handleValidationException(MethodArgumentNotValidException e) {
+        List<ValidationError> validationErrors = new ArrayList<>();
+        e.getBindingResult().getFieldErrors().forEach((error) -> validationErrors.add(new ValidationError(error.getField(), error.getDefaultMessage())));
         return new ResponseEntity<>(new ValidationErrorResponse(validationErrors), HttpStatus.BAD_REQUEST);
     }
 

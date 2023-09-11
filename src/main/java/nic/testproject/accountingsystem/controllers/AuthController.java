@@ -1,73 +1,53 @@
 package nic.testproject.accountingsystem.controllers;
 
-import nic.testproject.accountingsystem.dto.authorization.LoginDTO;
-import nic.testproject.accountingsystem.dto.authorization.LoginResponseDTO;
-import nic.testproject.accountingsystem.dto.authorization.RegisterDTO;
-import nic.testproject.accountingsystem.dto.authorization.RegisterResponseDTO;
-import nic.testproject.accountingsystem.models.user.Person;
-import nic.testproject.accountingsystem.security.JWT.JWTGenerator;
-import nic.testproject.accountingsystem.services.user.LoginService;
+import lombok.RequiredArgsConstructor;
+import nic.testproject.accountingsystem.dtos.authorization.JwtResponse;
+import nic.testproject.accountingsystem.dtos.authorization.LoginDTO;
+import nic.testproject.accountingsystem.dtos.authorization.LoginResponseDTO;
+import nic.testproject.accountingsystem.dtos.authorization.RefreshJwtRequest;
+import nic.testproject.accountingsystem.dtos.authorization.RegisterDTO;
+import nic.testproject.accountingsystem.dtos.authorization.RegisterResponseDTO;
+import nic.testproject.accountingsystem.services.user.AuthService;
 import nic.testproject.accountingsystem.services.user.RegistrationService;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.validation.Valid;
 
 @CrossOrigin
 @RestController
-@RequestMapping("api/auth")
+@RequestMapping("api/auth/")
+@RequiredArgsConstructor
 public class AuthController {
-
-    private final AuthenticationManager authenticationManager;
-    private final JWTGenerator jwtGenerator;
-    private final ModelMapper modelMapper;
-    private final LoginService loginService;
+    private final AuthService authService;
     private final RegistrationService registrationService;
 
-    @Autowired
-    public AuthController(AuthenticationManager authenticationManager,
-                          JWTGenerator jwtGenerator, ModelMapper modelMapper,
-                          LoginService personService, RegistrationService registrationService) {
-        this.authenticationManager = authenticationManager;
-        this.jwtGenerator = jwtGenerator;
-        this.modelMapper = modelMapper;
-        this.loginService = personService;
-        this.registrationService = registrationService;
+    @PostMapping("login")
+    public ResponseEntity<LoginResponseDTO> login(@RequestBody @Valid LoginDTO loginDTO) {
+        LoginResponseDTO response = authService.login(loginDTO);
+        return ResponseEntity.ok().body(response);
     }
 
-    @PostMapping("login")
-    public ResponseEntity<LoginResponseDTO> login(
-            @RequestBody LoginDTO loginDTO) {
+    @PostMapping("refresh")
+    public ResponseEntity<JwtResponse> getNewRefreshToken(@RequestBody @Valid RefreshJwtRequest request) {
+        JwtResponse response = authService.refreshTokens(request.getRefreshToken());
+        return ResponseEntity.ok(response);
+    }
 
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginDTO.getUsername(), loginDTO.getPassword()));
-
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        Person person = loginService.findPersonByUsername(loginDTO.getUsername());
-
-        String token = jwtGenerator.generateToken(authentication);
-
-        LoginResponseDTO response = new LoginResponseDTO();
-        response.setAccessToken(token);
-        response.setFirstName(person.getFirstName());
-        response.setSecondName(person.getSecondName());
-        response.setMiddleName(person.getMiddleName());
-
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(response);
+    @PostMapping("token")
+    public ResponseEntity<JwtResponse> getAccessToken(RefreshJwtRequest refreshToken) {
+        JwtResponse response = authService.getAccessToken(refreshToken.getRefreshToken());
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("register")
-    public ResponseEntity<RegisterResponseDTO> register(@RequestBody RegisterDTO registerDTO) {
-        RegisterResponseDTO response = modelMapper
-                .map(registrationService.register(registerDTO), RegisterResponseDTO.class);
+    public ResponseEntity<RegisterResponseDTO> register(@RequestBody @Valid RegisterDTO registerDTO) {
+        RegisterResponseDTO response = registrationService.register(registerDTO);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)

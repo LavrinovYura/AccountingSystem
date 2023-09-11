@@ -1,6 +1,6 @@
 package nic.testproject.accountingsystem.services.contracts.specs;
 
-import nic.testproject.accountingsystem.dto.contracts.ContractDTO;
+import nic.testproject.accountingsystem.dtos.contracts.ContractCriteriaDTO;
 import nic.testproject.accountingsystem.models.contracts.Contract;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -10,7 +10,7 @@ import java.util.List;
 
 public class ContractSpecifications {
 
-    public static Specification<Contract> searchContracts(ContractDTO searchCriteria) {
+    public static Specification<Contract> searchContracts(ContractCriteriaDTO searchCriteria) {
         return (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
 

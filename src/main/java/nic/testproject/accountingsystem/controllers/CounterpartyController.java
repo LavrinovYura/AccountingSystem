@@ -1,85 +1,58 @@
 package nic.testproject.accountingsystem.controllers;
 
-import nic.testproject.accountingsystem.dto.RequestName;
-import nic.testproject.accountingsystem.dto.contracts.CounterpartyDTO;
-import nic.testproject.accountingsystem.exceptions.ValidationException;
-import nic.testproject.accountingsystem.models.contracts.details.Counterparty;
-import nic.testproject.accountingsystem.repositories.contracts.CounterpartyRepository;
+import lombok.RequiredArgsConstructor;
+import nic.testproject.accountingsystem.dtos.contracts.CounterpartyDTO;
 import nic.testproject.accountingsystem.services.contracts.CounterpartyService;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import javax.validation.Valid;
+import java.util.Set;
 
 @CrossOrigin
 @RestController
 @RequestMapping("api/menu/counterparties/")
+@RequiredArgsConstructor
 public class CounterpartyController {
 
     private final CounterpartyService counterpartyService;
-    private final ModelMapper modelMapper;
-    private final CounterpartyRepository counterpartyRepository;
-
-    @Autowired
-    public CounterpartyController(CounterpartyService counterpartyService, ModelMapper modelMapper, CounterpartyRepository counterpartyRepository) {
-        this.counterpartyService = counterpartyService;
-        this.modelMapper = modelMapper;
-        this.counterpartyRepository = counterpartyRepository;
-    }
 
     @PostMapping("save")
     public ResponseEntity<CounterpartyDTO> saveCounterparty(
-            @RequestBody CounterpartyDTO counterpartyDTO) throws ValidationException {
-        if (counterpartyRepository.existsByName(counterpartyDTO.getName())) {
-            return ResponseEntity.badRequest().build();
-        }
+            @RequestBody @Valid CounterpartyDTO counterpartyDTO) {
+
         CounterpartyDTO savedCounterparty = counterpartyService.saveCounterparty(counterpartyDTO);
-        return ResponseEntity.ok(savedCounterparty);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(savedCounterparty);
     }
 
-    @GetMapping("show")
-    public ResponseEntity<List<CounterpartyDTO>> getCounterparties(
-            @ModelAttribute CounterpartyDTO criteria,
+    @PostMapping("show")
+    public ResponseEntity<Set<CounterpartyDTO>> getCounterparties(
+            @RequestBody CounterpartyDTO criteria,
             @RequestParam(name = "page", defaultValue = "0") int page,
             @RequestParam(name = "size", defaultValue = "50") int size) {
 
         Pageable pageable = PageRequest.of(page, size);
-        Page<Counterparty> counterpartiesPage = counterpartyService.findCounterparties(criteria, pageable);
+        Set<CounterpartyDTO> counterparties= counterpartyService.findCounterparties(criteria, pageable);
 
-        if (counterpartiesPage.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-
-        List<CounterpartyDTO> contracts = counterpartiesPage.getContent().stream()
-                .map(counterparty -> modelMapper.map(counterparty, CounterpartyDTO.class))
-                .collect(Collectors.toList());
-
-        return ResponseEntity.ok(contracts);
+        return ResponseEntity.ok(counterparties);
     }
 
-    @PutMapping("update/{name}")
+    @PutMapping("{id}/update")
     public ResponseEntity<CounterpartyDTO> updateCounterparty(
-            @PathVariable String name,
-            @RequestBody CounterpartyDTO counterpartyDTO) throws ValidationException {
-        CounterpartyDTO counterparty = counterpartyService.updateCounterparty(counterpartyDTO,name);
+            @PathVariable Long id,
+            @RequestBody CounterpartyDTO counterpartyDTO)  {
+        CounterpartyDTO counterparty = counterpartyService.updateCounterparty(counterpartyDTO, id);
         return ResponseEntity.ok(counterparty);
     }
 
-    @DeleteMapping("delete")
-    public ResponseEntity<Void> deleteCounterparty(@RequestBody RequestName name) {
-        counterpartyService.deleteCounterparty(name.getName());
-        return ResponseEntity.ok().build();
-    }
-
-    @DeleteMapping("deleteAll")
-    public ResponseEntity<Void> deleteCounterpartyWithChildren(@RequestBody RequestName name) {
-        counterpartyService.deleteCounterpartyWithChildren(name.getName());
+    @DeleteMapping("{id}/delete")
+    public ResponseEntity<Void> deleteCounterparty(@PathVariable Long id) {
+        counterpartyService.deleteCounterparty(id);
         return ResponseEntity.ok().build();
     }
 }

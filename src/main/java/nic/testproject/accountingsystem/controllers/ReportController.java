@@ -1,19 +1,15 @@
 package nic.testproject.accountingsystem.controllers;
 
-import nic.testproject.accountingsystem.dto.RequestName;
-import nic.testproject.accountingsystem.dto.report.AllContracts;
-import nic.testproject.accountingsystem.dto.report.RequestDates;
+import lombok.RequiredArgsConstructor;
+import nic.testproject.accountingsystem.dtos.report.AllContracts;
+import nic.testproject.accountingsystem.dtos.report.RequestDates;
 import nic.testproject.accountingsystem.repositories.contracts.projections.ContractPhaseProjection;
 import nic.testproject.accountingsystem.services.reports.ContractReportService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -22,16 +18,12 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/menu/reports")
+@RequiredArgsConstructor
 public class ReportController {
 
     private final ContractReportService reportService;
 
-    @Autowired
-    public ReportController(ContractReportService reportService) {
-        this.reportService = reportService;
-    }
-
-    @GetMapping("/contracts")
+    @PostMapping("/contracts")
     public ResponseEntity<ByteArrayResource> getContractsReport(
             @RequestBody RequestDates reportDates
     ) throws IOException {
@@ -51,12 +43,12 @@ public class ReportController {
                 .body(new ByteArrayResource(outputStream.toByteArray()));
     }
 
-    @GetMapping("/contractPhases")
+    @GetMapping("{id}/contractPhases")
     public ResponseEntity<ByteArrayResource> getPhasesReport(
-            @RequestBody RequestName name
+            @PathVariable Long id
     ) throws IOException {
 
-        List<ContractPhaseProjection> contractPhases = reportService.getAllPhasesByContract(name.getName());
+        List<ContractPhaseProjection> contractPhases = reportService.getAllPhasesByContract(id);
         ByteArrayOutputStream outputStream = reportService.generatePhasesExcelReport(contractPhases);
 
         HttpHeaders headers = new HttpHeaders();

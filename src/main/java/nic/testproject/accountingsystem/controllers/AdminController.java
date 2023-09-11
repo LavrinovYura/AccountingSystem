@@ -1,84 +1,70 @@
 package nic.testproject.accountingsystem.controllers;
 
-import nic.testproject.accountingsystem.dto.RequestName;
-import nic.testproject.accountingsystem.dto.administration.RequestRole;
-import nic.testproject.accountingsystem.dto.administration.UserDTO;
-import nic.testproject.accountingsystem.models.user.Person;
+import lombok.RequiredArgsConstructor;
+import nic.testproject.accountingsystem.dtos.administration.PersonDTO;
+import nic.testproject.accountingsystem.dtos.administration.RequestRole;
 import nic.testproject.accountingsystem.services.AdminService;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import javax.validation.Valid;
+import java.util.Set;
 
 @CrossOrigin
 @RestController
 @RequestMapping("api/menu/administration/")
+@RequiredArgsConstructor
 public class AdminController {
 
     private final AdminService adminService;
-    private final ModelMapper modelMapper;
 
-    @Autowired
-    public AdminController(AdminService adminService, ModelMapper modelMapper) {
-        this.adminService = adminService;
-        this.modelMapper = modelMapper;
-    }
-
-    @GetMapping("users")
-    public ResponseEntity<List<UserDTO>> getUsers(
+    @PostMapping("users")
+    public ResponseEntity<Set<PersonDTO>> getUsers(
             @RequestParam(name = "page", defaultValue = "0") int page,
             @RequestParam(name = "size", defaultValue = "50") int size) {
 
         Pageable pageable = PageRequest.of(page, size);
-        Page<Person> personPage = adminService.getUsers(pageable);
+        Set<PersonDTO> persons = adminService.getUsers(pageable);
 
-        List<UserDTO> users = personPage.getContent().stream()
-                .map(contract -> modelMapper.map(contract, UserDTO.class))
-                .collect(Collectors.toList());
-
-        return ResponseEntity.ok(users);
+        return ResponseEntity.ok().body(persons);
     }
 
-    @DeleteMapping("users/delete")
-    public ResponseEntity<Void> deleteUser(@RequestBody RequestName name) {
-        adminService.deleteUser(name.getName());
+    @DeleteMapping("users/{id}/delete")
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+        adminService.deleteUser(id);
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("users/addRole")
-    public ResponseEntity<UserDTO> addRole(
-            @RequestBody RequestRole requestRole) {
-        adminService.addRole(requestRole.getRoleType(), requestRole.getName());
+    @PutMapping("users/{personId}/addRole")
+    public ResponseEntity<Void> addRole(
+            @RequestBody @Valid RequestRole requestRole,
+            @PathVariable Long personId
+    ) {
+        adminService.addRole(requestRole.getRoleType(), personId);
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("users/removeRole")
-    public ResponseEntity<UserDTO> removeRole(
-            @RequestBody RequestRole requestRole) {
-        adminService.removeRole(requestRole.getRoleType(), requestRole.getName());
+    @PutMapping("users/{personId}/removeRole")
+    public ResponseEntity<Void> removeRole(
+            @RequestBody @Valid RequestRole requestRole,
+            @PathVariable Long personId) {
+        adminService.removeRole(requestRole.getRoleType(), personId);
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("users/usersByRole")
-    public ResponseEntity<List<UserDTO>> getUsersByRole(
+    @PostMapping("users/usersByRole")
+    public ResponseEntity<Set<PersonDTO>> getUsersByRole(
             @RequestParam(name = "page", defaultValue = "0") int page,
             @RequestParam(name = "size", defaultValue = "50") int size,
-            @RequestBody RequestRole requestRole) {
+            @RequestBody @Valid RequestRole requestRole
+    ) {
         Pageable pageable = PageRequest.of(page, size);
 
-        Page<Person> personPage = adminService.getUsersByRole(pageable, requestRole.getRoleType());
+        Set<PersonDTO> persons = adminService.getUsersByRole(pageable, requestRole.getRoleType());
 
-        List<UserDTO> users = personPage.stream()
-                .map(contract -> modelMapper.map(contract, UserDTO.class))
-                .collect(Collectors.toList());
-
-        return ResponseEntity.ok(users);
+        return ResponseEntity.ok(persons);
     }
 
 }

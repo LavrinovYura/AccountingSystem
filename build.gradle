@@ -23,6 +23,9 @@ repositories {
 }
 
 dependencies {
+    implementation 'org.mapstruct:mapstruct:1.5.5.Final'
+    implementation 'org.mapstruct:mapstruct-processor:1.5.5.Final'
+    implementation 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
     implementation group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.5'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     testImplementation 'junit:junit:4.13.2'
@@ -38,13 +41,14 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
 
     compileOnly 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
 
+    annotationProcessor 'org.projectlombok:lombok'
+    annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
+
+    testAnnotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
 
     runtimeOnly 'com.mysql:mysql-connector-j'
-
-    implementation group: 'org.modelmapper', name: 'modelmapper', version: '3.1.1'
 
     implementation 'org.apache.poi:poi-ooxml:5.2.2'
     implementation group: 'org.apache.poi', name: 'poi', version: '4.1.2'
