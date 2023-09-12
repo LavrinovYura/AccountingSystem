@@ -4,13 +4,7 @@ import nic.testproject.accountingsystem.dtos.contracts.ContractDTO;
 import nic.testproject.accountingsystem.dtos.contracts.UpdateContractDTO;
 import nic.testproject.accountingsystem.exceptions.ValidationException;
 import nic.testproject.accountingsystem.models.contracts.Contract;
-import org.mapstruct.AfterMapping;
-import org.mapstruct.BeanMapping;
-import org.mapstruct.IterableMapping;
-import org.mapstruct.Mapper;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.Named;
-import org.mapstruct.NullValuePropertyMappingStrategy;
+import org.mapstruct.*;
 import org.springframework.data.domain.Page;
 
 import java.util.Set;
@@ -32,6 +26,9 @@ public interface ContractMapper {
         } else throw new ValidationException("Phases", "at least 1 phase needed");
     }
 
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "contractCounterparties", ignore = true)
+    @Mapping(target = "phases", ignore = true)
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     Contract updateContractFromDto(@MappingTarget Contract contract, UpdateContractDTO contractDTO);
 

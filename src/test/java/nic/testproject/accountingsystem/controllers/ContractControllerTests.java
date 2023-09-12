@@ -127,7 +127,7 @@ class ContractControllerTests {
     @WithMockUser(authorities = {"USER"}, username = "admin")
     public void testAddPhases_ReturnsOk() throws Exception {
         Long id = 1L;
-        Set<ContractPhaseDTO> contractPhaseDTOS = createContractPhaseDTO();
+        Set<ContractPhaseDTO> contractPhaseDTOS = createContractPhaseDTOSet();
         ContractPhasesDTO contractPhasesDTO = new ContractPhasesDTO();
         contractPhasesDTO.setContractPhases(contractPhaseDTOS);
 
@@ -147,7 +147,7 @@ class ContractControllerTests {
     @WithMockUser(authorities = {"USER"}, username = "admin")
     public void testAddContractCounterparty_ReturnsOk() throws Exception {
         Long id = 1L;
-        Set<ContractCounterpartyDTO> contractCounterpartyDTO = createContractCounterpartyDTO();
+        Set<ContractCounterpartyDTO> contractCounterpartyDTO = createContractCounterpartyDTOSet();
         ContractCounterpartiesDTO contractCounterpartiesDTO = new ContractCounterpartiesDTO();
         contractCounterpartiesDTO.setContractCounterparties(contractCounterpartyDTO);
 
@@ -163,6 +163,60 @@ class ContractControllerTests {
         verify(contractService, times(1)).addContractCounterparty(contractCounterpartyDTO, id);
     }
 
+    @Test
+    @WithMockUser(authorities = {"USER"}, username = "admin")
+    public void testUpdateContractPhase_ReturnsOk() throws Exception {
+        Long phaseId = 1L;
+        ContractPhaseDTO phaseDTO = createContractPhaseDTO();
+        when(contractService.updateContractPhase(any(ContractPhaseDTO.class),any(Long.class))).thenReturn(phaseDTO);
+        mockMvc.perform(
+                        MockMvcRequestBuilders.post("/api/menu/contracts/" + phaseId + "/updatePhase")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(phaseDTO))
+                                .with(csrf()))
+                .andExpect(status().isOk());
+
+        verify(contractService, times(1)).updateContractPhase(phaseDTO, phaseId);
+    }
+
+    @Test
+    @WithMockUser(authorities = {"USER"}, username = "admin")
+    public void testUpdateContractCounterparty_ReturnsOk() throws Exception {
+        Long contractCounterpartyId = 1L;
+        ContractCounterpartyDTO contractCounterpartyDTO = createContractCounterpartyDTO();
+        when(contractService.updateContractCounterparty(any(ContractCounterpartyDTO.class),any(Long.class))).thenReturn(contractCounterpartyDTO);
+        mockMvc.perform(
+                        MockMvcRequestBuilders.post("/api/menu/contracts/" + contractCounterpartyId + "/updateContractCounterparty")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(contractCounterpartyDTO))
+                                .with(csrf()))
+                .andExpect(status().isOk());
+        verify(contractService, times(1)).updateContractCounterparty(contractCounterpartyDTO, contractCounterpartyId);
+    }
+
+    @Test
+    @WithMockUser(authorities = {"USER"}, username = "admin")
+    public void testDeleteContractCounterparty_ReturnsOk() throws Exception {
+        Long contractCounterpartyId = 1L;
+        mockMvc.perform(
+                        MockMvcRequestBuilders.delete("/api/menu/contracts/" + contractCounterpartyId + "/deleteContractCounterparty")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .with(csrf()))
+                .andExpect(status().isOk());
+        verify(contractService, times(1)).deleteContractCounterparty(contractCounterpartyId);
+    }
+
+    @Test
+    @WithMockUser(authorities = {"USER"}, username = "admin")
+    public void testDeletePhase_ReturnsOk() throws Exception {
+        Long phaseId = 1L;
+        mockMvc.perform(
+                        MockMvcRequestBuilders.delete("/api/menu/contracts/" + phaseId + "/deletePhase")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .with(csrf()))
+                .andExpect(status().isOk());
+        verify(contractService, times(1)).deletePhase(phaseId);
+    }
     public UpdateContractDTO createUpdateContractDTO() {
         UpdateContractDTO contractDTO = new UpdateContractDTO();
         contractDTO.setName("Contract Name");
@@ -185,12 +239,17 @@ class ContractControllerTests {
         contractDTO.setActualEndDate(LocalDate.of(2023, 9, 5));
         contractDTO.setAmount(new BigDecimal("10000.00"));
 
-        contractDTO.setContractCounterparties(createContractCounterpartyDTO());
-        contractDTO.setPhases(createContractPhaseDTO());
+        contractDTO.setContractCounterparties(createContractCounterpartyDTOSet());
+        contractDTO.setPhases(createContractPhaseDTOSet());
         return contractDTO;
     }
-    public Set<ContractCounterpartyDTO> createContractCounterpartyDTO() {
+    public Set<ContractCounterpartyDTO> createContractCounterpartyDTOSet() {
+        Set<ContractCounterpartyDTO> contractCounterparties = new HashSet<>();
+        contractCounterparties.add(createContractCounterpartyDTO());
+        return contractCounterparties;
+    }
 
+    public ContractCounterpartyDTO createContractCounterpartyDTO(){
         ContractCounterpartyDTO contractCounterpartyDTO = new ContractCounterpartyDTO();
         contractCounterpartyDTO.setName("Contract Name");
         contractCounterpartyDTO.setType(ContractType.DELIVERY);
@@ -200,13 +259,15 @@ class ContractControllerTests {
         contractCounterpartyDTO.setActualEndDate(LocalDate.of(2023, 9, 5));
         contractCounterpartyDTO.setAmount(new BigDecimal("10000.00"));
         contractCounterpartyDTO.setCounterpartyId(1L);
-
-        Set<ContractCounterpartyDTO> contractCounterparties = new HashSet<>();
-        contractCounterparties.add(contractCounterpartyDTO);
-        return contractCounterparties;
+        return contractCounterpartyDTO;
     }
+    public Set<ContractPhaseDTO> createContractPhaseDTOSet(){
+        Set<ContractPhaseDTO> contractPhases = new HashSet<>();
+        contractPhases.add(createContractPhaseDTO());
 
-    public Set<ContractPhaseDTO> createContractPhaseDTO(){
+        return contractPhases;
+    }
+    public ContractPhaseDTO createContractPhaseDTO(){
         ContractPhaseDTO contractPhaseDTO = new ContractPhaseDTO();
         contractPhaseDTO.setId(1L);
         contractPhaseDTO.setName("Phase Name");
@@ -219,11 +280,7 @@ class ContractControllerTests {
         contractPhaseDTO.setActualEndDate(LocalDate.of(2023, 8, 31));
         contractPhaseDTO.setActualMaterialCosts(BigDecimal.valueOf(5500.00));
         contractPhaseDTO.setActualSalaryExpenses(BigDecimal.valueOf(5500.00));
-
-        Set<ContractPhaseDTO> contractPhases = new HashSet<>();
-        contractPhases.add(contractPhaseDTO);
-
-        return contractPhases;
+        return contractPhaseDTO;
     }
 
 
