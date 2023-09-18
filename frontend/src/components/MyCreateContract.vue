@@ -1,0 +1,372 @@
+<template>
+    <v-app class="main">
+        <v-card class="card">
+                <v-card-title>
+                    <span
+                        class="text-h5"
+                    >
+                        Добавить новый контракт
+                    </span>
+                </v-card-title>
+                <v-card-text> 
+                    <v-divider></v-divider>
+                    <template>
+                        <v-row>
+                            <v-col v-for="(field, index) in fields" :key="index" cols="3">
+                                <label> {{ field.label }}</label>
+                                    <template v-if="field.type === 'select'">
+                                        <v-select clearable :items="type" v-model="newContract[field.model]"></v-select>
+                                    </template>
+                                
+                                <template v-else>
+                                    <v-text-field :type="field.type" v-model="newContract[field.model]" ></v-text-field>
+                                </template>
+                            </v-col>
+                        </v-row>
+                        </template>
+
+                    <v-divider></v-divider>
+                    <section > 
+                        <h4>Этапы</h4>
+                        <v-row  v-for="(phase, index) in newContract.phases" :key=" phase.id"> 
+                            <v-divider></v-divider>
+                            <h6>Этап {{ index+1 }}</h6>
+                            <v-col v-for="name in textPhases" cols="3">
+                                <label>{{ name.name1 }}
+                                    <v-text-field :type="name.type1" v-model="phase[name.model1]">
+                                    </v-text-field>
+                                </label>
+                            </v-col>
+                        </v-row>
+                        <v-btn outlined  icon color="blue" @click="addPhase"> 
+                            <v-icon >mdi-plus</v-icon>
+                        </v-btn>
+                        
+                    </section>
+                    <v-divider></v-divider>
+                    
+                    <section>
+                        <h4>Договор с контрагентом</h4>
+                        <v-divider></v-divider>
+
+                        <v-row v-for="(agent, id) in newContract.contractCounterparties" :key="agent.id">
+                            <h6>Контрагент {{ id+1 }}</h6>
+                            <v-col v-for="(name, index) in textAgents" cols="3">
+                                <label>{{ name.name2 }}</label>
+                                <template v-if="name.model2 === 'type'">
+                                    <v-select 
+                                    clearable :items="type" 
+                                    
+                                    v-model="agent[name.model2]"></v-select>
+                                    
+                                </template>
+                                <template v-else-if="name.model2==='organization'">
+                                    <v-autocomplete 
+                                        
+                                        @input='filterAgents'
+                                        :items="filteredWords"
+                                        hide-no-data
+                                        claerable
+                                        v-model.lazy="agent[name.model2]"
+                                    ></v-autocomplete>
+
+                                </template>
+                                <template v-else>
+                                    <v-text-field :type="name.type1" v-model="agent[name.model2]"></v-text-field>
+                                </template>
+                            </v-col>
+                            
+                        </v-row>
+                        
+                        <v-btn outlined  icon color="blue" @click="addContragent"> 
+                            <v-icon >mdi-plus</v-icon>
+                        </v-btn>
+                        <v-divider></v-divider>
+                    </section>
+                    {{ newContract.contractCounterparties }}
+                </v-card-text>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn
+                        color="blue darken-1"
+                        text
+                        @click="dialog2 = true"
+                        >Закрыть
+                    </v-btn>
+                    <v-row>
+                        <v-dialog width="600px" justify-center
+                            v-model="dialog2"
+                            >
+                            <v-card>
+                                <v-card-title>
+                                    <div>Вы уверены, что хотите закрыть окно?</div>
+                                    <div>Все несохраненные данные будут утеряны</div>
+                                </v-card-title>
+                                <v-card-actions>
+                                    <v-spacer></v-spacer>
+                                        <v-btn color="blue darken-1"
+                                            text
+                                            @click="closeDialog()"
+                                            >Закрыть
+                                        </v-btn>
+                                        <v-btn color="blue darken-1"
+                                            text
+                                            @click="dialog2 = false"
+                                            >Остаться
+                                        </v-btn>
+                                </v-card-actions>
+                            </v-card>
+                        </v-dialog>
+                    </v-row>
+                    
+                    <v-btn
+                        color="blue darken-1"
+                        text                                
+                        @click="sndNewContract(), closeDialog(),createNewContract()"
+                        >Сохранить
+                    </v-btn>
+                     
+                </v-card-actions>
+            </v-card>
+            
+    </v-app>
+</template>
+<script>
+import { mapGetters, mapMutations } from 'vuex';
+export default {
+    name: 'MyCreateContract',
+    data() {
+        return {
+            newContract:{
+                name: '',
+                type: '',
+                plannedStartDate: '',
+                plannedEndDate: '',
+                actualStartDate: '',
+                actualEndDate: '',
+                amount: '',
+                phases: [{ 
+                    id: '',
+                    name: '',
+                    amount: '',
+                    plannedSalaryExpenses: '',
+                    actualSalaryExpenses: '',
+                    plannedMaterialCosts: '',
+                    actualMaterialCosts: '',
+                    plannedStartDate: '',
+                    plannedEndDate: '',
+                    actualStartDate: '',
+                    actualEndDate: '',
+                }],
+                contractCounterparties: [{ 
+                    name: '',
+                    amount: '',
+                    organization: '',
+                    type: '',
+                    plannedStartDate: '',
+                    plannedEndDate: '',
+                    actualStartDate: '',
+                    actualEndDate: '',
+                }]
+            },
+            phase: { 
+                id: '',
+                name: '',
+                amount: '',
+                plannedSalaryExpenses: '',
+                actualSalaryExpenses: '',
+                plannedMaterialCosts: '',
+                actualMaterialCosts: '',
+                plannedStartDate: '',
+                plannedEndDate: '',
+                actualStartDate: '',
+                actualEndDate: '',
+            }    ,
+            
+            textPhases: [
+                {name1: 'Название',type1: '', model1: 'name',},
+                {name1: 'Сумма',type1: '',model1: 'amount',},
+                {name1: 'Плановые расходы на зп',type1: '',model1: 'plannedSalaryExpenses', },
+                {name1: 'Фактические расходы на зп',type1: '',model1: 'actualSalaryExpenses',},
+                {name1: 'Плановая дата начала',type1: 'Date',model1: 'plannedStartDate',},
+                {name1: 'Плановая дата окончания',type1: 'Date',model1: 'plannedEndDate',}, 
+                {name1: 'Фактическая дата начала',type1: 'Date',model1: 'actualStartDate',},
+                {name1: 'Фактическая дата окончания',  type1: 'Date', model1: 'actualEndDate', },
+                {name1: 'Плановые расходы на материалы',type1: '',model1: 'plannedMaterialCosts', },
+                {name1: 'Фактические расходы на материалы',type1: '',model1: 'actualMaterialCosts',},
+            ],
+            textAgents: [
+                {name2: 'Название', type1: '',model2: 'name'},
+                {name2: 'Сумма договора',type1: '',model2: 'amount'},
+                {name2: 'Организация ',type1: '', model2: 'organization'},
+                {name2: 'Тип договора', type1: '',model2: 'type'},
+                {name2: 'Плановая дата начала',type1: 'Date',model2: 'plannedStartDate'},
+                {name2: 'Плановая дата окончания',type1: 'Date',model2: 'plannedEndDate'},
+                {name2: 'Фактическая дата начала',type1: 'Date',model2: 'actualStartDate'},
+                {name2: 'Фактическая дата окончания',type1: 'Date',model2: 'actualEndDate'},
+
+            ],
+            fields: [
+                { label: 'Название', model: 'name', type: 'text' },
+                { label: 'Тип', model: 'type', type: 'select', options: ['option1', 'option2'] },
+                { label: 'Плановая дата начала', model: 'plannedStartDate', type: 'date' },
+                { label: 'Плановая дата окончания', model: 'plannedEndDate', type: 'date' },
+                { label: 'Фактическая дата начала', model: 'actualStartDate', type: 'date' },
+                { label: 'Фактическая дата окончания', model: 'actualEndDate', type: 'date' },
+                { label: 'Сумма договора', model: 'amount', type: 'text' }
+            ],
+            selectedWord: '',
+            filteredWords: ['one', 'two'],
+            dialog2: false,
+            
+        }
+    },
+    methods: {
+        ...mapMutations({
+            addNewContract: 'ADD_NEW_CONTRACT',
+            addAllContracts: 'ADD_ALL_CONTRACTS',
+            closeDialog: 'CLOSE_DIALOG'
+        }),
+
+        addPhase() {
+            const phases= { 
+                
+                name: '',
+                amount: '',
+                plannedSalaryExpenses: '',
+                actualSalaryExpenses: '',
+                plannedMaterialCosts: '',
+                actualMaterialCosts: '',
+                plannedStartDate: '',
+                plannedEndDate: '',
+                actualStartDate: '',
+                actualEndDate: '',
+            }    
+            
+            this.newContract.phases = [...this.newContract.phases, phases];
+},
+
+        addContragent() {
+            const contractCounterparties= { 
+               
+                name: '',
+                amount: '',
+                organization: '',
+                type: '',
+                plannedStartDate: '',
+                plannedEndDate: '',
+                actualStartDate: '',
+                actualEndDate: '',           
+            }
+            
+            this.newContract.contractCounterparties.push(contractCounterparties)
+        },
+
+
+        sndNewContract() {
+            
+            const res = {};
+            for (let item in this.newContract) {
+               res[item] = this.newContract[item];
+            }
+            this.addNewContract(res);
+            for (let item in this.newContract) {
+               this.newContract[item] = '';
+            };
+            
+        },
+
+        async filterAgents() {
+            try {
+                const response = await axios.post(this.$store.state.url + '/api/menu/counterparties/show',
+                {
+                    name: this.selectedWord,},
+                {headers: {
+                    "Authorization":  "Bearer " + localStorage.token,
+                }});
+                console.log(response)
+                console.log(this.selectedWord)
+            }
+            
+            catch(e) {
+                alert('Неверно')
+                }
+        },
+
+        async createNewContract() {
+            try {
+                const response = await axios.post(this.$store.state.url + '/api/menu/contracts/save',
+                {
+                    id: '',
+                    name: 'contract1',
+                    type: "WORKS",
+                    plannedStartDate: this.newContract.plannedStartDate,
+                    plannedEndDate: this.newContract.plannedEndDate,
+                    actualStartDate: this.newContract.actualStartDate,
+                    actualEndDate: this.newContract.actualEndDate,
+                    amount: this.newContract.amount,
+                    phases: [
+                        {
+                            name: "Phase 1123",
+                            plannedStartDate: "2023-09-11",
+                            plannedEndDate: "2023-09-03",
+                            actualStartDate: "2023-05-01",
+                            actualEndDate: "2023-07-11",
+                            phaseCost: 100000.0,
+                            actualMaterialCosts: 25000.0,
+                            plannedMaterialCosts: 20000.0,
+                            actualSalaryExpenses: 55000.0,
+                            plannedSalaryExpenses: 50000.0
+                        }
+                    ],
+                    contractCounterparties: [
+                        {
+                            name: "Contract 1123",
+                            type: "PROCUREMENT",
+                            counterpartyId: 1,
+                            amount: 100000.0,
+                            plannedStartDate: "2023-04-01",
+                            plannedEndDate: "2023-05-03",
+                            actualStartDate: "2023-05-01",
+                            actualEndDate: "2023-07-12"
+                        }
+                    ],
+                },
+                {headers: {
+                    "Authorization":  "Bearer " + localStorage.token,
+                }});
+                console.log(response)
+                
+            } 
+            catch(e) {
+                alert('Неверно')
+                }
+
+        },
+        
+
+
+        
+    },
+    computed:{
+        ...mapGetters({
+            headers: 'contractsModul/headers',           
+            contracts: 'contracts',
+            type: 'contractsModul/type',
+            dialog1: 'index/dialog1'
+        }),
+        
+    },
+}
+
+
+</script>
+
+<style scoped>
+.card {
+    width: 100%;
+}
+
+
+
+</style>
