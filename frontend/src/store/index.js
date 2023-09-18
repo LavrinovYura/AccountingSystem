@@ -19,7 +19,7 @@ export const store = new Vuex.Store({
     dialog1: false,
     dialog8: false,
     dialog7: false,
-    contragents: [{
+    contragents: [{ 
       id: 0,
       name: 'ann',
       inn: "fgnhn",
